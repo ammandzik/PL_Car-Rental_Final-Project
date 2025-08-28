@@ -25,19 +25,7 @@ spring:
 
 logging:
   level:
-    root: INFO
-    com.example.demo: INFO
-    org:
-      hibernate:
-        sql: WARN
-        jpa: WARN
-        orm.connections.pooling: WARN
-        type:
-          descriptor:
-            sql:
-              BasicBinder: WARN
-        tool:
-          schema: WARN
+    pl.coderslab.carrental: INFO
   file:
     name: logs/application.log
   pattern:
@@ -47,3 +35,6 @@ server:
   servlet:
     session:
       timeout: 15m
+
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY}
