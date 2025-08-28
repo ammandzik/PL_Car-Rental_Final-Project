@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: Car-Rental
+  output:
+    ansi:
+      enabled: ALWAYS
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  sql:
+    init:
+      mode: never
+      data-locations: classpath:sql/data.sql
+
+logging:
+  level:
+    root: INFO
+    com.example.demo: INFO
+    org:
+      hibernate:
+        sql: WARN
+        jpa: WARN
+        orm.connections.pooling: WARN
+        type:
+          descriptor:
+            sql:
+              BasicBinder: WARN
+        tool:
+          schema: WARN
+  file:
+    name: logs/application.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+
+server:
+  servlet:
+    session:
+      timeout: 15m
