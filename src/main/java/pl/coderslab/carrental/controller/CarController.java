@@ -34,18 +34,18 @@ public class CarController {
         return carService.getCarById(id);
     }
 
-    @PostMapping("/car")
+    @PostMapping("admin/car")
     public CarDto createCar(@RequestParam String brandName, @RequestBody CarDto carDto) {
         return carService.createCar(brandName, carDto);
     }
 
-    @PutMapping("/car")
+    @PutMapping("admin/car")
     public CarDto updateCar(@RequestParam Long id, @RequestBody CarDto carDto) {
 
         return carService.updateCar(id, carDto);
     }
 
-    @DeleteMapping("/car")
+    @DeleteMapping("admin/car")
     public void deleteCar(@RequestParam Long id) {
 
         carService.deleteCar(id);

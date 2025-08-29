@@ -80,10 +80,16 @@ public class CarService {
         carRepository.delete(car);
     }
 
+    public void changeStatus(Long id, CarStatus carStatus) {
+
+        var car = getCarOrElseThrow(id);
+        car.setCarStatus(carStatus);
+        carRepository.save(car);
+    }
+
     private Car getCarOrElseThrow(Long id) {
         return carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Car with id %s not found", id)));
     }
-
 }
 

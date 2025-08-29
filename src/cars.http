@@ -11,7 +11,7 @@ GET localhost:8080/api/cars?carStatus=AVAILABLE&brand=BMW
 GET localhost:8080/api/cars/car?id=null
 
 ###
-POST localhost:8080/api/cars/car?brandName=bugatti
+POST localhost:8080/api/cars/admin/car?brandName=bugatti
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###
-PUT localhost:8080/api/cars/car?id=2
+PUT localhost:8080/api/cars/admin/car?id=2
 Content-Type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE localhost:8080/api/cars/car?id=3
+DELETE localhost:8080/api/cars/admin/car?id=3
 
 ###
-DELETE localhost:8080/api/cars/car?id=123
+DELETE localhost:8080/api/cars/admin/car?id=123

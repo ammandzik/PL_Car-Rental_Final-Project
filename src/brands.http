@@ -1,0 +1,12 @@
+### GET request to example server
+GET localhost:8080/api/admin/brands
+
+###
+GET localhost:8080/api/admin/brands?id=1
+
+###
+POST localhost:8080/api/admin/brands
+Content-Type: application/json
+
+###
+DELETE localhost:8080/api/admin/brands?id=9
