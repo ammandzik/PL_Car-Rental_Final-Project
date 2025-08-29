@@ -1,0 +1,41 @@
+### GET request to example server
+GET localhost:8080/api/cars
+
+###
+GET localhost:8080/api/cars?brand=BMW
+
+###
+GET localhost:8080/api/cars?carStatus=AVAILABLE&brand=BMW
+
+###
+GET localhost:8080/api/cars/car?id=null
+
+###
+POST localhost:8080/api/cars/car?brandName=bugatti
+Content-Type: application/json
+
+{
+  "carStatus": "Rented",
+  "model": "Veyron",
+  "year": 2020
+}
+
+###
+PUT localhost:8080/api/cars/car?id=2
+Content-Type: application/json
+
+{
+  "brand": {
+    "id": 2,
+    "brandName": "XXX"
+  },
+  "carStatus": "Available",
+  "model": "Updated",
+  "year": 2029
+}
+
+###
+DELETE localhost:8080/api/cars/car?id=3
+
+###
+DELETE localhost:8080/api/cars/car?id=123
