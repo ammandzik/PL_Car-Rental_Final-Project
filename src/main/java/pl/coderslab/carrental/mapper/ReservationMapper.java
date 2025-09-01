@@ -11,11 +11,12 @@ public class ReservationMapper {
 
         return ReservationDto.builder()
                 .id(reservation.getId())
-                .carId(reservation.getId())
+                .carId(reservation.getCar().getId())
                 .userId(reservation.getUser().getId())
                 .confirmed(reservation.isConfirmed())
                 .dateFrom(reservation.getDateFrom())
                 .dateTo(reservation.getDateTo())
+                .finalPrice(reservation.getFinalPrice())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class ReservationMapper {
                 .confirmed(reservationDto.isConfirmed())
                 .dateFrom(reservationDto.getDateFrom())
                 .dateTo(reservationDto.getDateTo())
+                .finalPrice(reservationDto.getFinalPrice())
                 .build();
     }
 }

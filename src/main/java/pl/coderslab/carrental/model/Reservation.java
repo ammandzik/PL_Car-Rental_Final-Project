@@ -21,6 +21,7 @@ public class Reservation {
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private boolean confirmed;
+    private Double finalPrice;
     @ManyToOne
     private Car car;
     @ManyToOne

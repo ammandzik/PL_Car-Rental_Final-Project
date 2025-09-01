@@ -2,6 +2,7 @@ package pl.coderslab.carrental.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.coderslab.carrental.model.enum_package.PaymentMethod;
@@ -11,6 +12,7 @@ import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Payment {
 
     @Id
@@ -20,8 +22,7 @@ public class Payment {
     private PaymentMethod paymentMethod;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
-    private Long amount;
+    private Double amount;
     @ManyToOne
     private Reservation reservation;
-
 }

@@ -4,10 +4,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import pl.coderslab.carrental.exception.CarAlreadyRentedException;
 import pl.coderslab.carrental.response.ErrorResponse;
 
 @RestControllerAdvice
@@ -45,6 +47,15 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception) {
 
         log.error("Handling method argument type mismatch exception: {}", exception.getMessage());
+
+        return createResponse(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler(CarAlreadyRentedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleCarAlreadyRented(CarAlreadyRentedException exception) {
+
+        log.error("Handling car already rented exception: {}", exception.getMessage());
 
         return createResponse(HttpStatus.BAD_REQUEST, exception);
     }
