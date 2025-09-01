@@ -17,7 +17,8 @@ Content-Type: application/json
 {
   "carStatus": "Rented",
   "model": "Veyron",
-  "year": 2020
+  "year": 2020,
+  "pricePerDay": 1200
 }
 
 ###
@@ -31,11 +32,12 @@ Content-Type: application/json
   },
   "carStatus": "Available",
   "model": "Updated",
-  "year": 2029
+  "year": 2029,
+  "pricePerDay": 1200
 }
 
 ###
-DELETE localhost:8080/api/cars/admin/car?id=3
+DELETE localhost:8080/api/cars/admin/car?id=12
 
 ###
 DELETE localhost:8080/api/cars/admin/car?id=123

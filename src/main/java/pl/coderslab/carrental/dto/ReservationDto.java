@@ -10,8 +10,8 @@ import java.time.LocalDate;
 public class ReservationDto {
 
     private Long id;
-    private LocalDate date_from;
-    private LocalDate date_to;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
     private boolean confirmed;
     private Long carId;
     private Long userId;

@@ -1,0 +1,13 @@
+### GET request to example server
+
+###
+POST localhost:8080/reservations
+Content-Type: application/json
+
+{
+  "carId": 1,
+  "confirmed": false,
+  "dateFrom": "2025-09-01",
+  "dateTo": "2025-09-03",
+  "userId": 1
+}

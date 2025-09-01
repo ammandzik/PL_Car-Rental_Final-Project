@@ -2,6 +2,7 @@ package pl.coderslab.carrental.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import pl.coderslab.carrental.model.Role;
 
 import java.util.Set;
 
@@ -16,5 +17,5 @@ public class UserDto {
     private String phone;
     private String email;
     private String password;
-    private Set<String> roles;
+    private Set<Role> roles;
 }

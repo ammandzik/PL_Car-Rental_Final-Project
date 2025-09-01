@@ -1,5 +1,7 @@
 package pl.coderslab.carrental.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.carrental.dto.CarDto;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
@@ -18,36 +20,38 @@ public class CarController {
     }
 
     @GetMapping
-    public List<CarDto> getCars(@RequestParam(required = false) String brand,
-                                @RequestParam(required = false) CarStatus carStatus) {
+    public ResponseEntity<List<CarDto>> getCars(@RequestParam(required = false) String brand,
+                                                @RequestParam(required = false) CarStatus carStatus) {
 
         if (brand == null && carStatus == null) {
-            return carService.getAllCars();
+            return new ResponseEntity<>(carService.getAllCars(), HttpStatus.OK);
         } else {
-            return carService.getCarsByBrandAndStatus(brand, carStatus);
+            return new ResponseEntity<>(carService.getCarsByBrandAndStatus(brand, carStatus), HttpStatus.OK);
         }
     }
 
     @GetMapping("/car")
-    public CarDto getCar(@RequestParam Long id) {
+    public ResponseEntity<CarDto> getCar(@RequestParam Long id) {
 
-        return carService.getCarById(id);
+        return new ResponseEntity<>(carService.getCarById(id), HttpStatus.OK);
     }
 
     @PostMapping("admin/car")
-    public CarDto createCar(@RequestParam String brandName, @RequestBody CarDto carDto) {
-        return carService.createCar(brandName, carDto);
+    public ResponseEntity<CarDto> createCar(@RequestParam String brandName, @RequestBody CarDto carDto) {
+
+        return new ResponseEntity<>(carService.createCar(brandName, carDto), HttpStatus.CREATED);
     }
 
     @PutMapping("admin/car")
-    public CarDto updateCar(@RequestParam Long id, @RequestBody CarDto carDto) {
+    public ResponseEntity<CarDto> updateCar(@RequestParam Long id, @RequestBody CarDto carDto) {
 
-        return carService.updateCar(id, carDto);
+        return new ResponseEntity<>(carService.updateCar(id, carDto), HttpStatus.OK);
     }
 
     @DeleteMapping("admin/car")
-    public void deleteCar(@RequestParam Long id) {
+    public ResponseEntity<String> deleteCar(@RequestParam Long id) {
 
         carService.deleteCar(id);
+        return new ResponseEntity<>("Car deleted", HttpStatus.OK);
     }
 }

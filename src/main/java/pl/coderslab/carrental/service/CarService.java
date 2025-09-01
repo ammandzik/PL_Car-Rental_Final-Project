@@ -1,6 +1,7 @@
 package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.CarDto;
@@ -12,6 +13,7 @@ import pl.coderslab.carrental.repository.CarRepository;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CarService {
 
     private final CarRepository carRepository;
@@ -25,6 +27,9 @@ public class CarService {
     }
 
     public List<CarDto> getAllCars() {
+
+        log.info("Invoked get all cars method");
+
         return carRepository.findAll()
                 .stream()
                 .map(carMapper::toDto)
@@ -32,6 +37,8 @@ public class CarService {
     }
 
     public List<CarDto> getCarsByBrandAndStatus(String brand, CarStatus carStatus) {
+
+        log.info("Invoked get all cars filtered by brand and car status");
 
         return carRepository.findByBrandAndStatus(brand, carStatus)
                 .stream()
@@ -41,24 +48,45 @@ public class CarService {
 
     public CarDto getCarById(Long id) {
 
-        var car = getCarOrElseThrow(id);
+        log.info("Invoked get car by id method");
 
-        return carMapper.toDto(car);
+        if (id != null) {
+            var car = getCarOrElseThrow(id);
+
+            log.info("Returned car by id {}", car);
+            return carMapper.toDto(car);
+        } else {
+            throw new IllegalArgumentException("Car id is null");
+        }
     }
 
     @Transactional
     public CarDto createCar(String brandName, CarDto carDto) {
 
-        var brand = brandService.findOrCreateBrand(brandName);
+        log.info("Invoked create car method");
 
-        var car = carMapper.toEntity(carDto);
-        car.setBrand(brand);
+        if (brandName != null && carDto != null) {
+            var brand = brandService.findOrCreateBrand(brandName);
 
-        return carMapper.toDto(carRepository.save(car));
+            var car = carMapper.toEntity(carDto);
+            car.setBrand(brand);
+
+            log.info("Car created {}", car);
+
+            return carMapper.toDto(carRepository.save(car));
+        } else {
+            throw new IllegalArgumentException(String.format("Brand name and car should not be null: %s %s", brandName, carDto));
+        }
     }
 
     @Transactional
     public CarDto updateCar(Long id, CarDto carDto) {
+
+        log.info("Invoked update car method");
+
+        if (id == null || carDto == null) {
+            throw new IllegalArgumentException(String.format("Id and CarDto are required and cannot be null: %s %s", id, carDto));
+        }
 
         if (brandService.existsByName(carDto.getBrand().getBrandName())) {
 
@@ -68,6 +96,9 @@ public class CarService {
             car.setModel(carDto.getModel());
             car.setYear(carDto.getYear());
             car.setCarStatus(carDto.getCarStatus());
+
+            log.info("Car updated {}", car);
+
             return carMapper.toDto(carRepository.save(car));
 
         } else
@@ -76,18 +107,39 @@ public class CarService {
 
     public void deleteCar(Long id) {
 
-        var car = getCarOrElseThrow(id);
-        carRepository.delete(car);
+        log.info("Invoked delete car method");
+
+        if (id != null) {
+            var car = getCarOrElseThrow(id);
+            carRepository.delete(car);
+            log.info("Car deleted with ID {}", id);
+
+        } else {
+            throw new IllegalArgumentException("Cannot delete Car with null ID");
+        }
     }
 
     public void changeStatus(Long id, CarStatus carStatus) {
 
-        var car = getCarOrElseThrow(id);
-        car.setCarStatus(carStatus);
-        carRepository.save(car);
+        log.info("Invoked change status method of Car with id {}", id);
+
+        if (id != null && carStatus != null) {
+
+            log.info("Changing status of car with id {}", id);
+
+            var car = getCarOrElseThrow(id);
+            car.setCarStatus(carStatus);
+            carRepository.save(car);
+
+        } else {
+            throw new IllegalArgumentException(String.format("Id and/or car status cannot be null: %s %s", id, carStatus));
+        }
     }
 
     private Car getCarOrElseThrow(Long id) {
+
+        log.info("Invoked ger car or else throw method {}", id);
+
         return carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Car with id %s not found", id)));
     }

@@ -1,5 +1,7 @@
 package pl.coderslab.carrental.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.carrental.dto.BrandDto;
 import pl.coderslab.carrental.service.BrandService;
@@ -17,20 +19,28 @@ public class BrandController {
     }
 
     @GetMapping
-    public List<BrandDto> getBrands() {
+    public ResponseEntity<List<BrandDto>> getBrands() {
 
-        return brandService.getAllBrands();
+        return new ResponseEntity<>(brandService.getAllBrands(), HttpStatus.OK);
     }
 
     @PostMapping
-    public BrandDto createBrand(@RequestBody BrandDto brandDto) {
+    public ResponseEntity<BrandDto> createBrand(@RequestBody BrandDto brandDto) {
 
-        return brandService.createBrand(brandDto);
+        return new ResponseEntity<>(brandService.createBrand(brandDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping
-    public void deleteBrand(@RequestParam Long id) {
+    public ResponseEntity<String> deleteBrand(@RequestParam Long id) {
 
         brandService.deleteBrandById(id);
+
+        return new ResponseEntity<>("Brand removed", HttpStatus.OK);
+    }
+
+    @GetMapping("/brand")
+    public ResponseEntity<BrandDto> getBrandById(@RequestParam Long id) {
+
+        return new ResponseEntity<>(brandService.getBrandById(id), HttpStatus.OK);
     }
 }

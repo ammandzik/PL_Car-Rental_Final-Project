@@ -15,6 +15,7 @@ public class CarMapper {
                 .year(car.getYear())
                 .brand(car.getBrand())
                 .carStatus(car.getCarStatus())
+                .pricePerDay(car.getPricePerDay())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class CarMapper {
                 .year(carDto.getYear())
                 .brand(carDto.getBrand())
                 .carStatus(carDto.getCarStatus())
+                .pricePerDay(carDto.getPricePerDay())
                 .build();
     }
 }

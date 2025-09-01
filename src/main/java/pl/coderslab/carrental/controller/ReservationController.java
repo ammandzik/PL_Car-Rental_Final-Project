@@ -1,7 +1,33 @@
 package pl.coderslab.carrental.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import pl.coderslab.carrental.dto.ReservationDto;
+import pl.coderslab.carrental.service.ReservationService;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationController {
+
+    private final ReservationService reservationService;
+
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<ReservationDto>> getAllReservations() {
+
+        return new ResponseEntity<>(reservationService.findAll(), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto reservationDto) {
+
+        return new ResponseEntity<>(reservationService.save(reservationDto), HttpStatus.CREATED);
+    }
+
 }

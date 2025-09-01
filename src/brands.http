@@ -2,11 +2,15 @@
 GET localhost:8080/api/admin/brands
 
 ###
-GET localhost:8080/api/admin/brands?id=1
+GET localhost:8080/api/admin/brands/brand?id=33
 
 ###
 POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
+{
+  "name": "testowy2"
+}
+
 ###
-DELETE localhost:8080/api/admin/brands?id=9
+DELETE localhost:8080/api/admin/brands?id=10

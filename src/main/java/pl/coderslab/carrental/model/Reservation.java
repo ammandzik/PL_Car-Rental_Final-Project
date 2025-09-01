@@ -18,8 +18,8 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate date_from;
-    private LocalDate date_to;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
     private boolean confirmed;
     @ManyToOne
     private Car car;

@@ -14,4 +14,5 @@ public class CarDto {
     private CarStatus carStatus;
     private String model;
     private int year;
+    private double pricePerDay;
 }
