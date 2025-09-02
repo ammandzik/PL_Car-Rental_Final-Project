@@ -12,6 +12,7 @@ import pl.coderslab.carrental.model.Utils;
 import pl.coderslab.carrental.repository.InvoiceRepository;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -43,6 +44,16 @@ public class InvoiceService {
                 .toList();
     }
 
+    public List<InvoiceDto> getInvoicesFilteredByPeriod(LocalDate start, LocalDate end) {
+
+        log.info(("Invoked get all invoices filtered by period method"));
+
+        return invoiceRepository.findByIssueDateRange(start, end)
+                .stream()
+                .map(invoiceMapper::toDto)
+                .toList();
+    }
+
     public InvoiceDto getInvoice(Long id) {
         log.info(("Invoked get invoice method"));
 
@@ -62,14 +73,18 @@ public class InvoiceService {
 
         if (invoiceDto != null) {
 
-            if (invoiceRepository.existsByInvoiceNumberAndReservationId(invoiceDto.getInvoiceNumber(), invoiceDto.getReservationId())) {
-                throw new InvoiceAlreadyExists(String.format("Invoice with number %s for reservation id %s already exists", invoiceDto.getInvoiceNumber(), invoiceDto.getReservationId()));
+            if (invoiceRepository.existsByInvoiceNumberAndReservationId(invoiceDto.getReservationId())) {
+                throw new InvoiceAlreadyExists(String.format("Invoice with reservation id %s already exists", invoiceDto.getReservationId()));
             }
 
             var reservation = reservationService.getReservationEntityWithComponents(invoiceDto.getReservationId());
             var user = reservation.getUser();
 
             var invoice = invoiceMapper.toEntity(invoiceDto);
+            var date = LocalDate.now();
+
+            invoice.setIssueDate(date);
+            invoice.setInvoiceNumber(uniqueInvoiceNumberGenerator(date));
             invoice.setTotalAmount(reservation.getFinalPrice());
             invoice.setUser(user);
             invoice.setReservation(reservation);
@@ -107,8 +122,8 @@ public class InvoiceService {
 
             log.info("Invoice with id {} found", id);
 
-            var reservation = reservationService.getReservationEntityWithComponents(invoiceDto.getReservationId());
-            var user = userMapper.toUser(userService.findById(invoiceDto.getUserId()));
+            var reservation = reservationService.getReservationEntityWithComponents(invoice.getReservation().getId());
+            var user = userMapper.toUser(userService.findById(invoice.getUser().getId()));
 
             invoice.setInvoiceNumber(invoiceDto.getInvoiceNumber());
             invoice.setIssueDate(invoiceDto.getIssueDate());
@@ -139,6 +154,14 @@ public class InvoiceService {
         } catch (IOException e) {
             throw new PdfImportException(String.format("Cannot generate invoice pdf %s", invoiceId));
         }
+    }
+
+    private String uniqueInvoiceNumberGenerator(LocalDate issueDate) {
+
+        var randomId = Utils.randomBase64Url12();
+        var sb = new StringBuilder(String.format("%s-%s", issueDate, randomId));
+
+        return sb.toString();
     }
 
 }

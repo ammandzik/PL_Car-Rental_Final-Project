@@ -9,15 +9,27 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Base64;
 import java.util.Locale;
 
 public class Utils {
 
     private Utils() {
 
+    }
+
+    private static final SecureRandom RNG = new SecureRandom();
+    private static final Base64.Encoder B64URL = Base64.getUrlEncoder().withoutPadding();
+
+    public static String randomBase64Url12() {
+
+        byte[] buf = new byte[9];
+        RNG.nextBytes(buf);
+        return B64URL.encodeToString(buf);
     }
 
     public static byte[] buildSimpleInvoice(Long invoiceId, User user, Reservation reservation) throws IOException {

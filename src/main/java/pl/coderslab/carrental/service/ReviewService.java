@@ -7,6 +7,7 @@ import pl.coderslab.carrental.dto.ReviewDto;
 import pl.coderslab.carrental.exception.ReviewExistsException;
 import pl.coderslab.carrental.exception.ReviewNotAllowedYetException;
 import pl.coderslab.carrental.mapper.ReviewMapper;
+import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.repository.ReservationRepository;
 import pl.coderslab.carrental.repository.ReviewRepository;
 
@@ -44,7 +45,7 @@ public class ReviewService {
         if (reviewDto != null) {
 
             var reviewExists = reviewRepository.existsByReservationId(reviewDto.getReservationId());
-            var reservation = reservationRepository.findById(reviewDto.getReservationId()).get();
+            var reservation = findReservationOrElseThrow(reviewDto.getReservationId());
 
             if (!reservation.getDateTo().isBefore(LocalDate.now()) || !reservation.isConfirmed()) {
                 throw new ReviewNotAllowedYetException("Adding review is not allowed yet.");
@@ -71,9 +72,34 @@ public class ReviewService {
         if (reviewRepository.existsById(id)) {
             reviewRepository.deleteById(id);
             log.info("Deleted review with id {}", id);
-        }else{
+        } else {
             throw new EntityNotFoundException(String.format("Review with id %s not found", id));
         }
+
+    }
+
+    public ReviewDto updateReview(Long id, ReviewDto reviewDto) {
+
+        log.info("Update review method invoked");
+
+        var review = reviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Review with id %s not found", id)));
+
+        var reservation = findReservationOrElseThrow(reviewDto.getReservationId());
+
+        review.setDescription(reviewDto.getDescription());
+        review.setRating(reviewDto.getRating());
+        review.setPseudonym(reviewDto.getPseudonym());
+
+        review.setReservation(reservation);
+
+        return reviewMapper.toDto(reviewRepository.save(review));
+    }
+
+    private Reservation findReservationOrElseThrow(Long id) {
+
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Reservation not found with id %s", id)));
 
     }
 }

@@ -57,7 +57,7 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
     }
 
-    public void update(ReservationDto reservationDto) {
+    public ReservationDto update(ReservationDto reservationDto) {
         log.info("Update reservation method invoked");
 
         if (reservationDto != null) {
@@ -71,7 +71,7 @@ public class ReservationService {
             reservation.setFinalPrice(reservationDto.getFinalPrice());
 
             log.info("Updating reservation with id {}", reservationDto.getId());
-            reservationRepository.save(reservation);
+            return reservationMapper.toDto(reservationRepository.save(reservation));
         } else {
             throw new IllegalArgumentException("Reservation should not be null");
         }

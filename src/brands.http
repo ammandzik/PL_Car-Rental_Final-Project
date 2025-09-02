@@ -1,19 +1,30 @@
-### GET request to example server
+### get all brands
 GET localhost:8080/api/admin/brands
 
-###
+###(non existing brand)
 GET localhost:8080/api/admin/brands/brand?id=33
 
-###
+###(exisitng one)
 GET localhost:8080/api/admin/brands/brand?id=5
 
-###
+###(creation of new one, request body)
 POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
 {
-  "name": "testowy2"
+  "name": "Mazda"
 }
 
-###
-DELETE localhost:8080/api/admin/brands?id=14
+###(update, request param id, request body)
+PUT localhost:8080/api/admin/brands/brand?id=16
+Content-Type: application/json
+
+{
+  "name": "example"
+}
+
+###(removing previously added)
+DELETE localhost:8080/api/admin/brands?id=16
+
+
+

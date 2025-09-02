@@ -61,12 +61,12 @@ public class CarService {
     }
 
     @Transactional
-    public CarDto createCar(String brandName, CarDto carDto) {
+    public CarDto createCar(CarDto carDto) {
 
         log.info("Invoked create car method");
 
-        if (brandName != null && carDto != null) {
-            var brand = brandService.findOrCreateBrand(brandName);
+        if (carDto != null && carDto.getBrand().getId() != null) {
+            var brand = brandService.findBrandById(carDto.getBrand().getId());
 
             var car = carMapper.toEntity(carDto);
             car.setBrand(brand);
@@ -75,7 +75,7 @@ public class CarService {
 
             return carMapper.toDto(carRepository.save(car));
         } else {
-            throw new IllegalArgumentException(String.format("Brand name and car should not be null: %s %s", brandName, carDto));
+            throw new IllegalArgumentException(String.format("Brand id and car should not be null: %s %s", carDto.getId(), carDto));
         }
     }
 
@@ -88,21 +88,17 @@ public class CarService {
             throw new IllegalArgumentException(String.format("Id and CarDto are required and cannot be null: %s %s", id, carDto));
         }
 
-        if (brandService.existsByName(carDto.getBrand().getBrandName())) {
+        var brand = brandService.findBrandById(carDto.getBrand().getId());
+        var car = getCarOrElseThrow(id);
 
-            var car = getCarOrElseThrow(id);
+        car.setBrand(brand);
+        car.setModel(carDto.getModel());
+        car.setYear(carDto.getYear());
+        car.setCarStatus(carDto.getCarStatus());
 
-            car.setBrand(carDto.getBrand());
-            car.setModel(carDto.getModel());
-            car.setYear(carDto.getYear());
-            car.setCarStatus(carDto.getCarStatus());
+        log.info("Car updated {}", car);
 
-            log.info("Car updated {}", car);
-
-            return carMapper.toDto(carRepository.save(car));
-
-        } else
-            throw new EntityNotFoundException(String.format("Could not update car due to non existing brand %s", carDto.getBrand().getBrandName()));
+        return carMapper.toDto(carRepository.save(car));
     }
 
     public void deleteCar(Long id) {

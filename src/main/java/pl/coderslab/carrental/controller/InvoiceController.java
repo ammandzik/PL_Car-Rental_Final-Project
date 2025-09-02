@@ -1,12 +1,14 @@
 package pl.coderslab.carrental.controller;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.carrental.dto.InvoiceDto;
 import pl.coderslab.carrental.service.InvoiceService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -19,15 +21,20 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    @GetMapping("api/invoices")
-    public List<InvoiceDto> getInvoices() {
-        return invoiceService.getInvoices();
+    @GetMapping("/invoices")
+    public List<InvoiceDto> getInvoices(@RequestParam(required = false) LocalDate start, @RequestParam(required = false) LocalDate end) {
+
+        if (start == null && end == null) {
+            return invoiceService.getInvoices();
+        } else {
+            return invoiceService.getInvoicesFilteredByPeriod(start, end);
+        }
     }
 
     @PostMapping("/admin/invoice")
-    public InvoiceDto createInvoice(@RequestBody InvoiceDto invoiceDto) {
+    public ResponseEntity<InvoiceDto> createInvoice(@RequestBody InvoiceDto invoiceDto) {
 
-        return invoiceService.addInvoice(invoiceDto);
+        return new ResponseEntity<>(invoiceService.addInvoice(invoiceDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/invoices/pdf")
@@ -39,5 +46,19 @@ public class InvoiceController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=invoice-%d.pdf", id))
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
+    }
+
+    @DeleteMapping("/admin/invoice")
+    public ResponseEntity deleteInvoice(@RequestParam Long id) {
+
+        invoiceService.deleteInvoice(id);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/admin/invoice")
+    public ResponseEntity<InvoiceDto> updateInvoice(@RequestParam Long id, @RequestBody InvoiceDto invoiceDto) {
+
+        return new ResponseEntity<>(invoiceService.updateInvoice(id, invoiceDto), HttpStatus.OK);
     }
 }

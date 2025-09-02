@@ -2,18 +2,18 @@
 GET localhost:8080/api/reviews
 
 ###
-POST localhost:8080/api/reviews
+POST localhost:8080/api/review
 Content-Type: application/json
 
 {
-  "reservationId": 20,
+  "reservationId": 21,
   "description": "Testowa prawidlowa review",
   "rating": 5,
   "pseudonym": "janekBananek"
 }
 
 ###
-POST localhost:8080/api/reviews
+POST localhost:8080/api/review
 Content-Type: application/json
 
 {

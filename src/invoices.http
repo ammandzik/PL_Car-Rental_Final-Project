@@ -1,12 +1,53 @@
-### GET request to example server
-GET localhost:8080
+### GET filtered by period of time(issue date of invoice)
+GET localhost:8080/api/invoices?start=2025-08-31&end=2025-09-02
 
-###
+###creation of invoice (happy path)
 POST localhost:8080/api/admin/invoice
 Content-Type: application/json
 
 {
-  "reservationId": 21,
-  "invoiceNumber": "3443",
-  "issueDate": "2025-09-01"
+  "reservationId": 19
 }
+
+###creation of invoice (duplicated)
+POST localhost:8080/api/admin/invoice
+Content-Type: application/json
+
+{
+  "reservationId": 19
+}
+
+###creation for non exisitng reservation
+POST localhost:8080/api/admin/invoice
+Content-Type: application/json
+
+{
+  "reservationId": 2333
+}
+
+###deletion(happy path)
+DELETE localhost:8080/api/admin/invoice?id=1
+
+###deletion(non existing value)
+DELETE localhost:8080/api/admin/invoice?id=12323
+
+###exisitng update
+PUT localhost:8080/api/admin/invoice?id=2
+Content-Type: application/json
+
+{
+  "totalAmount": 2000,
+  "issueDate": "2025-09-10",
+  "invoiceNumber": "XXXXXX"
+}
+
+### non exisiting invoice
+PUT localhost:8080/api/admin/invoice?id=2222
+Content-Type: application/json
+
+{
+"totalAmount": 2000,
+"issueDate": "2025-09-10",
+"invoiceNumber": "XXXXXX"
+}
+

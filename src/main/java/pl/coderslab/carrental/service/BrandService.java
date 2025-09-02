@@ -25,23 +25,18 @@ public class BrandService {
         this.brandDeletionPolicy = brandDeletionPolicy;
     }
 
-    public Brand findOrCreateBrand(String name) {
+    public Brand findBrandById(Long brandId) {
 
-        log.info("Invoked find or create brand method by brand name: {}", name);
+        log.info("Invoked find or create brand method by brand id: {}", brandId);
 
-        var byNameIgnoreCase = brandRepository.findByBrandNameIgnoreCase(name);
+        if (brandId != null) {
+            var brandById = brandRepository.findById(brandId)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Brand with id %s was not found", brandId)));
 
-        if (byNameIgnoreCase.isPresent()) {
-
-            log.info("Found brand with name {}", byNameIgnoreCase.get());
-
-            return byNameIgnoreCase.get();
-
+            log.info("Found brand with id {}", brandById);
+            return brandById;
         } else {
-
-            var brand = new Brand();
-            brand.setBrandName(name);
-            return brandRepository.save(brand);
+            throw new IllegalArgumentException("Brand id is null");
         }
     }
 
@@ -86,6 +81,19 @@ public class BrandService {
             throw new IllegalArgumentException("Given brand cannot be null");
         }
 
+    }
+
+    public BrandDto updateBrand(Long id, BrandDto brandDto) {
+        log.info("Invoked update brand method");
+        if (brandDto != null && id != null) {
+            var brand = brandRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Brand not found with id %s", id)));
+
+            brand.setBrandName(brandDto.getName());
+            return brandMapper.toDto(brandRepository.save(brand));
+        } else {
+            throw new IllegalArgumentException("Cannot update brand. Given brand and/or id cannot be null");
+        }
     }
 
     @Transactional

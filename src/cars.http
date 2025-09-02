@@ -1,34 +1,53 @@
-### GET request to example server
+### GET all
 GET localhost:8080/api/cars
 
-###
+###(brand)
 GET localhost:8080/api/cars?brand=BMW
 
-###
+###(status)
 GET localhost:8080/api/cars?carStatus=RENTED
 
-###
-GET localhost:8080/api/cars/car?id=null
+###(filtered by both status and brand)
+GET localhost:8080/api/cars?carStatus=AVAILABLE&brand=BMW
 
-###
-POST localhost:8080/api/cars/admin/car?brandName=Fiat
+###(car with id null)
+GET localhost:8080/api/car?id=null
+
+###(creating a car with no existing brand)
+POST localhost:8080/api/admin/car
 Content-Type: application/json
 
 {
+  "brand": {
+    "id": 1
+  },
   "carStatus": "Available",
   "model": "Tipo",
   "year": 2020,
   "pricePerDay": 1200
 }
 
-### - non existing brand - should throw exception
-PUT localhost:8080/api/cars/admin/car?id=2
+###(creating a car)
+POST localhost:8080/api/admin/car
 Content-Type: application/json
 
 {
   "brand": {
-    "id": 2,
-    "brandName": "Opel"
+    "id": 111
+  },
+  "carStatus": "Available",
+  "model": "Tipo",
+  "year": 2020,
+  "pricePerDay": 1200
+}
+
+### - non existing brand - should throw and handle exception
+PUT localhost:8080/api/admin/car?id=2
+Content-Type: application/json
+
+{
+  "brand": {
+    "id": 455
   },
   "carStatus": "Available",
   "model": "Updated",
@@ -36,8 +55,23 @@ Content-Type: application/json
   "pricePerDay": 1200
 }
 
-###
-DELETE localhost:8080/api/cars/admin/car?id=15
+### - update with existing brand
+PUT localhost:8080/api/admin/car?id=2
+Content-Type: application/json
 
-###
-DELETE localhost:8080/api/cars/admin/car?id=123
+{
+  "brand": {
+    "id": 4
+  },
+  "carStatus": "Available",
+  "model": "Updated",
+  "year": 2011,
+  "pricePerDay": 1200
+}
+
+
+### existing car
+DELETE localhost:8080/api/admin/car?id=18
+
+### non exsiting car deletion
+DELETE localhost:8080/api/admin/car?id=123

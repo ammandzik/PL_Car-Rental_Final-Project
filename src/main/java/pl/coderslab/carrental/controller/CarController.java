@@ -10,7 +10,7 @@ import pl.coderslab.carrental.service.CarService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cars")
+@RequestMapping("/api")
 public class CarController {
 
     private final CarService carService;
@@ -19,7 +19,7 @@ public class CarController {
         this.carService = carService;
     }
 
-    @GetMapping
+    @GetMapping("/cars")
     public ResponseEntity<List<CarDto>> getCars(@RequestParam(required = false) String brand,
                                                 @RequestParam(required = false) CarStatus carStatus) {
 
@@ -37,9 +37,9 @@ public class CarController {
     }
 
     @PostMapping("admin/car")
-    public ResponseEntity<CarDto> createCar(@RequestParam String brandName, @RequestBody CarDto carDto) {
+    public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
 
-        return new ResponseEntity<>(carService.createCar(brandName, carDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(carService.createCar(carDto), HttpStatus.CREATED);
     }
 
     @PutMapping("admin/car")

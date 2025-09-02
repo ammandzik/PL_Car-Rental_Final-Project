@@ -18,7 +18,7 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/admin/reservations")
+    @GetMapping("/reservations")
     public ResponseEntity<List<ReservationDto>> getAllReservations() {
 
         return new ResponseEntity<>(reservationService.findAll(), HttpStatus.OK);
@@ -28,6 +28,12 @@ public class ReservationController {
     public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto reservationDto) {
 
         return new ResponseEntity<>(reservationService.save(reservationDto), HttpStatus.CREATED);
+    }
+
+    @PutMapping("reservation")
+    public ResponseEntity<ReservationDto> updateReservation(@RequestParam Long id, @RequestBody ReservationDto reservationDto) {
+
+        return new ResponseEntity<>(reservationService.update(reservationDto), HttpStatus.OK);
     }
 
 }
