@@ -9,7 +9,7 @@ import pl.coderslab.carrental.service.ReservationService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -18,13 +18,13 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/admin/reservations")
     public ResponseEntity<List<ReservationDto>> getAllReservations() {
 
         return new ResponseEntity<>(reservationService.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/reservation")
     public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto reservationDto) {
 
         return new ResponseEntity<>(reservationService.save(reservationDto), HttpStatus.CREATED);

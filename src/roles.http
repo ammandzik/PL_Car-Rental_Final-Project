@@ -1,0 +1,7 @@
+### GET request to example server
+GET localhost:8080/api/admin/roles
+
+###
+POST localhost:8080/api/admin/roles
+Content-Type: application/json
+

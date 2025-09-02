@@ -1,9 +1,11 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
+### GET all without filters
+GET localhost:8080/api/payments
+
+### GET with filters
+GET localhost:8080/api/payments?paymentMethod=CARD
 
 ###
-POST localhost:8080/pay
+POST localhost:8080/api/pay
 Content-Type: application/json
 
 {
@@ -13,8 +15,8 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8080/payments?reservationId=19
+GET localhost:8080/api/payments?reservationId=19
 
 ###
-GET localhost:8080/payments
+GET localhost:8080/api/payments
 

@@ -11,6 +11,7 @@ import pl.coderslab.carrental.service.PaymentService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class PaymentController {
 
     private final PaymentService paymentService;

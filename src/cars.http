@@ -5,39 +5,39 @@ GET localhost:8080/api/cars
 GET localhost:8080/api/cars?brand=BMW
 
 ###
-GET localhost:8080/api/cars?carStatus=AVAILABLE&brand=BMW
+GET localhost:8080/api/cars?carStatus=RENTED
 
 ###
 GET localhost:8080/api/cars/car?id=null
 
 ###
-POST localhost:8080/api/cars/admin/car?brandName=bugatti
+POST localhost:8080/api/cars/admin/car?brandName=Fiat
 Content-Type: application/json
 
 {
-  "carStatus": "Rented",
-  "model": "Veyron",
+  "carStatus": "Available",
+  "model": "Tipo",
   "year": 2020,
   "pricePerDay": 1200
 }
 
-###
+### - non existing brand - should throw exception
 PUT localhost:8080/api/cars/admin/car?id=2
 Content-Type: application/json
 
 {
   "brand": {
     "id": 2,
-    "brandName": "XXX"
+    "brandName": "Opel"
   },
   "carStatus": "Available",
   "model": "Updated",
-  "year": 2029,
+  "year": 2011,
   "pricePerDay": 1200
 }
 
 ###
-DELETE localhost:8080/api/cars/admin/car?id=12
+DELETE localhost:8080/api/cars/admin/car?id=15
 
 ###
 DELETE localhost:8080/api/cars/admin/car?id=123

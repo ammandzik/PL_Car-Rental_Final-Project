@@ -5,6 +5,9 @@ GET localhost:8080/api/admin/brands
 GET localhost:8080/api/admin/brands/brand?id=33
 
 ###
+GET localhost:8080/api/admin/brands/brand?id=5
+
+###
 POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
@@ -13,4 +16,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE localhost:8080/api/admin/brands?id=10
+DELETE localhost:8080/api/admin/brands?id=14

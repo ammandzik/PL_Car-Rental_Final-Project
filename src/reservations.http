@@ -1,7 +1,8 @@
-### GET request to example server
+###
+GET localhost:8080/api/admin/reservations
 
 ###
-POST localhost:8080/reservations
+POST localhost:8080/api/reservations
 Content-Type: application/json
 
 {

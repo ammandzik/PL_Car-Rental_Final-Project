@@ -92,7 +92,7 @@ public class ReservationService {
             reservation.setCar(carMapper.toEntity(carDto));
             reservation.setFinalPrice(getTotalPrice(carDto, reservationDto));
 
-            if(reservation.isConfirmed()) {
+            if (reservation.isConfirmed()) {
                 carDto.setCarStatus(CarStatus.RENTED);
             }
             carService.updateCar(carDto.getId(), carDto);
