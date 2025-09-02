@@ -18,11 +18,12 @@ public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String invoiceNumber;
     private LocalDate issueDate;
-    private Long totalAmount;
+    private Double totalAmount;
     @OneToOne
     private Reservation reservation;
-    @OneToOne
+    @ManyToOne
     private User user;
 }

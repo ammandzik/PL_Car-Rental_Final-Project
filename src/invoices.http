@@ -1,0 +1,12 @@
+### GET request to example server
+GET localhost:8080
+
+###
+POST localhost:8080/api/admin/invoice
+Content-Type: application/json
+
+{
+  "reservationId": 21,
+  "invoiceNumber": "3443",
+  "issueDate": "2025-09-01"
+}

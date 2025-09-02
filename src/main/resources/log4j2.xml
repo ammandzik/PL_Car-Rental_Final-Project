@@ -19,6 +19,7 @@
         </Logger>
         <Root level="WARN">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileLogger"/>
         </Root>
     </Loggers>
 </Configuration>

@@ -10,6 +10,7 @@ import pl.coderslab.carrental.exception.CarAlreadyRentedException;
 import pl.coderslab.carrental.mapper.CarMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
 import pl.coderslab.carrental.mapper.UserMapper;
+import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
 import pl.coderslab.carrental.repository.ReservationRepository;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Slf4j
 public class ReservationService {
 
+    private static final String RESERVATION_NOT_FOUND_WITH_ID_S = "Reservation not found with id %s";
     private final ReservationRepository reservationRepository;
     private final ReservationMapper reservationMapper;
     private final UserService userService;
@@ -52,25 +54,34 @@ public class ReservationService {
 
         return reservationRepository.findById(id)
                 .map(reservationMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Reservation not found with id %s", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
     }
 
     public void update(ReservationDto reservationDto) {
         log.info("Update reservation method invoked");
 
         if (reservationDto != null) {
-            log.info("Updating reservation with id {}", reservationDto.getId());
-            var reservation = reservationRepository.findById(reservationDto.getId()).get();
+
+            var reservation = reservationRepository.findById(reservationDto.getId())
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, reservationDto.getId())));
 
             reservation.setConfirmed(reservationDto.isConfirmed());
             reservation.setDateFrom(reservationDto.getDateFrom());
             reservation.setDateTo(reservationDto.getDateTo());
             reservation.setFinalPrice(reservationDto.getFinalPrice());
 
+            log.info("Updating reservation with id {}", reservationDto.getId());
             reservationRepository.save(reservation);
         } else {
             throw new IllegalArgumentException("Reservation should not be null");
         }
+    }
+
+    public Reservation getReservationEntityWithComponents(Long id) {
+        log.info("Get reservation by id method invoked");
+
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
     }
 
     @Transactional

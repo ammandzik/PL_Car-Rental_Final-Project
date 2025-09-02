@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import pl.coderslab.carrental.exception.CarAlreadyRentedException;
-import pl.coderslab.carrental.exception.ReviewExistsException;
-import pl.coderslab.carrental.exception.ReviewNotAllowedYetException;
+import pl.coderslab.carrental.exception.*;
 import pl.coderslab.carrental.response.ErrorResponse;
 
 @RestControllerAdvice
@@ -74,6 +72,22 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleReviewNotAllowedException(ReviewNotAllowedYetException exception) {
 
         log.error("Handling review not allowed yet exception: {}", exception.getMessage());
+        return createResponse(HttpStatus.CONFLICT, exception);
+    }
+
+    @ExceptionHandler(PdfImportException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlePdfImportException(PdfImportException exception) {
+
+        log.error("Handling pdf import exception: {}", exception.getMessage());
+        return createResponse(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler(InvoiceAlreadyExists.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleInvoiceAlreadyExists(InvoiceAlreadyExists exception) {
+
+        log.error("Handling existing invoice exception: {}", exception.getMessage());
         return createResponse(HttpStatus.CONFLICT, exception);
     }
 

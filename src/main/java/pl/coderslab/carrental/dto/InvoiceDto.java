@@ -12,7 +12,7 @@ public class InvoiceDto {
     private Long id;
     private String invoiceNumber;
     private LocalDate issueDate;
-    private Long totalAmount;
+    private Double totalAmount;
     private Long reservationId;
     private Long userId;
 }
