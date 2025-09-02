@@ -1,6 +1,7 @@
 package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.ReviewDto;
@@ -16,17 +17,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final ReservationRepository reservationRepository;
-
-    public ReviewService(ReviewRepository reviewRepository, ReviewMapper reviewMapper, ReservationRepository reservationRepository) {
-        this.reviewRepository = reviewRepository;
-        this.reviewMapper = reviewMapper;
-        this.reservationRepository = reservationRepository;
-    }
 
     public List<ReviewDto> findAllReviews() {
 

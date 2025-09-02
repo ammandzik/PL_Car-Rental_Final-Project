@@ -1,6 +1,7 @@
 package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,17 +14,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class BrandService {
 
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
     private final BrandDeletionPolicy brandDeletionPolicy;
-
-    public BrandService(BrandRepository brandRepository, BrandMapper brandMapper, BrandDeletionPolicy brandDeletionPolicy) {
-        this.brandRepository = brandRepository;
-        this.brandMapper = brandMapper;
-        this.brandDeletionPolicy = brandDeletionPolicy;
-    }
 
     public Brand findBrandById(Long brandId) {
 
@@ -38,13 +34,6 @@ public class BrandService {
         } else {
             throw new IllegalArgumentException("Brand id is null");
         }
-    }
-
-    public boolean existsByName(String name) {
-
-        log.info("Invoked exists by brand name method: {}", name);
-
-        return brandRepository.existsByBrandNameIgnoreCase(name);
     }
 
     public List<BrandDto> getAllBrands() {

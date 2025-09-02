@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,20 +17,13 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final ReservationService reservationService;
     private final PaymentMapper paymentMapper;
     private final ReservationMapper reservationMapper;
-
-    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, ReservationService reservationService, ReservationMapper reservationMapper) {
-        this.paymentRepository = paymentRepository;
-        this.paymentMapper = paymentMapper;
-        this.reservationService = reservationService;
-        this.reservationMapper = reservationMapper;
-
-    }
 
     public List<PaymentDto> getAllPayments() {
 

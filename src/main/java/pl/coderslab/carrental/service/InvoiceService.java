@@ -1,6 +1,7 @@
 package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.InvoiceDto;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class InvoiceService {
 
     private static final String INVOICE_WITH_ID_S_NOT_FOUND = "Invoice with id %s not found";
@@ -25,14 +27,6 @@ public class InvoiceService {
     private final UserService userService;
     private final ReservationService reservationService;
     private final UserMapper userMapper;
-
-    public InvoiceService(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper, UserService userService, ReservationService reservationService, UserMapper userMapper) {
-        this.invoiceRepository = invoiceRepository;
-        this.invoiceMapper = invoiceMapper;
-        this.userService = userService;
-        this.reservationService = reservationService;
-        this.userMapper = userMapper;
-    }
 
     public List<InvoiceDto> getInvoices() {
 

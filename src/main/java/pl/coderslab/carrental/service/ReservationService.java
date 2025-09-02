@@ -1,6 +1,7 @@
 package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ReservationService {
 
     private static final String RESERVATION_NOT_FOUND_WITH_ID_S = "Reservation not found with id %s";
@@ -28,15 +30,6 @@ public class ReservationService {
     private final CarService carService;
     private final CarMapper carMapper;
     private final UserMapper userMapper;
-
-    public ReservationService(ReservationRepository reservationRepository, ReservationMapper reservationMapper, UserService userService, CarService carService, CarMapper carMapper, UserMapper userMapper) {
-        this.reservationRepository = reservationRepository;
-        this.reservationMapper = reservationMapper;
-        this.userService = userService;
-        this.carService = carService;
-        this.carMapper = carMapper;
-        this.userMapper = userMapper;
-    }
 
     public List<ReservationDto> findAll() {
 

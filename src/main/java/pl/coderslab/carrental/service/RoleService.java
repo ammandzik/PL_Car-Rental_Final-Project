@@ -1,6 +1,7 @@
 package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.RoleDto;
@@ -11,15 +12,11 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
-
-    public RoleService(RoleRepository roleRepository, RoleMapper roleMapper) {
-        this.roleRepository = roleRepository;
-        this.roleMapper = roleMapper;
-    }
 
     public List<RoleDto> getRoles() {
 

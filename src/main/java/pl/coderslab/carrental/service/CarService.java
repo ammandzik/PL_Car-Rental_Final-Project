@@ -1,6 +1,7 @@
 package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,22 +10,21 @@ import pl.coderslab.carrental.mapper.CarMapper;
 import pl.coderslab.carrental.model.Car;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
 import pl.coderslab.carrental.repository.CarRepository;
+import pl.coderslab.carrental.repository.ReservationRepository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CarService {
 
     private final CarRepository carRepository;
     private final CarMapper carMapper;
     private final BrandService brandService;
-
-    public CarService(CarRepository carRepository, CarMapper carMapper, BrandService brandService) {
-        this.carRepository = carRepository;
-        this.carMapper = carMapper;
-        this.brandService = brandService;
-    }
+    private final ReservationRepository reservationRepository;
 
     public List<CarDto> getAllCars() {
 
@@ -132,6 +132,12 @@ public class CarService {
         }
     }
 
+    public void saveAll(List<Car> cars) {
+        log.info("Invoked save all cars method");
+
+        carRepository.saveAll(cars);
+    }
+
     private Car getCarOrElseThrow(Long id) {
 
         log.info("Invoked ger car or else throw method for  for id: {}", id);
@@ -139,5 +145,22 @@ public class CarService {
         return carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Car with id %s not found", id)));
     }
+
+    public void updateCarsAvailability() {
+
+        LocalDate today = LocalDate.now();
+
+        Set<Long> activeCarIds = reservationRepository.findActiveCarIds(today);
+
+        List<Car> carsToUpdate = activeCarIds.isEmpty()
+                ? carRepository.findByCarStatusNot(CarStatus.AVAILABLE)
+                : carRepository.findByCarStatusNotAndIdNotIn(CarStatus.AVAILABLE, activeCarIds);
+
+        if (!carsToUpdate.isEmpty()) {
+            carsToUpdate.forEach(c -> c.setCarStatus(CarStatus.AVAILABLE));
+            carRepository.saveAll(carsToUpdate);
+        }
+    }
+
 }
 
