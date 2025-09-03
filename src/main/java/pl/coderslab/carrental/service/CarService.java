@@ -115,29 +115,6 @@ public class CarService {
         }
     }
 
-    public void changeStatus(Long id, CarStatus carStatus) {
-
-        log.info("Invoked change status method of Car with id {}", id);
-
-        if (id != null && carStatus != null) {
-
-            log.info("Changing status of car with id {}", id);
-
-            var car = getCarOrElseThrow(id);
-            car.setCarStatus(carStatus);
-            carRepository.save(car);
-
-        } else {
-            throw new IllegalArgumentException(String.format("Id and/or car status cannot be null: %s %s", id, carStatus));
-        }
-    }
-
-    public void saveAll(List<Car> cars) {
-        log.info("Invoked save all cars method");
-
-        carRepository.saveAll(cars);
-    }
-
     private Car getCarOrElseThrow(Long id) {
 
         log.info("Invoked ger car or else throw method for  for id: {}", id);
@@ -146,9 +123,11 @@ public class CarService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Car with id %s not found", id)));
     }
 
-    public void updateCarsAvailability() {
+    public void updateCarsAvailabilityByClosedReservationDate() {
 
-        LocalDate today = LocalDate.now();
+        log.info("Invoked update cars availability method");
+
+        var today = LocalDate.now();
 
         Set<Long> activeCarIds = reservationRepository.findActiveCarIds(today);
 

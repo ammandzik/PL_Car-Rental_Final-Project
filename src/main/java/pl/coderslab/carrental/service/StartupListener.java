@@ -13,6 +13,6 @@ public class StartupListener {
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
-        carService.updateCarsAvailability();
+        carService.updateCarsAvailabilityByClosedReservationDate();
     }
 }
