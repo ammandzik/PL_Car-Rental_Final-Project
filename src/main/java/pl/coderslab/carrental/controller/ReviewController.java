@@ -30,14 +30,14 @@ public class ReviewController {
         return new ResponseEntity<>(reviewService.addReview(reviewDto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("review")
-    public ResponseEntity deleteReview(@RequestParam Long id) {
+    @DeleteMapping("/review")
+    public ResponseEntity<String> deleteReview(@RequestParam Long id) {
 
         reviewService.deleteReview(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Removed review with id: " + id, HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping
+    @PutMapping("/review")
     public ResponseEntity<ReviewDto> updateReview(@RequestParam Long id, @RequestBody ReviewDto reviewDto) {
 
         return new ResponseEntity<>(reviewService.updateReview(id, reviewDto), HttpStatus.OK);

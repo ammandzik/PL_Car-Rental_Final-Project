@@ -24,4 +24,15 @@ Content-Type: application/json
 }
 
 ###
+PUT localhost:8080/api/review
+Content-Type: application/json
+
+{
+  "reservationId": 19,
+  "description": "Testowa nieprawidlowa review",
+  "rating": 5,
+  "pseudonym": "janekBananek"
+}
+
+###
 DELETE localhost:8080/api/reviews?id=1

@@ -110,6 +110,21 @@ public class ReservationService {
         }
     }
 
+    public void deleteById(Long id) {
+        log.info("Delete reservation by id method invoked");
+
+        if (id != null) {
+
+            var reservation = reservationRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
+
+            reservationRepository.delete(reservation);
+            log.info("Deleting reservation with id {}", id);
+        } else {
+            throw new IllegalArgumentException("Reservation id is null");
+        }
+    }
+
     private Long getDays(ReservationDto reservationDto) {
 
         return ChronoUnit.DAYS.between(reservationDto.getDateFrom(), reservationDto.getDateTo());

@@ -1,8 +1,8 @@
 ###
-GET localhost:8080/api/admin/reservations
+GET localhost:8080/api/reservations
 
 ###
-POST localhost:8080/api/reservations
+POST localhost:8080/api/reservation
 Content-Type: application/json
 
 {
@@ -12,3 +12,22 @@ Content-Type: application/json
   "userId": 1,
   "confirmed": false
 }
+
+###
+PUT localhost:8080/api/reservation
+Content-Type: application/json
+
+{
+  "carId": 2,
+  "dateFrom": "2025-09-01",
+  "dateTo": "2025-09-03",
+  "userId": 1,
+  "confirmed": false
+}
+
+### - removing exsiting
+DELETE localhost:8080/api/reservation?id=20
+
+### - removing not exsiting
+DELETE localhost:8080/api/reservation?id=20
+

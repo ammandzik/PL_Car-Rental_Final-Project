@@ -1,7 +1,25 @@
 ### GET request to example server
 GET localhost:8080/api/admin/roles
 
-###
+###adding
 POST localhost:8080/api/admin/roles
 Content-Type: application/json
+
+{
+  "name": "Citroen"
+}
+
+###exsisting
+PUT localhost:8080/api/admin/roles?id=1
+Content-Type: application/json
+
+###non existing
+PUT localhost:8080/api/admin/roles?id=32324
+Content-Type: application/json
+
+### exisitng
+DELETE localhost:8080/api/admin/roles?id=1
+
+### non existing
+DELETE localhost:8080/api/admin/roles?id=123343
 

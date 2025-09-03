@@ -30,10 +30,17 @@ public class ReservationController {
         return new ResponseEntity<>(reservationService.save(reservationDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("reservation")
+    @PutMapping("/reservation")
     public ResponseEntity<ReservationDto> updateReservation(@RequestParam Long id, @RequestBody ReservationDto reservationDto) {
 
         return new ResponseEntity<>(reservationService.update(reservationDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/reservation")
+    public ResponseEntity<String> deleteInactiveReservations(@RequestParam Long id) {
+
+        reservationService.deleteById(id);
+        return new ResponseEntity<>("Deleted reservation", HttpStatus.NO_CONTENT);
     }
 
 }
