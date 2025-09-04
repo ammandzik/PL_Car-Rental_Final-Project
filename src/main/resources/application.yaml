@@ -30,7 +30,6 @@ logging:
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
 
-
 ---
 #Profil dev
 spring:
@@ -47,7 +46,6 @@ spring:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${MYSQL_DATABASE}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
-
 
 ---
 #Profil docker

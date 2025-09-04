@@ -9,14 +9,12 @@ services:
       - "3307:3306"
     volumes:
       - car_rental_mysql_data:/var/lib/mysql
-
   redis:
     image: redis:7-alpine
     container_name: car_rental_redis
     command: [ "redis-server", "--appendonly", "yes" ]
     ports:
       - "6379:6379"
-
   app:
     build:
       context: .
