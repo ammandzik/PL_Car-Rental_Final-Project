@@ -18,9 +18,9 @@ services:
     env_file:
       - src/main/resources/.env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/car_rental
-      SPRING_DATASOURCE_USERNAME: db_user
-      SPRING_DATASOURCE_PASSWORD: car1234
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - mysql
     ports:
       - "8080:8080"
 volumes:

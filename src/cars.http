@@ -22,7 +22,7 @@ Content-Type: application/json
     "id": 1
   },
   "carStatus": "Available",
-  "model": "Tipo",
+  "model": "Example",
   "year": 2020,
   "pricePerDay": 1200
 }
