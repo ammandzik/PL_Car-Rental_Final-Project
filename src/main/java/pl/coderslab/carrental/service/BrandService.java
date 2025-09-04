@@ -3,8 +3,6 @@ package pl.coderslab.carrental.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.BrandDto;
@@ -19,12 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BrandService {
 
-    private static final String BRAND_NOT_FOUND_WITH_ID_S = "Brand not found with id %s";
+    private static final String BRAND_NOT_FOUND_WITH_ID_S = "Brand with id %s was not found";
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
     private final BrandDeletionPolicy brandDeletionPolicy;
 
-    @Cacheable(cacheNames = "brands", key = "#id")
     public Brand findBrandById(Long brandId) {
 
         log.info("Invoked find or create brand method by brand id: {}", brandId);
@@ -39,7 +36,6 @@ public class BrandService {
             throw new IllegalArgumentException("Brand id is null");
         }
     }
-
 
     public List<BrandDto> getAllBrands() {
 
