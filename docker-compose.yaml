@@ -26,8 +26,6 @@ services:
       - src/main/resources/.env
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
     depends_on:
       - mysql
     ports:
