@@ -1,3 +1,41 @@
-### GET request to example server
+###Get all users
+GET localhost:8080/api/admin/users
 
-###
+###Get user by id (happy path)
+GET localhost:8080/api/admin/user?id=1
+
+###Get user by id(non existing)
+GET localhost:8080/api/admin/users
+
+###Create user
+POST localhost:8080/api/admin/users
+Content-Type: application/json
+
+{
+
+}
+
+###Update existing user
+PUT localhost:8080/api/admin/user?id=2
+Content-Type: application/json
+
+{
+
+}
+
+###Update non-existing user
+PUT localhost:8080/api/admin/user?id=2322
+Content-Type: application/json
+
+{
+
+}
+
+###Delete existing
+DELETE localhost:8080/api/admin/user?id=1
+
+###Delete non existing
+DELETE localhost:8080/api/admin/user?id=14454
+
+
+

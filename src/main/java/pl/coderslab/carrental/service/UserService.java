@@ -29,7 +29,7 @@ public class UserService {
 
     }
 
-    List<UserDto> findAll() {
+    public List<UserDto> findAll() {
         log.info("Invoked find all users");
 
         return userRepository.findAll()

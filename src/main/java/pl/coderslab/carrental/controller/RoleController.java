@@ -37,9 +37,9 @@ public class RoleController {
     }
 
     @DeleteMapping
-    public ResponseEntity deleteRole(@RequestParam Long id) {
+    public ResponseEntity<String> deleteRole(@RequestParam Long id) {
 
         roleService.deleteRole(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Role deleted", HttpStatus.NO_CONTENT);
     }
 }
