@@ -19,6 +19,8 @@ spring:
     init:
       mode: never
       data-locations: classpath:sql/data.sql
+  cache:
+    type: redis
 logging:
   level:
     pl.coderslab.carrental: INFO
@@ -27,16 +29,24 @@ logging:
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
 
+
 ---
 #Profil dev
 spring:
   config:
     activate:
       on-profile: dev
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      timeout: 5s
+
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${MYSQL_DATABASE}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
+
 
 ---
 #Profil docker
@@ -48,6 +58,11 @@ spring:
     url: jdbc:mysql://${DB_HOST_DOCKER}:${DB_PORT_DOCKER}/${MYSQL_DATABASE}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
+  data:
+    redis:
+      host: redis
+      port: 6379
+      timeout: 5s
 ---
 
 server:
