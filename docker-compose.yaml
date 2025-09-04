@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: car_rental_mysql
+    env_file:
+      - path: src/main/resources/.env
+        required: true
+    ports:
+      - "3307:3306"
+    volumes:
+      - car_rental_mysql_data:/var/lib/mysql
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: car-rental-app
+    env_file:
+      - src/main/resources/.env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/car_rental
+      SPRING_DATASOURCE_USERNAME: db_user
+      SPRING_DATASOURCE_PASSWORD: car1234
+    ports:
+      - "8080:8080"
+volumes:
+  car_rental_mysql_data:

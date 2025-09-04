@@ -90,9 +90,15 @@ public class BrandService {
 
         log.info("Invoked delete brand method");
 
-        if (!brandDeletionPolicy.canDelete(id)) {
-            throw new IllegalStateException(String.format("Cannot delete brand: cars are existing for brand with id %s", id));
+        if (id != null) {
+            if (!brandDeletionPolicy.canDelete(id)) {
+                throw new IllegalStateException(String.format("Cannot delete brand: cars are existing for brand with id %s", id));
+            }
+
+            brandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Brand not found with id %s", id)));
+            brandRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Cannot delete brand. Given brand and/or id cannot be null");
         }
-        brandRepository.deleteById(id);
     }
 }

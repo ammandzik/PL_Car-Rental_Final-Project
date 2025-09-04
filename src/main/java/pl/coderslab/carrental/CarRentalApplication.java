@@ -9,9 +9,9 @@ public class CarRentalApplication {
 
     public static void main(String[] args) {
 
-        System.setProperty("DB_USER", EnvLoader.getEnv("DB_USER"));
-        System.setProperty("DB_PASS", EnvLoader.getEnv("DB_PASS"));
-        System.setProperty("DB_NAME", EnvLoader.getEnv("DB_NAME"));
+        System.setProperty("MYSQL_USER", EnvLoader.getEnv("MYSQL_USER"));
+        System.setProperty("MYSQL_PASSWORD", EnvLoader.getEnv("MYSQL_PASSWORD"));
+        System.setProperty("MYSQL_DATABASE", EnvLoader.getEnv("MYSQL_DATABASE"));
         System.setProperty("DB_HOST", EnvLoader.getEnv("DB_HOST"));
         System.setProperty("DB_PORT", EnvLoader.getEnv("DB_PORT"));
 

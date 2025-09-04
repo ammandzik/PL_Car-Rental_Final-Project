@@ -12,11 +12,11 @@ POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
 {
-  "name": "Mazda"
+  "name": "XXX"
 }
 
 ###(update, request param id, request body)
-PUT localhost:8080/api/admin/brands/brand?id=16
+PUT localhost:8080/api/admin/brands/brand?id=6
 Content-Type: application/json
 
 {
@@ -24,7 +24,10 @@ Content-Type: application/json
 }
 
 ###(removing previously added)
-DELETE localhost:8080/api/admin/brands?id=16
+DELETE localhost:8080/api/admin/brands?id=6
+
+###(removing non existing brand)
+DELETE localhost:8080/api/admin/brands?id=776
 
 
 
