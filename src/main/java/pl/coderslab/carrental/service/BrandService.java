@@ -3,6 +3,8 @@ package pl.coderslab.carrental.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.BrandDto;
@@ -17,17 +19,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BrandService {
 
+    private static final String BRAND_NOT_FOUND_WITH_ID_S = "Brand not found with id %s";
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
     private final BrandDeletionPolicy brandDeletionPolicy;
 
+    @Cacheable(cacheNames = "brands", key = "#id")
     public Brand findBrandById(Long brandId) {
 
         log.info("Invoked find or create brand method by brand id: {}", brandId);
 
         if (brandId != null) {
             var brandById = brandRepository.findById(brandId)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("Brand with id %s was not found", brandId)));
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, brandId)));
 
             log.info("Found brand with id {}", brandById);
             return brandById;
@@ -35,6 +39,7 @@ public class BrandService {
             throw new IllegalArgumentException("Brand id is null");
         }
     }
+
 
     public List<BrandDto> getAllBrands() {
 
@@ -52,7 +57,7 @@ public class BrandService {
 
         return brandRepository.findById(id)
                 .map(brandMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Brand not found with id %s", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
     }
 
     public BrandDto createBrand(BrandDto brandDto) {
@@ -76,7 +81,7 @@ public class BrandService {
         log.info("Invoked update brand method");
         if (brandDto != null && id != null) {
             var brand = brandRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("Brand not found with id %s", id)));
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
 
             brand.setBrandName(brandDto.getName());
             return brandMapper.toDto(brandRepository.save(brand));
@@ -95,7 +100,7 @@ public class BrandService {
                 throw new IllegalStateException(String.format("Cannot delete brand: cars are existing for brand with id %s", id));
             }
 
-            brandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Brand not found with id %s", id)));
+            brandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
             brandRepository.deleteById(id);
         } else {
             throw new IllegalArgumentException("Cannot delete brand. Given brand and/or id cannot be null");

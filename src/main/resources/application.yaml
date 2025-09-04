@@ -24,6 +24,7 @@ spring:
 logging:
   level:
     pl.coderslab.carrental: INFO
+    org.springframework.cache: TRACE
   file:
     name: logs/application.log
   pattern:
