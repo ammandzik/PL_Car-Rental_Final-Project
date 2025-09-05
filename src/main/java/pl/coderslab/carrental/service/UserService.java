@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +41,14 @@ public class UserService {
     }
 
     public UserDto addUser(UserDto userDto) {
+
         log.info("Invoked add user");
 
         if (userDto != null) {
+
+            if (userRepository.existsByEmail(userDto.getEmail()) || userRepository.existsByUsername(userDto.getUsername())) {
+                throw new EntityExistsException("User already exists with that data");
+            }
 
             var userEntity = userMapper.toUser(userDto);
             hashPassword(userDto.getPassword());
@@ -55,18 +61,39 @@ public class UserService {
     }
 
     public UserDto updateUser(Long id, UserDto userDto) {
+
         log.info("Invoked update user");
+
         if (userDto != null && id != null) {
+
+            if (userRepository.existsByEmail(userDto.getEmail()) || userRepository.existsByUsername(userDto.getUsername())) {
+                throw new EntityExistsException("User already exists with that data");
+            }
 
             var userEntity = userRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(USER_WITH_ID_S_NOT_FOUND, id)));
-            userEntity.setName(userDto.getName());
-            userEntity.setEmail(userDto.getEmail());
-            userEntity.setPassword(userDto.getPassword());
-            userEntity.setPhone(userDto.getPhone());
-            userEntity.setRoles(userDto.getRoles());
+
+            if (userDto.getName() != null) {
+                userEntity.setName(userDto.getName());
+            }
+            if (userDto.getUsername() != null) {
+                userEntity.setUsername(userDto.getUsername());
+            }
+            if (userDto.getEmail() != null) {
+                userEntity.setEmail(userDto.getEmail());
+            }
+            if (userDto.getPassword() != null) {
+                userEntity.setPassword(hashPassword(userDto.getPassword()));
+            }
+            if (userDto.getPhone() != null) {
+                userEntity.setPhone(userDto.getPhone());
+            }
+            if (userDto.getRoles() != null) {
+                userEntity.setRoles(userDto.getRoles());
+            }
 
             log.info("User with id {} updated", id);
+
             return userMapper.toUserDto(userRepository.save(userEntity));
         } else {
             throw new IllegalArgumentException("UserDto and/or id cannot be empty.");

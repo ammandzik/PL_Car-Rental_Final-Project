@@ -25,6 +25,9 @@ PUT localhost:8080/api/admin/user?id=2
 Content-Type: application/json
 
 {
+  "surname": "Preisner",
+  "phone": "123-456-789",
+  "password": "PuszekOkruszek"
 
 }
 
