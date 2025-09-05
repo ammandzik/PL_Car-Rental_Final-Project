@@ -40,7 +40,7 @@ Content-Type: application/json
 }
 
 ###Delete existing
-DELETE localhost:8080/api/admin/user?id=1
+DELETE localhost:8080/api/admin/user?id=3
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454

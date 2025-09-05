@@ -119,6 +119,4 @@ public class UserService {
 
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
-
-
 }
