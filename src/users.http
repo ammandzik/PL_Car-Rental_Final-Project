@@ -8,11 +8,16 @@ GET localhost:8080/api/admin/user?id=1
 GET localhost:8080/api/admin/users
 
 ###Create user
-POST localhost:8080/api/admin/users
+POST localhost:8080/api/admin/user
 Content-Type: application/json
 
 {
-
+  "username": "ammandzik",
+  "name": "Amanda",
+  "surname": "Preisner",
+  "phone": "123-456-789",
+  "email": "amanda@wp.pl",
+  "password": "PuszekOkruszek"
 }
 
 ###Update existing user
@@ -36,6 +41,7 @@ DELETE localhost:8080/api/admin/user?id=1
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454
+
 
 
 

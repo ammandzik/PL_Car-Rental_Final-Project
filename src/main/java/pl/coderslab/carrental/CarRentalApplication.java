@@ -18,6 +18,7 @@ public class CarRentalApplication {
         System.setProperty("DB_PORT", EnvLoader.getEnv("DB_PORT"));
         System.setProperty("SPRING_REDIS_HOST", EnvLoader.getEnv("SPRING_REDIS_HOST"));
         System.setProperty("SPRING_REDIS_PORT", EnvLoader.getEnv("SPRING_REDIS_PORT"));
+        System.setProperty("SPRING_DATASOURCE_URL", EnvLoader.getEnv("SPRING_DATASOURCE_URL"));
 
         SpringApplication.run(CarRentalApplication.class, args);
     }

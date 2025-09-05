@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: car_rental_mysql
+    container_name: mysql
     env_file:
       - path: src/main/resources/.env
         required: true
@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: car-rental-app
     env_file:
-      - src/main/resources/.env
+      - path: src/main/resources/.env
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:

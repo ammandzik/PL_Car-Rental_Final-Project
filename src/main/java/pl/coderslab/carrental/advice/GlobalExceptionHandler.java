@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.advice;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -59,14 +60,6 @@ public class GlobalExceptionHandler {
         return createResponse(HttpStatus.CONFLICT, exception);
     }
 
-    @ExceptionHandler(ReviewExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleReviewExistsException(ReviewExistsException exception) {
-
-        log.error("Handling review exists exception: {}", exception.getMessage());
-        return createResponse(HttpStatus.CONFLICT, exception);
-    }
-
     @ExceptionHandler(ReviewNotAllowedYetException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleReviewNotAllowedException(ReviewNotAllowedYetException exception) {
@@ -83,11 +76,10 @@ public class GlobalExceptionHandler {
         return createResponse(HttpStatus.BAD_REQUEST, exception);
     }
 
-    @ExceptionHandler(InvoiceAlreadyExists.class)
+    @ExceptionHandler(EntityExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleInvoiceAlreadyExists(InvoiceAlreadyExists exception) {
-
-        log.error("Handling existing invoice exception: {}", exception.getMessage());
+    public ErrorResponse handleEntityExistsException(EntityExistsException exception) {
+        log.error("Handling entity exists exception: {}", exception.getMessage());
         return createResponse(HttpStatus.CONFLICT, exception);
     }
 

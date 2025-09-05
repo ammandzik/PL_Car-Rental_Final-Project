@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/brands")
+@RequiredArgsConstructor
 public class BrandController {
 
     private final BrandService brandService;
-
-    public BrandController(BrandService brandService) {
-        this.brandService = brandService;
-    }
 
     @GetMapping
     public ResponseEntity<List<BrandDto>> getBrands() {

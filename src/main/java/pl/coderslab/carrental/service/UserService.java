@@ -3,6 +3,7 @@ package pl.coderslab.carrental.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.UserDto;
 import pl.coderslab.carrental.mapper.UserMapper;
@@ -44,6 +45,8 @@ public class UserService {
         if (userDto != null) {
 
             var userEntity = userMapper.toUser(userDto);
+            hashPassword(userDto.getPassword());
+            userEntity.setPassword(BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt()));
 
             return userMapper.toUserDto(userRepository.save(userEntity));
         } else {
@@ -83,6 +86,11 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("Id cannot be empty.");
         }
+    }
+
+    private String hashPassword(String password) {
+
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
 

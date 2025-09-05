@@ -23,8 +23,12 @@ spring:
     type: redis
 logging:
   level:
-    pl.coderslab.carrental: INFO
-    org.springframework.cache: TRACE
+    root: INFO
+    com.zaxxer.hikari: DEBUG
+    org.springframework.jdbc: DEBUG
+    org.springframework.orm.jpa: DEBUG
+    org.hibernate.engine.jdbc.spi: DEBUG
+    com.mysql.cj.jdbc: TRACE
   file:
     name: logs/application.log
   pattern:
@@ -54,7 +58,7 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:mysql://${DB_HOST_DOCKER}:${DB_PORT_DOCKER}/${MYSQL_DATABASE}
+    url: jdbc:mysql://mysql:3306/car_rental
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
   data:
@@ -69,6 +73,3 @@ server:
     session:
       timeout: 15m
   port: 8080
-
-stripe:
-  secret-key: ${STRIPE_SECRET_KEY}

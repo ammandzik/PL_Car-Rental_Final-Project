@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,13 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
-
-    public InvoiceController(InvoiceService invoiceService) {
-        this.invoiceService = invoiceService;
-    }
 
     @GetMapping("/invoices")
     public List<InvoiceDto> getInvoices(@RequestParam(required = false) LocalDate start, @RequestParam(required = false) LocalDate end) {

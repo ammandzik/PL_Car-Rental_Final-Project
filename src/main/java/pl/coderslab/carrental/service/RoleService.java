@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +35,17 @@ public class RoleService {
 
         if (roleDto != null) {
 
+            System.out.println(roleRepository.existsByName(roleDto.getName()));
+
+            if (roleRepository.existsByName(roleDto.getName())) {
+                throw new EntityExistsException(String.format("Role with name %s already exists", roleDto.getName()));
+            }
+
             var role = roleMapper.toEntity(roleDto);
+            roleRepository.save(role);
 
             log.info("Saved role: {}", role);
-            return roleMapper.toDto(roleRepository.save(role));
+            return roleMapper.toDto(role);
         } else {
             throw new IllegalArgumentException("Role is null");
         }

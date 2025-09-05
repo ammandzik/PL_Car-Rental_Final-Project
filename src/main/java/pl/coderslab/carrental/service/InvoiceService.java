@@ -1,11 +1,11 @@
 package pl.coderslab.carrental.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.InvoiceDto;
-import pl.coderslab.carrental.exception.InvoiceAlreadyExists;
 import pl.coderslab.carrental.exception.PdfImportException;
 import pl.coderslab.carrental.mapper.InvoiceMapper;
 import pl.coderslab.carrental.mapper.UserMapper;
@@ -68,7 +68,7 @@ public class InvoiceService {
         if (invoiceDto != null) {
 
             if (invoiceRepository.existsByInvoiceNumberAndReservationId(invoiceDto.getReservationId())) {
-                throw new InvoiceAlreadyExists(String.format("Invoice with reservation id %s already exists", invoiceDto.getReservationId()));
+                throw new EntityExistsException(String.format("Invoice with reservation id %s already exists", invoiceDto.getReservationId()));
             }
 
             var reservation = reservationService.getReservationEntityWithComponents(invoiceDto.getReservationId());

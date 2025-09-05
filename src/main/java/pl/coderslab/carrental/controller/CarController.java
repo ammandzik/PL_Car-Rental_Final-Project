@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,13 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class CarController {
 
     private final CarService carService;
-
-    public CarController(CarService carService) {
-        this.carService = carService;
-    }
 
     @GetMapping("/cars")
     public ResponseEntity<List<CarDto>> getCars(@RequestParam(required = false) String brand,
@@ -36,19 +34,19 @@ public class CarController {
         return new ResponseEntity<>(carService.getCarById(id), HttpStatus.OK);
     }
 
-    @PostMapping("admin/car")
+    @PostMapping("/admin/car")
     public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
 
         return new ResponseEntity<>(carService.createCar(carDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("admin/car")
+    @PutMapping("/admin/car")
     public ResponseEntity<CarDto> updateCar(@RequestParam Long id, @RequestBody CarDto carDto) {
 
         return new ResponseEntity<>(carService.updateCar(id, carDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("admin/car")
+    @DeleteMapping("/admin/car")
     public ResponseEntity<String> deleteCar(@RequestParam Long id) {
 
         carService.deleteCar(id);

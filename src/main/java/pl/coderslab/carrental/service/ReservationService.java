@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +87,10 @@ public class ReservationService {
             var userDto = userService.findById(reservationDto.getUserId());
             var carDto = carService.getCarById(reservationDto.getCarId());
             var reservation = reservationMapper.toEntity(reservationDto);
+
+            if(reservationRepository.existsByCarId(reservationDto.getCarId())) {
+                throw new EntityExistsException(String.format("Reservation with car id %s already exists", reservationDto.getCarId()));
+            }
 
             if (carDto.getCarStatus().equals(CarStatus.RENTED)) {
                 throw new CarAlreadyRentedException(String.format("Car with id %s already rented.", carDto.getId()));

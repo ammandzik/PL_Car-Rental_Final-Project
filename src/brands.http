@@ -12,7 +12,7 @@ POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
 {
-  "name": "XXX"
+  "name": "AAA"
 }
 
 ###(update, request param id, request body)

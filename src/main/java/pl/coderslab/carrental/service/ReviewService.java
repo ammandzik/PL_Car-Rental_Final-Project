@@ -1,11 +1,11 @@
 package pl.coderslab.carrental.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.ReviewDto;
-import pl.coderslab.carrental.exception.ReviewExistsException;
 import pl.coderslab.carrental.exception.ReviewNotAllowedYetException;
 import pl.coderslab.carrental.mapper.ReviewMapper;
 import pl.coderslab.carrental.model.Reservation;
@@ -48,7 +48,7 @@ public class ReviewService {
             }
 
             if (reviewExists) {
-                throw new ReviewExistsException(String.format("Review for reservation with id %s already exists", reviewDto.getReservationId()));
+                throw new EntityExistsException(String.format("Review for reservation with id %s already exists", reviewDto.getReservationId()));
             }
 
             var reviewEntity = reviewMapper.toEntity(reviewDto);

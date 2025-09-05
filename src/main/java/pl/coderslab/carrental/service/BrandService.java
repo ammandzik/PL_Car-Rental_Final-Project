@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,10 @@ public class BrandService {
         log.info("Invoked create brand method");
 
         if (brandDto != null && brandDto.getName() != null) {
+
+            if(brandRepository.existsByName(brandDto.getName())) {
+                throw new EntityExistsException(String.format("Brand with name %s already exists", brandDto.getName()));
+            }
 
             log.info("Saving brand: {}", brandDto);
 

@@ -20,6 +20,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                  and r.dateTo   >= :today
                   and r.confirmed = true
             """)
-
     Set<Long> findActiveCarIds(@Param("today") LocalDate today);
+
+    @Query("select count(r) > 0 from Reservation r where r.car.id = :carId")
+    boolean existsByCarId(Long carId);
 }

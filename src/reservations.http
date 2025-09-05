@@ -6,7 +6,7 @@ POST localhost:8080/api/reservation
 Content-Type: application/json
 
 {
-  "carId": 2,
+  "carId": 1,
   "dateFrom": "2025-09-01",
   "dateTo": "2025-09-03",
   "userId": 1,
