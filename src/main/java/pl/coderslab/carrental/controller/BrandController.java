@@ -44,7 +44,7 @@ public class BrandController {
     }
 
     @PutMapping("/brand")
-    public ResponseEntity<BrandDto> updateBrand(@RequestParam Long id, @RequestBody BrandDto brandDto) {
+    public ResponseEntity<BrandDto> updateBrand(@RequestParam Long id, @Valid @RequestBody BrandDto brandDto) {
 
         return new ResponseEntity<>(brandService.updateBrand(id, brandDto), HttpStatus.OK);
     }

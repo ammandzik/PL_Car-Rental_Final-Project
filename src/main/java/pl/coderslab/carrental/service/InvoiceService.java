@@ -6,9 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.InvoiceDto;
+import pl.coderslab.carrental.exception.InvoiceCreationNotAllowed;
 import pl.coderslab.carrental.exception.PdfImportException;
 import pl.coderslab.carrental.mapper.InvoiceMapper;
 import pl.coderslab.carrental.mapper.UserMapper;
+import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.Utils;
 import pl.coderslab.carrental.repository.InvoiceRepository;
 
@@ -67,12 +69,12 @@ public class InvoiceService {
 
         if (invoiceDto != null) {
 
-            if (invoiceRepository.existsByInvoiceNumberAndReservationId(invoiceDto.getReservationId())) {
-                throw new EntityExistsException(String.format("Invoice with reservation id %s already exists", invoiceDto.getReservationId()));
-            }
+            checkIfInvoiceExistsByReservation(invoiceDto);
 
             var reservation = reservationService.getReservationEntityWithComponents(invoiceDto.getReservationId());
             var user = reservation.getUser();
+
+            checkIfReservationIsConfirmed(reservation);
 
             var invoice = invoiceMapper.toEntity(invoiceDto);
             var date = LocalDate.now();
@@ -111,6 +113,7 @@ public class InvoiceService {
         log.info(("Invoked update invoice method"));
 
         if (id != null) {
+
             var invoice = invoiceRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(INVOICE_WITH_ID_S_NOT_FOUND, id)));
 
@@ -119,9 +122,8 @@ public class InvoiceService {
             var reservation = reservationService.getReservationEntityWithComponents(invoice.getReservation().getId());
             var user = userMapper.toUser(userService.findById(invoice.getUser().getId()));
 
-            invoice.setInvoiceNumber(invoiceDto.getInvoiceNumber());
-            invoice.setIssueDate(invoiceDto.getIssueDate());
-            invoice.setTotalAmount(invoiceDto.getTotalAmount());
+            invoice.setIssueDate(LocalDate.now());
+            invoice.setTotalAmount(reservation.getFinalPrice());
             invoice.setUser(user);
             invoice.setReservation(reservation);
             invoiceRepository.save(invoice);
@@ -158,4 +160,16 @@ public class InvoiceService {
         return sb.toString();
     }
 
+
+    private static void checkIfReservationIsConfirmed(Reservation reservation) {
+        if (!reservation.isConfirmed()) {
+            throw new InvoiceCreationNotAllowed("Invoice creation not allowed. Reservation has not been confirmed");
+        }
+    }
+
+    private void checkIfInvoiceExistsByReservation(InvoiceDto invoiceDto) {
+        if (invoiceRepository.existsByInvoiceNumberAndReservationId(invoiceDto.getReservationId())) {
+            throw new EntityExistsException(String.format("Invoice with reservation id %s already exists", invoiceDto.getReservationId()));
+        }
+    }
 }

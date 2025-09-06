@@ -10,8 +10,12 @@ Content-Type: application/json
 }
 
 ###exsisting
-PUT localhost:8080/api/admin/roles?id=1
+PUT localhost:8080/api/admin/roles?id=2
 Content-Type: application/json
+
+{
+  "name": "Admin"
+}
 
 ###non existing
 PUT localhost:8080/api/admin/roles?id=32324

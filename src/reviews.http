@@ -6,7 +6,7 @@ POST localhost:8080/api/review
 Content-Type: application/json
 
 {
-  "reservationId": 21,
+  "reservationId": 19,
   "description": "Testowa prawidlowa review",
   "rating": 5,
   "pseudonym": "janekBananek"
@@ -18,21 +18,21 @@ Content-Type: application/json
 
 {
   "reservationId": 19,
-  "description": "Testowa nieprawidlowa review",
+  "description": "Testowa prawidlowa review",
   "rating": 5,
   "pseudonym": "janekBananek"
 }
 
 ###
-PUT localhost:8080/api/review
+PUT localhost:8080/api/review?id=1
 Content-Type: application/json
 
 {
   "reservationId": 19,
-  "description": "Testowa nieprawidlowa review",
+  "description": "Testowa prawidlowa review",
   "rating": 5,
   "pseudonym": "janekBananek"
 }
 
 ###
-DELETE localhost:8080/api/reviews?id=1
+DELETE localhost:8080/api/review?id=1

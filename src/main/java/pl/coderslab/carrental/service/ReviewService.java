@@ -102,7 +102,7 @@ public class ReviewService {
 
     private static void validateReviewAddingIsAlowed(Reservation reservation) {
         if (!reservation.getDateTo().isBefore(LocalDate.now()) || !reservation.isConfirmed()) {
-            throw new ReviewNotAllowedYetException("Adding review is not allowed yet.");
+            throw new ReviewNotAllowedYetException("Adding review is not allowed.");
         }
     }
 }

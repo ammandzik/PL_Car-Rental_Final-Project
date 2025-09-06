@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,13 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<RoleDto> createRole(@RequestBody RoleDto roleDto) {
+    public ResponseEntity<RoleDto> createRole(@Valid @RequestBody RoleDto roleDto) {
 
         return new ResponseEntity<>(roleService.saveRole(roleDto), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<RoleDto> updateRole(@RequestParam Long id, @RequestBody RoleDto roleDto) {
+    public ResponseEntity<RoleDto> updateRole(@RequestParam Long id, @Valid @RequestBody RoleDto roleDto) {
 
         return new ResponseEntity<>(roleService.updateRole(id, roleDto), HttpStatus.OK);
     }

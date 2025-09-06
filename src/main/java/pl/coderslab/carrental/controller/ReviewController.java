@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ReviewController {
     }
 
     @PostMapping("/review")
-    public ResponseEntity<ReviewDto> addReview(@RequestBody ReviewDto reviewDto) {
+    public ResponseEntity<ReviewDto> addReview(@Valid @RequestBody ReviewDto reviewDto) {
 
         return new ResponseEntity<>(reviewService.addReview(reviewDto), HttpStatus.CREATED);
     }
