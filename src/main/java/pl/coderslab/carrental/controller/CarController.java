@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,9 @@ public class CarController {
     }
 
     @PostMapping("/admin/car")
-    public ResponseEntity<CarDto> createCar(@RequestBody CarDto carDto) {
+    public ResponseEntity<CarDto> createCar(@Valid @RequestBody CarDto carDto) {
 
-        return new ResponseEntity<>(carService.createCar(carDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(carService.saveCar(carDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/admin/car")

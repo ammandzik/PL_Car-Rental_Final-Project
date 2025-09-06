@@ -28,7 +28,6 @@ public class UserService {
         return userRepository.findById(id)
                 .map(userMapper::toUserDto)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(USER_WITH_ID_S_NOT_FOUND, id)));
-
     }
 
     public List<UserDto> findAll() {
@@ -46,10 +45,9 @@ public class UserService {
 
         if (userDto != null) {
 
-            if (userRepository.existsByEmail(userDto.getEmail()) || userRepository.existsByUsername(userDto.getUsername())) {
+            if (userRepository.existsByEmail(userDto.getEmail())) {
                 throw new EntityExistsException("User already exists with that data");
             }
-
             var userEntity = userMapper.toUser(userDto);
             hashPassword(userDto.getPassword());
             userEntity.setPassword(BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt()));
@@ -66,34 +64,19 @@ public class UserService {
 
         if (userDto != null && id != null) {
 
-            if (userRepository.existsByEmail(userDto.getEmail()) || userRepository.existsByUsername(userDto.getUsername())) {
+            if (userRepository.existsByEmail(userDto.getEmail()) && userRepository.userIdDiffers(id)) {
                 throw new EntityExistsException("User already exists with that data");
             }
-
             var userEntity = userRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(USER_WITH_ID_S_NOT_FOUND, id)));
 
-            if (userDto.getName() != null) {
-                userEntity.setName(userDto.getName());
-            }
-            if (userDto.getUsername() != null) {
-                userEntity.setUsername(userDto.getUsername());
-            }
-            if (userDto.getEmail() != null) {
-                userEntity.setEmail(userDto.getEmail());
-            }
-            if (userDto.getPassword() != null) {
-                userEntity.setPassword(hashPassword(userDto.getPassword()));
-            }
-            if (userDto.getPhone() != null) {
-                userEntity.setPhone(userDto.getPhone());
-            }
-            if (userDto.getRoles() != null) {
-                userEntity.setRoles(userDto.getRoles());
-            }
+            userEntity.setName(userDto.getName());
+            userEntity.setEmail(userDto.getEmail());
+            userEntity.setPassword(hashPassword(userDto.getPassword()));
+            userEntity.setPhone(userDto.getPhone());
+            userEntity.setRoles(userDto.getRoles());
 
             log.info("User with id {} updated", id);
-
             return userMapper.toUserDto(userRepository.save(userEntity));
         } else {
             throw new IllegalArgumentException("UserDto and/or id cannot be empty.");

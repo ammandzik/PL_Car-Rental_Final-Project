@@ -61,7 +61,7 @@ public class CarService {
     }
 
     @Transactional
-    public CarDto createCar(CarDto carDto) {
+    public CarDto saveCar(CarDto carDto) {
 
         log.info("Invoked create car method");
 

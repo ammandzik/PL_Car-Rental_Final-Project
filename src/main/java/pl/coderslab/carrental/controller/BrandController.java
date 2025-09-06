@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class BrandController {
     }
 
     @PostMapping
-    public ResponseEntity<BrandDto> createBrand(@RequestBody BrandDto brandDto) {
+    public ResponseEntity<BrandDto> createBrand(@Valid @RequestBody BrandDto brandDto) {
 
         return new ResponseEntity<>(brandService.createBrand(brandDto), HttpStatus.CREATED);
     }

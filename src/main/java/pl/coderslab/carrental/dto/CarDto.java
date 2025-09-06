@@ -2,6 +2,7 @@ package pl.coderslab.carrental.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import pl.coderslab.carrental.model.Brand;
@@ -18,9 +19,10 @@ public class CarDto {
     private CarStatus carStatus;
     @NotNull
     @NotEmpty
+    @Size(min = 1, max = 20)
     private String model;
-    @NotEmpty
+    @NotNull
     private int year;
-    @NotEmpty
+    @NotNull
     private double pricePerDay;
 }

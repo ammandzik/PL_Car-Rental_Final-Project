@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ReservationController {
     }
 
     @PostMapping("/reservation")
-    public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto reservationDto) {
+    public ResponseEntity<ReservationDto> createReservation(@Valid @RequestBody ReservationDto reservationDto) {
 
         return new ResponseEntity<>(reservationService.save(reservationDto), HttpStatus.CREATED);
     }

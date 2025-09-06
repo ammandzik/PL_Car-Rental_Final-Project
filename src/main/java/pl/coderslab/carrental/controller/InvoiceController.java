@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,7 @@ public class InvoiceController {
     }
 
     @PutMapping("/admin/invoice")
-    public ResponseEntity<InvoiceDto> updateInvoice(@RequestParam Long id, @RequestBody InvoiceDto invoiceDto) {
+    public ResponseEntity<InvoiceDto> updateInvoice(@RequestParam Long id, @Valid @RequestBody InvoiceDto invoiceDto) {
 
         return new ResponseEntity<>(invoiceService.updateInvoice(id, invoiceDto), HttpStatus.OK);
     }

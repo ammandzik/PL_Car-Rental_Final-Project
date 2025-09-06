@@ -16,6 +16,7 @@ import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
 import pl.coderslab.carrental.repository.ReservationRepository;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -58,11 +59,17 @@ public class ReservationService {
 
             var reservation = reservationRepository.findById(reservationDto.getId())
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, reservationDto.getId())));
+            var car = reservation.getCar();
 
             reservation.setConfirmed(reservationDto.isConfirmed());
             reservation.setDateFrom(reservationDto.getDateFrom());
             reservation.setDateTo(reservationDto.getDateTo());
             reservation.setFinalPrice(reservationDto.getFinalPrice());
+
+            if (reservation.isConfirmed()) {
+                car.setCarStatus(CarStatus.RENTED);
+                carService.updateCar(car.getId(), carMapper.toDto(car));
+            }
 
             log.info("Updating reservation with id {}", reservationDto.getId());
             return reservationMapper.toDto(reservationRepository.save(reservation));
@@ -84,17 +91,12 @@ public class ReservationService {
         log.info("Invoked save reservation method");
 
         if (reservationDto != null) {
+
             var userDto = userService.findById(reservationDto.getUserId());
             var carDto = carService.getCarById(reservationDto.getCarId());
             var reservation = reservationMapper.toEntity(reservationDto);
 
-            if(reservationRepository.existsByCarId(reservationDto.getCarId())) {
-                throw new EntityExistsException(String.format("Reservation with car id %s already exists", reservationDto.getCarId()));
-            }
-
-            if (carDto.getCarStatus().equals(CarStatus.RENTED)) {
-                throw new CarAlreadyRentedException(String.format("Car with id %s already rented.", carDto.getId()));
-            }
+            validateReservationAndCarOrElseThrow(reservationDto, carDto);
 
             reservation.setConfirmed(reservation.isConfirmed());
             reservation.setUser(userMapper.toUser(userDto));
@@ -106,7 +108,7 @@ public class ReservationService {
             }
             carService.updateCar(carDto.getId(), carDto);
 
-            log.info("Saving/updating reservation");
+            log.info("Saving reservation");
 
             return reservationMapper.toDto(reservationRepository.save(reservation));
 
@@ -127,6 +129,17 @@ public class ReservationService {
             log.info("Deleting reservation with id {}", id);
         } else {
             throw new IllegalArgumentException("Reservation id is null");
+        }
+    }
+
+    private void validateReservationAndCarOrElseThrow(ReservationDto reservationDto, CarDto carDto) {
+
+        if (reservationRepository.existsByCarIdWithFutureDate(reservationDto.getCarId(), LocalDate.now())) {
+            throw new EntityExistsException(String.format("Reservation with car id %s already exists", reservationDto.getCarId()));
+        }
+
+        if (carDto.getCarStatus().equals(CarStatus.RENTED)) {
+            throw new CarAlreadyRentedException(String.format("Car with id %s already rented.", carDto.getId()));
         }
     }
 

@@ -32,13 +32,15 @@ DELETE localhost:8080/api/admin/invoice?id=1
 DELETE localhost:8080/api/admin/invoice?id=12323
 
 ###exisitng update
-PUT localhost:8080/api/admin/invoice?id=2
+PUT localhost:8080/api/admin/invoice?id=1
 Content-Type: application/json
 
 {
+  "reservationId": 19,
   "totalAmount": 2000,
-  "issueDate": "2025-09-10",
-  "invoiceNumber": "XXXXXX"
+  "issueDate": "2025-09-05",
+  "invoiceNumber": "XXXXXX",
+  "userId": 1
 }
 
 ### non exisiting invoice
@@ -46,8 +48,10 @@ PUT localhost:8080/api/admin/invoice?id=2222
 Content-Type: application/json
 
 {
-"totalAmount": 2000,
-"issueDate": "2025-09-10",
-"invoiceNumber": "XXXXXX"
+  "reservationId": 19,
+  "totalAmount": 2000,
+  "issueDate": "2025-09-04",
+  "invoiceNumber": "XXXXXX",
+  "userId": 1
 }
 

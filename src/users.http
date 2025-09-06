@@ -12,7 +12,6 @@ POST localhost:8080/api/admin/user
 Content-Type: application/json
 
 {
-  "username": "ammandzik",
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
@@ -21,13 +20,15 @@ Content-Type: application/json
 }
 
 ###Update existing user
-PUT localhost:8080/api/admin/user?id=2
+PUT localhost:8080/api/admin/user?id=1
 Content-Type: application/json
 
 {
+  "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "password": "PuszekOkruszek"
+  "email": "amanda@wp.pl",
+  "password": "DwaPuszki"
 
 }
 
@@ -36,7 +37,11 @@ PUT localhost:8080/api/admin/user?id=2322
 Content-Type: application/json
 
 {
-
+  "name": "Amanda",
+  "surname": "Preisner",
+  "phone": "123-456-789",
+  "email": "amanda@wp.pl",
+  "password": "DwPuszki"
 }
 
 ###Delete existing

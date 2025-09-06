@@ -1,11 +1,13 @@
 package pl.coderslab.carrental.service;
 
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.CarDto;
 import pl.coderslab.carrental.dto.PaymentDto;
+import pl.coderslab.carrental.dto.ReservationDto;
 import pl.coderslab.carrental.mapper.PaymentMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
@@ -53,19 +55,26 @@ public class PaymentService {
 
             var reservation = reservationService.findById(paymentDto.getReservationId());
 
+            if (reservation.isConfirmed()) {
+                throw new EntityExistsException(String.format("Approved payment already exists with reservation id %s", paymentDto.getReservationId()));
+            }
+
             paymentDto.setAmount(reservation.getFinalPrice());
 
             var entity = paymentMapper.toEntity(paymentDto);
-
-            if (paymentDto.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
-                reservation.setConfirmed(true);
-                reservationService.save(reservation);
-            }
+            checkIfPaymentApprovedAndChangeReservationStatus(paymentDto, reservation);
             entity.setReservation(reservationMapper.toEntity(reservation));
 
             return paymentMapper.toDto(paymentRepository.save(entity));
         } else {
             throw new IllegalArgumentException("Payment cannot be null");
+        }
+    }
+
+    private void checkIfPaymentApprovedAndChangeReservationStatus(PaymentDto paymentDto, ReservationDto reservation) {
+        if (paymentDto.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
+            reservation.setConfirmed(true);
+            reservationService.update(reservation);
         }
     }
 }

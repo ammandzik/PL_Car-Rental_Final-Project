@@ -12,7 +12,14 @@ POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
 {
-  "name": "AAA"
+  "name": "XXX"
+}
+
+###(creation of new one, null)
+POST localhost:8080/api/admin/brands
+Content-Type: application/json
+
+{
 }
 
 ###(update, request param id, request body)

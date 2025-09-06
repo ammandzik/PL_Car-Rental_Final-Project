@@ -1,5 +1,6 @@
 package pl.coderslab.carrental.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class PaymentController {
     }
 
     @PostMapping("/pay")
-    public ResponseEntity<PaymentDto> payReservation(@RequestBody PaymentDto paymentDto) {
+    public ResponseEntity<PaymentDto> payReservation(@Valid @RequestBody PaymentDto paymentDto) {
 
         return new ResponseEntity<>(paymentService.save(paymentDto), HttpStatus.CREATED);
     }

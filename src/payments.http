@@ -10,7 +10,7 @@ Content-Type: application/json
 
 {
   "reservationId": 20,
-  "paymentMethod": "Card",
+  "paymentMethod": "Bank Transfer",
   "paymentStatus": "Approved"
 }
 
