@@ -6,7 +6,9 @@ public enum PaymentStatus {
 
     APPROVED("Approved"),
     REJECTED("Rejected"),
-    AWAITING("Awaiting");
+    AWAITING("Awaiting"),
+    FUNDS_BEING_REFUNDED("Funds being refunded"),
+    CANCELLED("Cancelled");
 
     private final String description;
 

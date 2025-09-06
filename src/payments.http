@@ -15,6 +15,9 @@ Content-Type: application/json
 }
 
 ###
+PUT localhost:8080/api/payment-cancel?id=4
+
+###
 GET localhost:8080/api/payments?reservationId=19
 
 ###

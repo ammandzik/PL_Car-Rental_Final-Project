@@ -43,13 +43,8 @@ public class ReviewService {
             var reviewExists = reviewRepository.existsByReservationId(reviewDto.getReservationId());
             var reservation = findReservationOrElseThrow(reviewDto.getReservationId());
 
-            if (!reservation.getDateTo().isBefore(LocalDate.now()) || !reservation.isConfirmed()) {
-                throw new ReviewNotAllowedYetException("Adding review is not allowed yet.");
-            }
-
-            if (reviewExists) {
-                throw new EntityExistsException(String.format("Review for reservation with id %s already exists", reviewDto.getReservationId()));
-            }
+            validateReviewAddingIsAlowed(reservation);
+            checkIfReviewExists(reviewDto, reviewExists);
 
             var reviewEntity = reviewMapper.toEntity(reviewDto);
             reviewEntity.setReservation(reservation);
@@ -97,5 +92,17 @@ public class ReviewService {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Reservation not found with id %s", id)));
 
+    }
+
+    private static void checkIfReviewExists(ReviewDto reviewDto, boolean reviewExists) {
+        if (reviewExists) {
+            throw new EntityExistsException(String.format("Review for reservation with id %s already exists", reviewDto.getReservationId()));
+        }
+    }
+
+    private static void validateReviewAddingIsAlowed(Reservation reservation) {
+        if (!reservation.getDateTo().isBefore(LocalDate.now()) || !reservation.isConfirmed()) {
+            throw new ReviewNotAllowedYetException("Adding review is not allowed yet.");
+        }
     }
 }

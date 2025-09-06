@@ -66,6 +66,7 @@ public class CarService {
         log.info("Invoked create car method");
 
         if (carDto != null && carDto.getBrand().getId() != null) {
+
             var brand = brandService.findBrandById(carDto.getBrand().getId());
 
             var car = carMapper.toEntity(carDto);
@@ -84,21 +85,22 @@ public class CarService {
 
         log.info("Invoked update car method");
 
-        if (id == null || carDto == null) {
-            throw new IllegalArgumentException(String.format("Id and CarDto are required and cannot be null: %s %s", id, carDto));
+        if (id != null || carDto != null) {
+
+            var brand = brandService.findBrandById(carDto.getBrand().getId());
+            var car = getCarOrElseThrow(id);
+
+            car.setBrand(brand);
+            car.setModel(carDto.getModel());
+            car.setYear(carDto.getYear());
+            car.setCarStatus(carDto.getCarStatus());
+
+            log.info("Car updated {}", car);
+
+            return carMapper.toDto(carRepository.save(car));
+        } else {
+            throw new IllegalArgumentException("Id and CarDto are required and cannot be null: %s %s");
         }
-
-        var brand = brandService.findBrandById(carDto.getBrand().getId());
-        var car = getCarOrElseThrow(id);
-
-        car.setBrand(brand);
-        car.setModel(carDto.getModel());
-        car.setYear(carDto.getYear());
-        car.setCarStatus(carDto.getCarStatus());
-
-        log.info("Car updated {}", car);
-
-        return carMapper.toDto(carRepository.save(car));
     }
 
     public void deleteCar(Long id) {

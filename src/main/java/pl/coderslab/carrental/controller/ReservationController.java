@@ -32,7 +32,7 @@ public class ReservationController {
     @PutMapping("/reservation")
     public ResponseEntity<ReservationDto> updateReservation(@RequestParam Long id, @RequestBody ReservationDto reservationDto) {
 
-        return new ResponseEntity<>(reservationService.update(reservationDto), HttpStatus.OK);
+        return new ResponseEntity<>(reservationService.update(id, reservationDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/reservation")

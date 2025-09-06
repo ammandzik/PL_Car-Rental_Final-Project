@@ -1,26 +1,26 @@
 ###
 GET localhost:8080/api/reservations
 
-###
+###Field confirmed will always be set to false while creating
 POST localhost:8080/api/reservation
 Content-Type: application/json
 
 {
-  "carId": 1,
+  "carId": 3,
   "dateFrom": "2025-09-06",
   "dateTo": "2025-09-10",
   "userId": 1,
-  "confirmed": false
+  "confirmed": true
 }
 
 ###
-PUT localhost:8080/api/reservation
+PUT localhost:8080/api/reservation?id=22
 Content-Type: application/json
 
 {
-  "carId": 2,
+  "carId": 3,
   "dateFrom": "2025-09-01",
-  "dateTo": "2025-09-03",
+  "dateTo": "2025-09-05",
   "userId": 1,
   "confirmed": false
 }

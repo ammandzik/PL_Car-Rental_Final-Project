@@ -12,6 +12,7 @@ import pl.coderslab.carrental.exception.CarAlreadyRentedException;
 import pl.coderslab.carrental.mapper.CarMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
 import pl.coderslab.carrental.mapper.UserMapper;
+import pl.coderslab.carrental.model.Car;
 import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
 import pl.coderslab.carrental.repository.ReservationRepository;
@@ -52,24 +53,17 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
     }
 
-    public ReservationDto update(ReservationDto reservationDto) {
+    public ReservationDto update(Long id, ReservationDto reservationDto) {
         log.info("Update reservation method invoked");
 
-        if (reservationDto != null) {
+        if (reservationDto != null && id != null) {
 
-            var reservation = reservationRepository.findById(reservationDto.getId())
+            var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, reservationDto.getId())));
             var car = reservation.getCar();
 
             reservation.setConfirmed(reservationDto.isConfirmed());
-            reservation.setDateFrom(reservationDto.getDateFrom());
-            reservation.setDateTo(reservationDto.getDateTo());
-            reservation.setFinalPrice(reservationDto.getFinalPrice());
-
-            if (reservation.isConfirmed()) {
-                car.setCarStatus(CarStatus.RENTED);
-                carService.updateCar(car.getId(), carMapper.toDto(car));
-            }
+            checkReservationStatusAndChangeCarStatus(reservation, car);
 
             log.info("Updating reservation with id {}", reservationDto.getId());
             return reservationMapper.toDto(reservationRepository.save(reservation));
@@ -98,17 +92,12 @@ public class ReservationService {
 
             validateReservationAndCarOrElseThrow(reservationDto, carDto);
 
-            reservation.setConfirmed(reservation.isConfirmed());
+            reservation.setConfirmed(false);
             reservation.setUser(userMapper.toUser(userDto));
             reservation.setCar(carMapper.toEntity(carDto));
             reservation.setFinalPrice(getTotalPrice(carDto, reservationDto));
 
-            if (reservation.isConfirmed()) {
-                carDto.setCarStatus(CarStatus.RENTED);
-            }
-            carService.updateCar(carDto.getId(), carDto);
-
-            log.info("Saving reservation");
+            log.info("Saving new reservation");
 
             return reservationMapper.toDto(reservationRepository.save(reservation));
 
@@ -151,5 +140,15 @@ public class ReservationService {
     private Double getTotalPrice(CarDto car, ReservationDto reservationDto) {
 
         return car.getPricePerDay() * getDays(reservationDto);
+    }
+
+    private void checkReservationStatusAndChangeCarStatus(Reservation reservation, Car car) {
+        if (reservation.isConfirmed()) {
+            car.setCarStatus(CarStatus.RENTED);
+            carService.updateCar(car.getId(), carMapper.toDto(car));
+        } else {
+            car.setCarStatus(CarStatus.AVAILABLE);
+            carService.updateCar(car.getId(), carMapper.toDto(car));
+        }
     }
 }

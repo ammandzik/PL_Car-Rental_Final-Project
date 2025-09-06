@@ -63,9 +63,7 @@ public class BrandService {
 
         if (brandDto != null && brandDto.getName() != null) {
 
-            if(brandRepository.existsByName(brandDto.getName())) {
-                throw new EntityExistsException(String.format("Brand with name %s already exists", brandDto.getName()));
-            }
+            checkIfBrandAlreadyExistsOrElseThrow(brandDto);
 
             log.info("Saving brand: {}", brandDto);
 
@@ -80,7 +78,9 @@ public class BrandService {
 
     public BrandDto updateBrand(Long id, BrandDto brandDto) {
         log.info("Invoked update brand method");
+
         if (brandDto != null && id != null) {
+
             var brand = brandRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
 
@@ -97,6 +97,7 @@ public class BrandService {
         log.info("Invoked delete brand method");
 
         if (id != null) {
+
             if (!brandDeletionPolicy.canDelete(id)) {
                 throw new IllegalStateException(String.format("Cannot delete brand: cars are existing for brand with id %s", id));
             }
@@ -105,6 +106,13 @@ public class BrandService {
             brandRepository.deleteById(id);
         } else {
             throw new IllegalArgumentException("Cannot delete brand. Given brand and/or id cannot be null");
+        }
+    }
+
+    private void checkIfBrandAlreadyExistsOrElseThrow(BrandDto brandDto) {
+
+        if (brandRepository.existsByName(brandDto.getName())) {
+            throw new EntityExistsException(String.format("Brand with name %s already exists", brandDto.getName()));
         }
     }
 }
