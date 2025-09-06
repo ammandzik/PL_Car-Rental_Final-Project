@@ -15,7 +15,6 @@ public class InvoiceDto {
     private String invoiceNumber;
     @PastOrPresent
     private LocalDate issueDate;
-    @NotNull
     private Double totalAmount;
     @NotNull
     private Long reservationId;
