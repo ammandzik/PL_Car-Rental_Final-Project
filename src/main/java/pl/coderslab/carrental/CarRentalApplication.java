@@ -1,13 +1,19 @@
 package pl.coderslab.carrental;
 
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import pl.coderslab.carrental.env.EnvLoader;
 
 @SpringBootApplication
 @EnableCaching
 public class CarRentalApplication {
+
+    @Autowired
+    private CacheManager cacheManager;
 
     public static void main(String[] args) {
 
@@ -21,6 +27,10 @@ public class CarRentalApplication {
         System.setProperty("SPRING_DATASOURCE_URL", EnvLoader.getEnv("SPRING_DATASOURCE_URL"));
 
         SpringApplication.run(CarRentalApplication.class, args);
+    }
+    @PostConstruct
+    public void checkCacheManager() {
+        System.out.println(">>> CacheManager używany przez Spring: " + cacheManager.getClass().getName());
     }
 
 }

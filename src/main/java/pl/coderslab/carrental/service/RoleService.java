@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.RoleDto;
 import pl.coderslab.carrental.mapper.RoleMapper;
@@ -18,6 +19,12 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+
+    @Cacheable(value = "role", key = "#id")
+    public RoleDto getRoleById(Long id) {
+        var role = roleRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return roleMapper.toDto(role);
+    }
 
     public List<RoleDto> getRoles() {
 

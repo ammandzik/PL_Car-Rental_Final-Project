@@ -12,7 +12,7 @@ POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
 {
-  "name": "Toyota"
+  "name": "Audi"
 }
 
 ###(creation of already existing)

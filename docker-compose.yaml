@@ -10,7 +10,7 @@ services:
     volumes:
       - car_rental_mysql_data:/var/lib/mysql
   redis:
-    image: redis:7-alpine
+    image: redis:latest
     container_name: car_rental_redis
     command: [ "redis-server", "--appendonly", "yes" ]
     ports:
@@ -26,6 +26,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - mysql
+      - redis
     ports:
       - "8080:8080"
 volumes:

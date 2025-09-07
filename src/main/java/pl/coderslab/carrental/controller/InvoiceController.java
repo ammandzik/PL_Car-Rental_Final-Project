@@ -56,8 +56,10 @@ public class InvoiceController {
     }
 
     @PutMapping("/admin/invoice")
-    public ResponseEntity<InvoiceDto> refreshInvoiceData(@RequestParam Long id) {
+    public ResponseEntity<String> refreshInvoiceData(@RequestParam Long id) {
 
-        return new ResponseEntity<>(invoiceService.refreshInvoiceData(id), HttpStatus.OK);
+        invoiceService.refreshInvoiceData(id);
+
+        return new ResponseEntity<>("Invoice data refreshed", HttpStatus.OK);
     }
 }

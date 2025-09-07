@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.carrental.model.Invoice;
+import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +29,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     @Query("""
             SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Payment p
             WHERE p.reservation.id = :reservationId
-            AND p.paymentStatus = "APPROVED"
+            AND p.paymentStatus = :paymentStatus
             """)
-    boolean invoiceReservationPaymentIsApproved(Long reservationId);
+    boolean invoiceReservationPaymentHasStatus(Long reservationId, PaymentStatus paymentStatus);
 }

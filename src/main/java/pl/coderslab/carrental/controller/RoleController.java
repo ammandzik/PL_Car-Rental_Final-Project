@@ -41,4 +41,9 @@ public class RoleController {
         roleService.deleteRole(id);
         return new ResponseEntity<>("Role deleted", HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/role")
+    public ResponseEntity<RoleDto> getRoleById(@RequestParam Long id) {
+        return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
+    }
 }

@@ -71,6 +71,7 @@ public class CarService {
 
             var car = carMapper.toEntity(carDto);
             car.setBrand(brand);
+            car.setCarStatus(CarStatus.AVAILABLE);
 
             log.info("Car created {}", car);
 
@@ -117,14 +118,6 @@ public class CarService {
         }
     }
 
-    private Car getCarOrElseThrow(Long id) {
-
-        log.info("Invoked ger car or else throw method for  for id: {}", id);
-
-        return carRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Car with id %s not found", id)));
-    }
-
     @Transactional
     public void updateCarsAvailabilityByClosedReservationDate() {
 
@@ -143,6 +136,12 @@ public class CarService {
             carRepository.saveAll(carsToUpdate);
         }
     }
+    private Car getCarOrElseThrow(Long id) {
 
+        log.info("Invoked ger car or else throw method for  for id: {}", id);
+
+        return carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Car with id %s not found", id)));
+    }
 }
 

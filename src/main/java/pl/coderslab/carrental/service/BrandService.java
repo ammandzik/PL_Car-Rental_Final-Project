@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.BrandDto;
@@ -23,13 +24,14 @@ public class BrandService {
     private final BrandMapper brandMapper;
     private final BrandDeletionPolicy brandDeletionPolicy;
 
-    public Brand findBrandById(Long brandId) {
+    @Cacheable(value = "brand", key = "#id")
+    public Brand findBrandById(Long id) {
 
-        log.info("Invoked find or create brand method by brand id: {}", brandId);
+        log.info("Invoked find or create brand method by brand id: {}", id);
 
-        if (brandId != null) {
-            var brandById = brandRepository.findById(brandId)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, brandId)));
+        if (id != null) {
+            var brandById = brandRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
 
             log.info("Found brand with id {}", brandById);
             return brandById;

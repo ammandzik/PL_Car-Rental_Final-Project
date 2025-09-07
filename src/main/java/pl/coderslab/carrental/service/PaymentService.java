@@ -44,19 +44,22 @@ public class PaymentService {
                 .toList();
     }
 
+    @Transactional
     public PaymentDto updatePaymentStatus(Long id, PaymentStatus status) {
 
         var payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Payment was not found with id %s", id)));
 
-        payment.setPaymentStatus(status);
-        paymentRepository.save(payment);
-
-        if (status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
-            var reservation = reservationService.findById(payment.getReservation().getId());
-            reservation.setConfirmed(false);
-            reservationService.update(payment.getReservation().getId(), reservation);
+        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
+            if (status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
+                reservationService.updateStatus(payment.getReservation().getId(), false);
+                payment.setPaymentStatus(status);
+            }
+        } else {
+            payment.setPaymentStatus(status);
         }
+
+        paymentRepository.save(payment);
         return paymentMapper.toDto(payment);
     }
 

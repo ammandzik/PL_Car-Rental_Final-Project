@@ -6,7 +6,7 @@ POST localhost:8080/api/admin/invoice
 Content-Type: application/json
 
 {
-  "reservationId": 27
+  "reservationId": 1
 }
 
 ###creation of invoice (duplicated)
@@ -26,13 +26,13 @@ Content-Type: application/json
 }
 
 ###deletion(happy path)
-DELETE localhost:8080/api/admin/invoice?id=1
+DELETE localhost:8080/api/admin/invoice?id=3
 
 ###deletion(non existing value)
 DELETE localhost:8080/api/admin/invoice?id=12323
 
 ###exisitng update(refreshes all data based on related entities)
-PUT localhost:8080/api/admin/invoice?id=1
+PUT localhost:8080/api/admin/invoice?id=4
 
 ### non exisiting invoice
 PUT localhost:8080/api/admin/invoice?id=2222

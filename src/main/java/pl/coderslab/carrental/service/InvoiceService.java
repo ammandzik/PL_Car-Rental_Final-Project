@@ -13,6 +13,7 @@ import pl.coderslab.carrental.mapper.InvoiceMapper;
 import pl.coderslab.carrental.mapper.UserMapper;
 import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.Utils;
+import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 import pl.coderslab.carrental.repository.InvoiceRepository;
 
 import java.io.IOException;
@@ -65,6 +66,7 @@ public class InvoiceService {
         }
     }
 
+    @Transactional
     public InvoiceDto addInvoice(InvoiceDto invoiceDto) {
 
         log.info("Invoked save invoice method");
@@ -112,7 +114,7 @@ public class InvoiceService {
     }
 
     @Transactional
-    public InvoiceDto refreshInvoiceData(Long id) {
+    public void refreshInvoiceData(Long id) {
 
         log.info("Invoked update invoice method");
 
@@ -126,15 +128,20 @@ public class InvoiceService {
             var reservation = reservationService.getReservationEntityWithComponents(invoice.getReservation().getId());
             var user = userMapper.toUser(userService.findById(invoice.getUser().getId()));
 
-            invoice.setIssueDate(LocalDate.now());
-            invoice.setTotalAmount(reservation.getFinalPrice());
-            invoice.setUser(user);
-            invoice.setReservation(reservation);
+            if (fundsWereWithdrawnForTheInvoiceReservation(reservation.getId())) {
+                invoiceRepository.delete(invoice);
+                log.info("Invoice with id {} deleted due to cancellation of reservation", id);
 
-            invoiceRepository.save(invoice);
-            log.info("Updated invoice saved to database");
+            } else {
+                invoice.setIssueDate(LocalDate.now());
+                invoice.setTotalAmount(reservation.getFinalPrice());
+                invoice.setUser(user);
+                invoice.setReservation(reservation);
 
-            return invoiceMapper.toDto(invoice);
+                invoiceRepository.save(invoice);
+                log.info("Updated invoice saved to database");
+            }
+
         } else {
             throw new IllegalArgumentException(String.format("Id is null %s", id));
         }
@@ -165,9 +172,14 @@ public class InvoiceService {
         return sb.toString();
     }
 
+    private boolean fundsWereWithdrawnForTheInvoiceReservation(Long reservationId) {
+
+        return invoiceRepository.invoiceReservationPaymentHasStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED);
+    }
+
     private void checkIfReservationIsConfirmedAndPaid(Reservation reservation) {
 
-        if (!reservation.isConfirmed() && !invoiceRepository.invoiceReservationPaymentIsApproved(reservation.getId())) {
+        if (!reservation.isConfirmed() || !invoiceRepository.invoiceReservationPaymentHasStatus(reservation.getId(), PaymentStatus.APPROVED)) {
             throw new InvoiceCreationNotAllowed("Invoice creation not allowed. Reservation has not been confirmed and paid");
         }
     }

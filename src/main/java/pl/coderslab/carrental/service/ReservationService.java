@@ -55,6 +55,7 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
     }
 
+    @Transactional
     public ReservationDto updateStatus(Long id, Boolean status) {
         log.info("Update reservation status invoked");
 
@@ -146,6 +147,8 @@ public class ReservationService {
 
     private void validateReservationAndCarOrElseThrow(ReservationDto reservationDto, CarDto carDto) {
 
+        log.info("Invoked validate reservation and car method");
+
         if (reservationRepository.existsByCarIdWithFutureDate(reservationDto.getCarId(), LocalDate.now())) {
             throw new EntityExistsException(String.format("Reservation with car id %s already exists", reservationDto.getCarId()));
         }
@@ -157,15 +160,21 @@ public class ReservationService {
 
     private Long getDays(ReservationDto reservationDto) {
 
+        log.info("Invoked getDays reservation method");
+
         return ChronoUnit.DAYS.between(reservationDto.getDateFrom(), reservationDto.getDateTo());
     }
 
     private Double getTotalPrice(CarDto car, ReservationDto reservationDto) {
 
+        log.info("Invoked getTotalPrice method");
+
         return car.getPricePerDay() * getDays(reservationDto);
     }
 
     private void checkReservationStatusAndChangeCarStatus(Reservation reservation, Car car) {
+
+        log.info("Invoked checkReservationStatusAndChangeCarStatus method");
 
         if (reservation.isConfirmed()) {
             car.setCarStatus(CarStatus.RENTED);
@@ -177,6 +186,8 @@ public class ReservationService {
     }
 
     private void checkWhichComponentsShouldBeUpdated(ReservationDto reservationDto, Reservation reservation) {
+        log.info("Invoked check which components should be updated");
+
         if (reservationDto.getDateFrom() != null) {
             reservation.setDateFrom(reservationDto.getDateFrom());
         }
@@ -189,14 +200,18 @@ public class ReservationService {
     }
 
     private void checkIfPaidAndConfirmed(Long id, Reservation reservation) {
+        log.info("Invoked checkIfPaidAndConfirmed method");
+
         if (reservation.isConfirmed()) {
             throw new ReservationEditNotAllowed(String.format("Cannot update. Reservation with id %s is already confirmed and paid", id));
         }
     }
 
     private void checkIfFundsBeingReturned(Long reservationId) {
+        log.info("Invoked checkIfFundsBeingReturned method");
+
         if (reservationRepository.paymentExistsForReservationAndStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED)) {
-            throw new ReservationEditNotAllowed(String.format("Cannot update. There is ongoing return of funds processed", reservationId));
+            throw new ReservationEditNotAllowed("Cannot update. There is ongoing return of funds processed");
         }
     }
 }
