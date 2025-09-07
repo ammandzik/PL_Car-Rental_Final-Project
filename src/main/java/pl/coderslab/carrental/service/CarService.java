@@ -125,6 +125,7 @@ public class CarService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Car with id %s not found", id)));
     }
 
+    @Transactional
     public void updateCarsAvailabilityByClosedReservationDate() {
 
         log.info("Invoked update cars availability method");

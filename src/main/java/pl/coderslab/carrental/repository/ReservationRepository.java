@@ -17,16 +17,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("""
             SELECT DISTINCT r.car.id
                FROM Reservation r
-               WHERE r.dateFrom <= :today
-               AND r.dateTo   >= :today
+               WHERE r.dateTo   >= :today
                AND r.confirmed = true
             """)
-    Set<Long> findActiveCarIds(@Param("today") LocalDate today);
+    Set<Long> findActiveCarIds(LocalDate today);
 
     @Query("""
             SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
-                       FROM Reservation r 
-                       WHERE r.car.id = :carId 
+                       FROM Reservation r
+                       WHERE r.car.id = :carId
                        AND r.dateTo >= :dateNow
             """)
     boolean existsByCarIdWithFutureDate(Long carId, LocalDate dateNow);
