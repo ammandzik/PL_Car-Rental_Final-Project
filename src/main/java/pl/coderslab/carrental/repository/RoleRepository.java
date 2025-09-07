@@ -8,6 +8,9 @@ import pl.coderslab.carrental.model.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    @Query("select count(r) > 0 from Role r where r.name = :name")
+    @Query("""
+            SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+            FROM Role r
+            WHERE r.name = :name""")
     boolean existsByName(String name);
 }

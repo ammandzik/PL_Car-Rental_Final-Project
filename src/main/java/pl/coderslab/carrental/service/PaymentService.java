@@ -44,29 +44,20 @@ public class PaymentService {
                 .toList();
     }
 
-    public void updatePaymentAmount(Double amount, Long paymentId) {
-
-        var payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Payment not found with id %s", paymentId)));
-
-        payment.setAmount(amount);
-        paymentRepository.save(payment);
-    }
-
-    public PaymentDto updateCancelledPayment(Long id) {
-
-        log.info("Invoked update payment");
+    public PaymentDto updatePaymentStatus(Long id, PaymentStatus status) {
 
         var payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Payment not found with id %s", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Payment was not found with id %s", id)));
 
-        var reservation = reservationService.findById(payment.getReservation().getId());
+        payment.setPaymentStatus(status);
+        paymentRepository.save(payment);
 
-        reservation.setConfirmed(false);
-        reservationService.update(payment.getReservation().getId(), reservation);
-        payment.setPaymentStatus(PaymentStatus.FUNDS_BEING_REFUNDED);
-
-        return paymentMapper.toDto(paymentRepository.save(payment));
+        if (status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
+            var reservation = reservationService.findById(payment.getReservation().getId());
+            reservation.setConfirmed(false);
+            reservationService.update(payment.getReservation().getId(), reservation);
+        }
+        return paymentMapper.toDto(payment);
     }
 
     @Transactional

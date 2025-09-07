@@ -107,6 +107,13 @@ public class GlobalExceptionHandler {
         return createResponse(HttpStatus.CONFLICT, exception);
     }
 
+    @ExceptionHandler(InvoiceCreationNotAllowed.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleInvoiceCreationNotAllowed(InvoiceCreationNotAllowed exception) {
+        log.error("Handling invoice creation not allowed exception: {}", exception.getMessage());
+        return createResponse(HttpStatus.CONFLICT, exception);
+    }
+
     private ErrorResponse createResponse(HttpStatusCode status, Exception exception) {
 
         return ErrorResponse.builder()

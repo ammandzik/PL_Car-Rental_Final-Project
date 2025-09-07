@@ -84,6 +84,7 @@ public class ReservationService {
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
 
             checkIfPaidAndConfirmed(id, reservation);
+            checkIfFundsBeingReturned(id);
             checkWhichComponentsShouldBeUpdated(reservationDto, reservation);
             reservationRepository.updatePaymentTotalPriceForReservation(id, reservation.getFinalPrice());
 
@@ -190,6 +191,12 @@ public class ReservationService {
     private void checkIfPaidAndConfirmed(Long id, Reservation reservation) {
         if (reservation.isConfirmed()) {
             throw new ReservationEditNotAllowed(String.format("Cannot update. Reservation with id %s is already confirmed and paid", id));
+        }
+    }
+
+    private void checkIfFundsBeingReturned(Long reservationId) {
+        if (reservationRepository.paymentExistsForReservationAndStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED)) {
+            throw new ReservationEditNotAllowed(String.format("Cannot update. There is ongoing return of funds processed", reservationId));
         }
     }
 }

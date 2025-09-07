@@ -48,16 +48,16 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/admin/invoice")
-    public ResponseEntity deleteInvoice(@RequestParam Long id) {
+    public ResponseEntity<String> deleteInvoice(@RequestParam Long id) {
 
         invoiceService.deleteInvoice(id);
 
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Invoice removed", HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/admin/invoice")
-    public ResponseEntity<InvoiceDto> updateInvoice(@RequestParam Long id, @Valid @RequestBody InvoiceDto invoiceDto) {
+    public ResponseEntity<InvoiceDto> refreshInvoiceData(@RequestParam Long id) {
 
-        return new ResponseEntity<>(invoiceService.updateInvoice(id, invoiceDto), HttpStatus.OK);
+        return new ResponseEntity<>(invoiceService.refreshInvoiceData(id), HttpStatus.OK);
     }
 }

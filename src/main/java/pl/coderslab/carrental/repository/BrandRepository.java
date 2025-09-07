@@ -8,7 +8,10 @@ import pl.coderslab.carrental.model.Brand;
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
-    @Query("select count(b) > 0 from Brand b where b.brandName = :name")
+    @Query("""
+            SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
+            FROM Brand b WHERE b.brandName = :name
+            """)
     boolean existsByName(String name);
 
 }

@@ -8,9 +8,17 @@ import pl.coderslab.carrental.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("select count(u) > 0 from User u where u.email = :email")
+    @Query("""
+            SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END
+            FROM User u
+            WHERE u.email = :email
+            """)
     boolean existsByEmail(String email);
 
-    @Query("select count(u) < 1 from User u where u.id = :userId")
+    @Query("""
+            SELECT CASE WHEN COUNT(u) < 1 THEN true ELSE false END
+            FROM User u
+            WHERE u.id = :userId
+            """)
     boolean userIdDiffers(Long userId);
 }

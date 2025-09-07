@@ -14,19 +14,19 @@ Content-Type: application/json
 }
 
 ###
-PUT localhost:8080/api/reservation?id=27
+PUT localhost:8080/api/reservation?id=1
 Content-Type: application/json
 
 {
   "carId": 1,
-  "dateFrom": "2025-09-08",
-  "dateTo": "2025-09-13",
+  "dateFrom": "2025-09-12",
+  "dateTo": "2025-09-27",
   "userId": 1,
   "confirmed": false
 }
 
 ###
-PUT localhost:8080/api/admin/reservation-status?id=23&status=true
+PUT localhost:8080/api/admin/reservation-status?id=1&status=false
 
 ### - removing exsiting
 DELETE localhost:8080/api/admin/reservation?id=20

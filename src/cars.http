@@ -10,18 +10,18 @@ GET localhost:8080/api/cars?carStatus=RENTED
 ###(filtered by both status and brand)
 GET localhost:8080/api/cars?carStatus=AVAILABLE&brand=BMW
 
-###(creating a car)
+###(creating a car, status will be available anyway, req due to validation)
 POST localhost:8080/api/admin/car
 Content-Type: application/json
 
 {
   "brand": {
-    "id": 134343
+    "id": 1
   },
-  "carStatus": "Available",
-  "model": "E36",
-  "year": 2022,
-  "pricePerDay": 1200
+  "carStatus": "Rented",
+  "model": "220",
+  "year": 2017,
+  "pricePerDay": 450
 }
 
 ###(creating a car non existing brand)
@@ -35,16 +35,16 @@ Content-Type: application/json
   "carStatus": "Available",
   "model": "Tipo",
   "year": 2020,
-  "pricePerDay": 1200
+  "pricePerDay": 30
 }
 
-### - non existing brand - should throw and handle exception
-PUT localhost:8080/api/admin/car?id=2
+### - non existing car and brand - should throw and handle exception
+PUT localhost:8080/api/admin/car?id=2333
 Content-Type: application/json
 
 {
   "brand": {
-    "id": 455
+    "id": 12222
   },
   "carStatus": "Available",
   "model": "Updated",
@@ -58,14 +58,13 @@ Content-Type: application/json
 
 {
   "brand": {
-    "id": 3
+    "id": 2
   },
   "carStatus": "Available",
   "model": "Updated",
   "year": 2011,
   "pricePerDay": 1200
 }
-
 
 ### existing car
 DELETE localhost:8080/api/admin/car?id=2

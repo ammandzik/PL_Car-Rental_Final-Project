@@ -38,10 +38,10 @@ public class PaymentController {
         return new ResponseEntity<>(paymentService.save(paymentDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/payment-cancel")
-    public ResponseEntity<PaymentDto> updatePayment(@RequestParam Long id) {
+    @PutMapping("/payment-status")
+    public ResponseEntity<PaymentDto> updatePayment(@RequestParam Long id, @RequestParam PaymentStatus paymentStatus) {
 
-        return new ResponseEntity<>(paymentService.updateCancelledPayment(id), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.updatePaymentStatus(id, paymentStatus), HttpStatus.OK);
     }
 
 }

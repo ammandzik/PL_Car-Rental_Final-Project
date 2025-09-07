@@ -2,6 +2,7 @@ package pl.coderslab.carrental.service;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class InvoiceService {
 
     public List<InvoiceDto> getInvoices() {
 
-        log.info(("Invoked get all invoices method"));
+        log.info("Invoked get all invoices method");
 
         return invoiceRepository.findAll()
                 .stream()
@@ -42,7 +43,7 @@ public class InvoiceService {
 
     public List<InvoiceDto> getInvoicesFilteredByPeriod(LocalDate start, LocalDate end) {
 
-        log.info(("Invoked get all invoices filtered by period method"));
+        log.info("Invoked get all invoices filtered by period method");
 
         return invoiceRepository.findByIssueDateRange(start, end)
                 .stream()
@@ -51,7 +52,7 @@ public class InvoiceService {
     }
 
     public InvoiceDto getInvoice(Long id) {
-        log.info(("Invoked get invoice method"));
+        log.info("Invoked get invoice method");
 
         if (id != null) {
             var invoice = invoiceRepository.findById(id)
@@ -65,16 +66,17 @@ public class InvoiceService {
     }
 
     public InvoiceDto addInvoice(InvoiceDto invoiceDto) {
-        log.info(("Invoked save invoice method"));
+
+        log.info("Invoked save invoice method");
 
         if (invoiceDto != null) {
 
-            checkIfInvoiceExistsByReservation(invoiceDto);
+            checkIfInvoiceExistsByReservation(invoiceDto.getReservationId());
 
             var reservation = reservationService.getReservationEntityWithComponents(invoiceDto.getReservationId());
             var user = reservation.getUser();
 
-            checkIfReservationIsConfirmed(reservation);
+            checkIfReservationIsConfirmedAndPaid(reservation);
 
             var invoice = invoiceMapper.toEntity(invoiceDto);
             var date = LocalDate.now();
@@ -87,6 +89,7 @@ public class InvoiceService {
 
             invoiceRepository.save(invoice);
             log.info("Invoice saved to database");
+
             return invoiceMapper.toDto(invoice);
 
         } else {
@@ -96,7 +99,7 @@ public class InvoiceService {
 
     public void deleteInvoice(Long id) {
 
-        log.info(("Invoked delete invoice method"));
+        log.info("Invoked delete invoice method");
 
         if (id != null) {
             var invoice = invoiceRepository.findById(id)
@@ -108,9 +111,10 @@ public class InvoiceService {
         }
     }
 
-    public InvoiceDto updateInvoice(Long id, InvoiceDto invoiceDto) {
+    @Transactional
+    public InvoiceDto refreshInvoiceData(Long id) {
 
-        log.info(("Invoked update invoice method"));
+        log.info("Invoked update invoice method");
 
         if (id != null) {
 
@@ -126,18 +130,19 @@ public class InvoiceService {
             invoice.setTotalAmount(reservation.getFinalPrice());
             invoice.setUser(user);
             invoice.setReservation(reservation);
+
             invoiceRepository.save(invoice);
             log.info("Updated invoice saved to database");
 
             return invoiceMapper.toDto(invoice);
         } else {
-            throw new IllegalArgumentException(String.format("Id and/or invoice body is null %s %s", id, invoiceDto));
+            throw new IllegalArgumentException(String.format("Id is null %s", id));
         }
     }
 
     public byte[] generateInvoicePdf(Long invoiceId) {
 
-        log.info(("Invoked generate invoice pdf method"));
+        log.info("Invoked generate invoice pdf method");
 
         try {
             var invoice = invoiceRepository.findById(invoiceId)
@@ -160,16 +165,16 @@ public class InvoiceService {
         return sb.toString();
     }
 
+    private void checkIfReservationIsConfirmedAndPaid(Reservation reservation) {
 
-    private static void checkIfReservationIsConfirmed(Reservation reservation) {
-        if (!reservation.isConfirmed()) {
-            throw new InvoiceCreationNotAllowed("Invoice creation not allowed. Reservation has not been confirmed");
+        if (!reservation.isConfirmed() && !invoiceRepository.invoiceReservationPaymentIsApproved(reservation.getId())) {
+            throw new InvoiceCreationNotAllowed("Invoice creation not allowed. Reservation has not been confirmed and paid");
         }
     }
 
-    private void checkIfInvoiceExistsByReservation(InvoiceDto invoiceDto) {
-        if (invoiceRepository.existsByInvoiceNumberAndReservationId(invoiceDto.getReservationId())) {
-            throw new EntityExistsException(String.format("Invoice with reservation id %s already exists", invoiceDto.getReservationId()));
+    private void checkIfInvoiceExistsByReservation(Long reservationId) {
+        if (invoiceRepository.existsByInvoiceNumberAndReservationId(reservationId)) {
+            throw new EntityExistsException(String.format("Invoice with reservation id %s already exists", reservationId));
         }
     }
 }

@@ -44,7 +44,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                 UPDATE Payment p
                 SET p.amount = :amount
                 WHERE p.reservation.id = :reservationId
-                AND (p.paymentStatus = "CANCELLED" OR p.paymentStatus = "AWAITING")
+                AND p.paymentStatus = "AWAITING"
             """)
     void updatePaymentTotalPriceForReservation(Long reservationId, Double amount);
 }
