@@ -23,6 +23,6 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     private Double amount;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Reservation reservation;
 }

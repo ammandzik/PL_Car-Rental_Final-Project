@@ -35,8 +35,14 @@ public class ReservationController {
         return new ResponseEntity<>(reservationService.update(id, reservationDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/reservation")
-    public ResponseEntity<String> deleteInactiveReservations(@RequestParam Long id) {
+    @PutMapping("/admin/reservation-status")
+    public ResponseEntity<ReservationDto> updateReservationStatus(@RequestParam Long id, @RequestParam Boolean status) {
+
+        return new ResponseEntity<>(reservationService.updateStatus(id, status), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/reservation")
+    public ResponseEntity<String> deleteReservation(@RequestParam Long id) {
 
         reservationService.deleteById(id);
         return new ResponseEntity<>("Deleted reservation", HttpStatus.NO_CONTENT);

@@ -6,7 +6,7 @@ POST localhost:8080/api/admin/invoice
 Content-Type: application/json
 
 {
-  "reservationId": 19
+  "reservationId": 23
 }
 
 ###creation of invoice (duplicated)

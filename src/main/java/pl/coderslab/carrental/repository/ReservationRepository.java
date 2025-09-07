@@ -1,10 +1,12 @@
 package pl.coderslab.carrental.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.carrental.model.Reservation;
+import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -13,14 +15,36 @@ import java.util.Set;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     @Query("""
-            select distinct r.car.id
-               from Reservation r
-               where r.dateFrom <= :today
-                 and r.dateTo   >= :today
-                  and r.confirmed = true
+            SELECT DISTINCT r.car.id
+               FROM Reservation r
+               WHERE r.dateFrom <= :today
+               AND r.dateTo   >= :today
+               AND r.confirmed = true
             """)
     Set<Long> findActiveCarIds(@Param("today") LocalDate today);
 
-    @Query("select count(r) > 0 from Reservation r where r.car.id = :carId and r.dateTo >= :dateNow")
+    @Query("""
+            SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+                       FROM Reservation r 
+                       WHERE r.car.id = :carId 
+                       AND r.dateTo >= :dateNow
+            """)
     boolean existsByCarIdWithFutureDate(Long carId, LocalDate dateNow);
+
+    @Query("""
+                SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
+                FROM Payment p
+                WHERE p.reservation.id = :reservationId
+                  AND p.paymentStatus = :status
+            """)
+    boolean paymentExistsForReservationAndStatus(Long reservationId, PaymentStatus status);
+
+    @Modifying
+    @Query("""
+                UPDATE Payment p
+                SET p.amount = :amount
+                WHERE p.reservation.id = :reservationId
+                AND (p.paymentStatus = "CANCELLED" OR p.paymentStatus = "AWAITING")
+            """)
+    void updatePaymentTotalPriceForReservation(Long reservationId, Double amount);
 }

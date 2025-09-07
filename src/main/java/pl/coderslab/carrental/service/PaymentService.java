@@ -44,6 +44,15 @@ public class PaymentService {
                 .toList();
     }
 
+    public void updatePaymentAmount(Double amount, Long paymentId) {
+
+        var payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Payment not found with id %s", paymentId)));
+
+        payment.setAmount(amount);
+        paymentRepository.save(payment);
+    }
+
     public PaymentDto updateCancelledPayment(Long id) {
 
         log.info("Invoked update payment");
@@ -55,11 +64,10 @@ public class PaymentService {
 
         reservation.setConfirmed(false);
         reservationService.update(payment.getReservation().getId(), reservation);
-
         payment.setPaymentStatus(PaymentStatus.FUNDS_BEING_REFUNDED);
+
         return paymentMapper.toDto(paymentRepository.save(payment));
     }
-
 
     @Transactional
     public PaymentDto save(PaymentDto paymentDto) {
@@ -70,8 +78,9 @@ public class PaymentService {
 
             var reservation = reservationService.findById(paymentDto.getReservationId());
 
-            checkIfApprovedPaymentAlreadyExists(paymentDto, reservation);
-            checkIfAskedForRefund(paymentDto, reservation);
+            checkIfPaymentIsAwaiting(reservation.getId());
+            checkIfApprovedPaymentAlreadyExists(reservation.getId());
+            checkIfAskedForRefund(reservation.getId());
 
             paymentDto.setAmount(reservation.getFinalPrice());
             var entity = paymentMapper.toEntity(paymentDto);
@@ -85,23 +94,32 @@ public class PaymentService {
         }
     }
 
-    private void checkIfAskedForRefund(PaymentDto paymentDto, ReservationDto reservation) {
-        if(paymentRepository.existsByRefundStatusAndReservationId(PaymentStatus.FUNDS_BEING_REFUNDED, reservation.getId())){
+    private void checkIfPaymentIsAwaiting(Long reservationId) {
+
+        if (paymentRepository.existsByStatusAndReservationId(PaymentStatus.AWAITING, reservationId)) {
+            throw new EntityExistsException(String.format("Payment with reservation id %s already exists and has awaiting status. Processing new payment is not allowed.", reservationId));
+        }
+
+    }
+
+    private void checkIfAskedForRefund(Long reservationId) {
+        if (paymentRepository.existsByStatusAndReservationId(PaymentStatus.FUNDS_BEING_REFUNDED, reservationId)) {
             throw new EntityExistsException(String.format("Payment already exists with reservation id %s and the funds are being returned. " +
-                                                          "Therefore, payment cannot be processed again.", paymentDto.getReservationId()));
+                                                          "Therefore, payment cannot be processed again.", reservationId));
         }
     }
 
-    private void checkIfApprovedPaymentAlreadyExists(PaymentDto paymentDto, ReservationDto reservation) {
-        if (reservation.isConfirmed()) {
-            throw new EntityExistsException(String.format("Approved payment already exists with reservation id %s", paymentDto.getReservationId()));
+    private void checkIfApprovedPaymentAlreadyExists(Long reservationId) {
+
+        if (paymentRepository.existsByStatusAndReservationId(PaymentStatus.APPROVED, reservationId)) {
+            throw new EntityExistsException(String.format("Payment with reservation id %s already exists and has been approved. " +
+                                                          "Processing another payment is not allowed.", reservationId));
         }
     }
 
     private void checkIfPaymentApprovedAndChangeReservationStatus(Long reservationId, PaymentDto paymentDto, ReservationDto reservation) {
         if (paymentDto.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
-            reservation.setConfirmed(true);
-            reservationService.update(reservationId, reservation);
+            reservationService.updateStatus(reservationId, true);
         }
     }
 }

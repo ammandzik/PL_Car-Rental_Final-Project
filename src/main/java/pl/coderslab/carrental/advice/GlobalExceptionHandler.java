@@ -100,6 +100,13 @@ public class GlobalExceptionHandler {
         return createResponse(HttpStatus.CONFLICT, exception);
     }
 
+    @ExceptionHandler(ReservationEditNotAllowed.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleReservationEditNotAllowed(ReservationEditNotAllowed exception) {
+        log.error("Handling reservation edit not allowed exception: {}", exception.getMessage());
+        return createResponse(HttpStatus.CONFLICT, exception);
+    }
+
     private ErrorResponse createResponse(HttpStatusCode status, Exception exception) {
 
         return ErrorResponse.builder()

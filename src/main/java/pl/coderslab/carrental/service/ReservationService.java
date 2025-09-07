@@ -9,12 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.CarDto;
 import pl.coderslab.carrental.dto.ReservationDto;
 import pl.coderslab.carrental.exception.CarAlreadyRentedException;
+import pl.coderslab.carrental.exception.ReservationEditNotAllowed;
 import pl.coderslab.carrental.mapper.CarMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
 import pl.coderslab.carrental.mapper.UserMapper;
 import pl.coderslab.carrental.model.Car;
 import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
+import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 import pl.coderslab.carrental.repository.ReservationRepository;
 
 import java.time.LocalDate;
@@ -53,19 +55,39 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
     }
 
+    public ReservationDto updateStatus(Long id, Boolean status) {
+        log.info("Update reservation status invoked");
+
+        if (status != null && id != null) {
+
+            var reservation = reservationRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
+            var car = reservation.getCar();
+
+            reservation.setConfirmed(status);
+            checkReservationStatusAndChangeCarStatus(reservation, car);
+
+            log.info("Updating reservation status with id {}", id);
+            return reservationMapper.toDto(reservationRepository.save(reservation));
+        } else {
+            throw new IllegalArgumentException("Reservation and/or id should not be null");
+        }
+    }
+
+    @Transactional
     public ReservationDto update(Long id, ReservationDto reservationDto) {
         log.info("Update reservation method invoked");
 
         if (reservationDto != null && id != null) {
 
             var reservation = reservationRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, reservationDto.getId())));
-            var car = reservation.getCar();
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
 
-            reservation.setConfirmed(reservationDto.isConfirmed());
-            checkReservationStatusAndChangeCarStatus(reservation, car);
+            checkIfPaidAndConfirmed(id, reservation);
+            checkWhichComponentsShouldBeUpdated(reservationDto, reservation);
+            reservationRepository.updatePaymentTotalPriceForReservation(id, reservation.getFinalPrice());
 
-            log.info("Updating reservation with id {}", reservationDto.getId());
+            log.info("Updating reservation with id {}", id);
             return reservationMapper.toDto(reservationRepository.save(reservation));
         } else {
             throw new IllegalArgumentException("Reservation should not be null");
@@ -143,12 +165,31 @@ public class ReservationService {
     }
 
     private void checkReservationStatusAndChangeCarStatus(Reservation reservation, Car car) {
+
         if (reservation.isConfirmed()) {
             car.setCarStatus(CarStatus.RENTED);
             carService.updateCar(car.getId(), carMapper.toDto(car));
         } else {
             car.setCarStatus(CarStatus.AVAILABLE);
             carService.updateCar(car.getId(), carMapper.toDto(car));
+        }
+    }
+
+    private void checkWhichComponentsShouldBeUpdated(ReservationDto reservationDto, Reservation reservation) {
+        if (reservationDto.getDateFrom() != null) {
+            reservation.setDateFrom(reservationDto.getDateFrom());
+        }
+        if (reservationDto.getDateTo() != null) {
+            reservation.setDateTo(reservationDto.getDateTo());
+        }
+        if (reservationDto.getDateFrom() != null && reservationDto.getDateTo() != null) {
+            reservation.setFinalPrice(getTotalPrice(carMapper.toDto(reservation.getCar()), reservationDto));
+        }
+    }
+
+    private void checkIfPaidAndConfirmed(Long id, Reservation reservation) {
+        if (reservation.isConfirmed()) {
+            throw new ReservationEditNotAllowed(String.format("Cannot update. Reservation with id %s is already confirmed and paid", id));
         }
     }
 }

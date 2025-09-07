@@ -18,5 +18,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     PaymentMethod paymentMethod, @Param("reservationId") Long reservationId);
 
     @Query("select count(p) > 0 from Payment p where p.paymentStatus = :paymentStatus and p.reservation.id = :reservationId")
-    boolean existsByRefundStatusAndReservationId(PaymentStatus paymentStatus, Long reservationId);
+    boolean existsByStatusAndReservationId(PaymentStatus paymentStatus, Long reservationId);
+
 }

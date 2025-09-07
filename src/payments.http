@@ -9,13 +9,13 @@ POST localhost:8080/api/pay
 Content-Type: application/json
 
 {
-  "reservationId": 20,
+  "reservationId": 27,
   "paymentMethod": "Bank Transfer",
-  "paymentStatus": "Approved"
+  "paymentStatus": "Awaiting"
 }
 
 ###
-PUT localhost:8080/api/payment-cancel?id=4
+PUT localhost:8080/api/payment-cancel?id=5
 
 ###
 GET localhost:8080/api/payments?reservationId=19
