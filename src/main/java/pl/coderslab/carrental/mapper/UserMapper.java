@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import pl.coderslab.carrental.dto.UserDto;
 import pl.coderslab.carrental.model.User;
 
+import java.util.HashSet;
+
 @Component
 public class UserMapper {
 
@@ -15,7 +17,7 @@ public class UserMapper {
                 .name(user.getName())
                 .phone(user.getPhone())
                 .surname(user.getSurname())
-                .roles(user.getRoles())
+                .roles(new HashSet<>(user.getRoles()))
                 .build();
     }
 

@@ -62,8 +62,11 @@ public class PaymentService {
         var payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Payment was not found with id %s", id)));
 
-        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && !status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
-            throw new PaymentEditionException(String.format("Payment with id %s is already approved and it's status cannot be changed to %s ", id, status.getDescription()));
+        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && !status.equals(PaymentStatus.FUNDS_BEING_REFUNDED) ||
+            payment.getPaymentStatus().equals(PaymentStatus.FUNDS_BEING_REFUNDED) && !status.equals(PaymentStatus.FUNDS_PAID_BACK)) {
+
+            throw new PaymentEditionException(String.format("Payment with id %s is already in %s status and it's status cannot be changed to %s ",
+                    id, payment.getPaymentStatus().getDescription(), status.getDescription()));
 
         } else if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
             reservationService.updateStatus(payment.getReservation().getId(), false);
@@ -71,7 +74,6 @@ public class PaymentService {
         } else {
             payment.setPaymentStatus(status);
         }
-
         paymentRepository.save(payment);
         return paymentMapper.toDto(payment);
     }

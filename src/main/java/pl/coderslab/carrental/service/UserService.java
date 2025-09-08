@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.UserDto;
 import pl.coderslab.carrental.mapper.UserMapper;
 import pl.coderslab.carrental.repository.UserRepository;
@@ -23,6 +24,7 @@ public class UserService {
     private final UserMapper userMapper;
 
     @Cacheable(value = "user", key = "#id")
+    @Transactional(readOnly = true)
     public UserDto findById(Long id) {
 
         log.info("Invoked find user by id method");
@@ -30,6 +32,7 @@ public class UserService {
         if (id != null) {
             var user = userRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(USER_WITH_ID_S_NOT_FOUND, id)));
+
             return userMapper.toUserDto(user);
         } else {
             throw new IllegalArgumentException("Id is null");
@@ -55,8 +58,8 @@ public class UserService {
                 throw new EntityExistsException("User already exists with that data");
             }
             var userEntity = userMapper.toUser(userDto);
-
-            return userMapper.toUserDto(userRepository.save(userEntity));
+            userRepository.save(userEntity);
+            return userMapper.toUserDto(userEntity);
         } else {
             throw new IllegalArgumentException("UserDto is null");
         }

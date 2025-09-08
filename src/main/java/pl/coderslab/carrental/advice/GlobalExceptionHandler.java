@@ -105,6 +105,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ReservationEditNotAllowed.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleReservationEditNotAllowed(ReservationEditNotAllowed exception) {
+
         log.error("Handling reservation edit not allowed exception: {}", exception.getMessage());
         return createResponse(HttpStatus.CONFLICT, exception);
     }
@@ -112,7 +113,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvoiceCreationNotAllowed.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleInvoiceCreationNotAllowed(InvoiceCreationNotAllowed exception) {
+
         log.error("Handling invoice creation not allowed exception: {}", exception.getMessage());
+        return createResponse(HttpStatus.CONFLICT, exception);
+    }
+
+    @ExceptionHandler(PaymentEditionException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handlePaymentEditionException(PaymentEditionException exception) {
+
+        log.error("Handling payment edition exception: {}", exception.getMessage());
         return createResponse(HttpStatus.CONFLICT, exception);
     }
 

@@ -2,7 +2,7 @@
 GET localhost:8080/api/admin/users
 
 ###Get user by id (happy path)
-GET localhost:8080/api/admin/user?id=1
+GET localhost:8080/api/admin/user?id=8
 
 ###Get user by id(non existing)
 GET localhost:8080/api/admin/users
@@ -15,7 +15,10 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "amanda@wp.pl"
+  "email": "wdsssad@wp.pl",
+  "roles": [
+    {"id": 1}
+  ]
 }
 
 ###Update existing user
@@ -26,8 +29,7 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "amanda22@wp.pl",
-  "password": "DwaPuszki"
+  "email": "amanda22@wp.pl"
 
 }
 
@@ -39,12 +41,11 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "amanda@wp.pl",
-  "password": "DwPuszki"
+  "email": "amanda@wp.pl"
 }
 
 ###Delete existing
-DELETE localhost:8080/api/admin/user?id=3
+DELETE localhost:8080/api/admin/user?id=6
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454
