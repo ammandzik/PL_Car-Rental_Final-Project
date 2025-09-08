@@ -2,7 +2,7 @@
 GET localhost:8080/api/admin/users
 
 ###Get user by id (happy path)
-GET localhost:8080/api/admin/user?id=8
+GET localhost:8080/api/admin/user?id=1
 
 ###Get user by id(non existing)
 GET localhost:8080/api/admin/users
@@ -15,10 +15,9 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "sssss@wp.pl",
+  "email": "amanda@wp.pl",
   "roles": [
-    {"id": 1},
-    {"id": 7}
+    {"id": 1}
   ]
 }
 

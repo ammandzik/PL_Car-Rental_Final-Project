@@ -13,10 +13,12 @@ import pl.coderslab.carrental.dto.ReservationDto;
 import pl.coderslab.carrental.exception.PaymentEditionException;
 import pl.coderslab.carrental.mapper.PaymentMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
+import pl.coderslab.carrental.model.Payment;
 import pl.coderslab.carrental.model.enum_package.PaymentMethod;
 import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 import pl.coderslab.carrental.repository.PaymentRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -71,6 +73,7 @@ public class PaymentService {
         } else if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
             reservationService.updateStatus(payment.getReservation().getId(), false);
             payment.setPaymentStatus(status);
+            payment.setRefundDate(LocalDate.now());
         } else {
             payment.setPaymentStatus(status);
         }
@@ -130,5 +133,15 @@ public class PaymentService {
         if (paymentDto.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
             reservationService.updateStatus(reservationId, true);
         }
+    }
+
+    public void updateStatusForAllAskedForRefund() {
+
+        var today = LocalDate.now();
+        var todayMinusThree = today.minusDays(3);
+
+        List<Payment> payments = paymentRepository.findByStatusAndRefundDate(PaymentStatus.FUNDS_BEING_REFUNDED, todayMinusThree);
+
+        payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.FUNDS_PAID_BACK));
     }
 }

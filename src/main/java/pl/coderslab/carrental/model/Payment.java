@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import pl.coderslab.carrental.model.enum_package.PaymentMethod;
 import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -23,6 +25,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     private Double amount;
+    private LocalDate refundDate;
     @ManyToOne(fetch = FetchType.EAGER)
     private Reservation reservation;
+
 }
