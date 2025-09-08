@@ -1,7 +1,10 @@
-### GET filtered by period of time(issue date of invoice)
-GET localhost:8080/api/invoices?start=2025-08-31&end=2025-09-02
+### Get filtered by period of time(issue date of invoice)
+GET localhost:8080/api/invoices?start=2025-08-31&end=2025-09-30
 
-###creation of invoice (happy path)
+### Get invoice by ID
+GET localhost:8080/api/admin/invoice?id=1
+
+###Creation of invoice (happy path)
 POST localhost:8080/api/admin/invoice
 Content-Type: application/json
 
@@ -9,15 +12,15 @@ Content-Type: application/json
   "reservationId": 1
 }
 
-###creation of invoice (duplicated)
+###Creation of invoice (duplicated)
 POST localhost:8080/api/admin/invoice
 Content-Type: application/json
 
 {
-  "reservationId": 19
+  "reservationId": 1
 }
 
-###creation for non exisitng reservation
+###Creating for non exisitng reservation
 POST localhost:8080/api/admin/invoice
 Content-Type: application/json
 
@@ -25,24 +28,12 @@ Content-Type: application/json
   "reservationId": 2333
 }
 
-###deletion(happy path)
+###Deletion(happy path)
 DELETE localhost:8080/api/admin/invoice?id=3
 
-###deletion(non existing value)
+###Deletion(non existing value)
 DELETE localhost:8080/api/admin/invoice?id=12323
 
-###exisitng update(refreshes all data based on related entities)
+###Update exisitng update(refreshes all data based on related entities)
 PUT localhost:8080/api/admin/invoice?id=4
-
-### non exisiting invoice
-PUT localhost:8080/api/admin/invoice?id=2222
-Content-Type: application/json
-
-{
-  "reservationId": 19,
-  "totalAmount": 2000,
-  "issueDate": "2025-09-04",
-  "invoiceNumber": "XXXXXX",
-  "userId": 1
-}
 

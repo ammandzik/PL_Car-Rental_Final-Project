@@ -11,7 +11,6 @@ public class UserMapper {
 
         return UserDto.builder()
                 .id(user.getId())
-                .password(user.getPassword())
                 .email(user.getEmail())
                 .name(user.getName())
                 .phone(user.getPhone())
@@ -24,7 +23,6 @@ public class UserMapper {
 
         return User.builder()
                 .id(userDto.getId())
-                .password(userDto.getPassword())
                 .email(userDto.getEmail())
                 .name(userDto.getName())
                 .phone(userDto.getPhone())

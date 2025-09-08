@@ -4,6 +4,8 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.PaymentDto;
@@ -34,6 +36,14 @@ public class PaymentService {
                 .toList();
     }
 
+    @Cacheable(value = "payment", key = "#id")
+    public PaymentDto getPaymentById(Long id) {
+
+        return paymentRepository.findById(id)
+                .map(paymentMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Payment with id %s not found", id)));
+    }
+
     public List<PaymentDto> getPaymentsWithFilters(PaymentStatus status, PaymentMethod method, Long reservation) {
 
         log.info("Invoked get all payments with filters");
@@ -45,6 +55,7 @@ public class PaymentService {
     }
 
     @Transactional
+    @CachePut(value = "payment", key = "#id")
     public PaymentDto updatePaymentStatus(Long id, PaymentStatus status) {
 
         var payment = paymentRepository.findById(id)

@@ -4,6 +4,8 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.CarDto;
@@ -46,6 +48,7 @@ public class ReservationService {
                 .toList();
     }
 
+    @Cacheable(value = "reservation", key = "#id")
     public ReservationDto findById(Long id) {
 
         log.info("Find reservation by id method invoked");
@@ -56,6 +59,7 @@ public class ReservationService {
     }
 
     @Transactional
+    @CachePut(value = "reservation", key = "#id")
     public ReservationDto updateStatus(Long id, Boolean status) {
         log.info("Update reservation status invoked");
 
@@ -76,6 +80,7 @@ public class ReservationService {
     }
 
     @Transactional
+    @CachePut(value = "reservation", key = "#id")
     public ReservationDto update(Long id, ReservationDto reservationDto) {
         log.info("Update reservation method invoked");
 
@@ -130,6 +135,7 @@ public class ReservationService {
         }
     }
 
+    @CachePut(value = "reservation", key = "#id")
     public void deleteById(Long id) {
         log.info("Delete reservation by id method invoked");
 
@@ -142,19 +148,6 @@ public class ReservationService {
             log.info("Deleting reservation with id {}", id);
         } else {
             throw new IllegalArgumentException("Reservation id is null");
-        }
-    }
-
-    private void validateReservationAndCarOrElseThrow(ReservationDto reservationDto, CarDto carDto) {
-
-        log.info("Invoked validate reservation and car method");
-
-        if (reservationRepository.existsByCarIdWithFutureDate(reservationDto.getCarId(), LocalDate.now())) {
-            throw new EntityExistsException(String.format("Reservation with car id %s already exists", reservationDto.getCarId()));
-        }
-
-        if (carDto.getCarStatus().equals(CarStatus.RENTED)) {
-            throw new CarAlreadyRentedException(String.format("Car with id %s already rented.", carDto.getId()));
         }
     }
 
@@ -182,6 +175,19 @@ public class ReservationService {
         } else {
             car.setCarStatus(CarStatus.AVAILABLE);
             carService.updateCar(car.getId(), carMapper.toDto(car));
+        }
+    }
+
+    private void validateReservationAndCarOrElseThrow(ReservationDto reservationDto, CarDto carDto) {
+
+        log.info("Invoked validate reservation and car method");
+
+        if (reservationRepository.existsByCarIdWithFutureDate(reservationDto.getCarId(), LocalDate.now())) {
+            throw new EntityExistsException(String.format("Reservation with car id %s already exists", reservationDto.getCarId()));
+        }
+
+        if (carDto.getCarStatus().equals(CarStatus.RENTED)) {
+            throw new CarAlreadyRentedException(String.format("Car with id %s already rented.", carDto.getId()));
         }
     }
 

@@ -41,4 +41,10 @@ public class ReviewController {
 
         return new ResponseEntity<>(reviewService.updateReview(id, reviewDto), HttpStatus.OK);
     }
+
+    @GetMapping("/review")
+    public ResponseEntity<ReviewDto> updateReview(@RequestParam Long id) {
+
+        return new ResponseEntity<>(reviewService.findReviewById(id), HttpStatus.OK);
+    }
 }

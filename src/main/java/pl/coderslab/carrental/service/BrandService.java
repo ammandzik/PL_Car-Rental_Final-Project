@@ -4,12 +4,12 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.BrandDto;
 import pl.coderslab.carrental.mapper.BrandMapper;
-import pl.coderslab.carrental.model.Brand;
 import pl.coderslab.carrental.repository.BrandRepository;
 
 import java.util.List;
@@ -24,21 +24,6 @@ public class BrandService {
     private final BrandMapper brandMapper;
     private final BrandDeletionPolicy brandDeletionPolicy;
 
-    @Cacheable(value = "brand", key = "#id")
-    public Brand findBrandById(Long id) {
-
-        log.info("Invoked find or create brand method by brand id: {}", id);
-
-        if (id != null) {
-            var brandById = brandRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
-
-            log.info("Found brand with id {}", brandById);
-            return brandById;
-        } else {
-            throw new IllegalArgumentException("Brand id is null");
-        }
-    }
 
     public List<BrandDto> getAllBrands() {
 
@@ -50,13 +35,18 @@ public class BrandService {
                 .toList();
     }
 
+    @Cacheable(value = "brand", key = "#id")
     public BrandDto getBrandById(Long id) {
 
         log.info("Invoked find by brand id method: {}", id);
 
-        return brandRepository.findById(id)
-                .map(brandMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
+        if (id != null) {
+            return brandRepository.findById(id)
+                    .map(brandMapper::toDto)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
+        } else {
+            throw new IllegalArgumentException("Brand id is null");
+        }
     }
 
     public BrandDto createBrand(BrandDto brandDto) {
@@ -78,6 +68,7 @@ public class BrandService {
 
     }
 
+    @CachePut(value = "brand", key = "#id")
     public BrandDto updateBrand(Long id, BrandDto brandDto) {
         log.info("Invoked update brand method");
 
@@ -94,6 +85,7 @@ public class BrandService {
     }
 
     @Transactional
+    @CachePut(value = "brand", key = "#id")
     public void deleteBrandById(Long id) {
 
         log.info("Invoked delete brand method");

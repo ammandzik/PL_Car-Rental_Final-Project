@@ -9,7 +9,7 @@ Content-Type: application/json
   "carId": 1,
   "dateFrom": "2025-09-08",
   "dateTo": "2025-09-12",
-  "userId": 1,
+  "userId": 2,
   "confirmed": true
 }
 

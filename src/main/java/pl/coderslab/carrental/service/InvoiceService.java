@@ -5,6 +5,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.InvoiceDto;
 import pl.coderslab.carrental.exception.InvoiceCreationNotAllowed;
@@ -52,6 +54,7 @@ public class InvoiceService {
                 .toList();
     }
 
+    @Cacheable(value = "invoice", key = "#id")
     public InvoiceDto getInvoice(Long id) {
         log.info("Invoked get invoice method");
 
@@ -99,6 +102,7 @@ public class InvoiceService {
         }
     }
 
+    @CachePut(value = "invoice", key = "#id")
     public void deleteInvoice(Long id) {
 
         log.info("Invoked delete invoice method");
@@ -114,6 +118,7 @@ public class InvoiceService {
     }
 
     @Transactional
+    @CachePut(value = "invoice", key = "#id")
     public void refreshInvoiceData(Long id) {
 
         log.info("Invoked update invoice method");

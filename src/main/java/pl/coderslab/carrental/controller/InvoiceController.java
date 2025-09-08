@@ -1,6 +1,5 @@
 package pl.coderslab.carrental.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -61,5 +60,13 @@ public class InvoiceController {
         invoiceService.refreshInvoiceData(id);
 
         return new ResponseEntity<>("Invoice data refreshed", HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/invoice")
+    public ResponseEntity<InvoiceDto> getInvoice(@RequestParam Long id) {
+
+        invoiceService.refreshInvoiceData(id);
+
+        return new ResponseEntity<>(invoiceService.getInvoice(id), HttpStatus.OK);
     }
 }

@@ -1,6 +1,9 @@
 ### GET all
 GET localhost:8080/api/cars
 
+###
+GET localhost:8080/api/car?id=1
+
 ###(brand)
 GET localhost:8080/api/cars?brand=BMW
 

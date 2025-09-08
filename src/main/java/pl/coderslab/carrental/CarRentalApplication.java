@@ -30,7 +30,7 @@ public class CarRentalApplication {
     }
     @PostConstruct
     public void checkCacheManager() {
-        System.out.println(">>> CacheManager używany przez Spring: " + cacheManager.getClass().getName());
+        System.out.println(">>> CacheManager used by Spring: " + cacheManager.getClass().getName());
     }
 
 }

@@ -3,14 +3,18 @@ package pl.coderslab.carrental.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.coderslab.carrental.model.Role;
 
 import java.util.Set;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
 
     private Long id;
@@ -26,8 +30,5 @@ public class UserDto {
     @NotNull
     @Email
     private String email;
-    @NotNull
-    @Size(min = 8, max = 30)
-    private String password;
     private Set<Role> roles;
 }

@@ -4,7 +4,10 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.ReviewDto;
 import pl.coderslab.carrental.exception.ReviewNotAllowedYetException;
 import pl.coderslab.carrental.mapper.ReviewMapper;
@@ -34,6 +37,15 @@ public class ReviewService {
                 .toList();
     }
 
+    @Cacheable(value = "review", key = "#id")
+    public ReviewDto findReviewById(Long id) {
+        log.info("Find review by id method invoked");
+
+        return reviewRepository.findById(id)
+                .map(reviewMapper::toDto)
+                .orElseThrow(()-> new EntityNotFoundException(String.format("Review not found with id %s", id)));
+    }
+
     public ReviewDto addReview(ReviewDto reviewDto) {
 
         log.info("Add review method invoked");
@@ -41,9 +53,9 @@ public class ReviewService {
         if (reviewDto != null) {
 
             var reviewExists = reviewRepository.existsByReservationId(reviewDto.getReservationId());
-            var reservation = findReservationOrElseThrow(reviewDto.getReservationId());
+            var reservation = findReviewReservationOrElseThrow(reviewDto.getReservationId());
 
-            validateReviewAddingIsAlowed(reservation);
+            validateReviewAddingIsAllowed(reservation);
             checkIfReviewExists(reviewDto, reviewExists);
 
             var reviewEntity = reviewMapper.toEntity(reviewDto);
@@ -56,6 +68,7 @@ public class ReviewService {
         }
     }
 
+    @CachePut(value = "review", key = "#id")
     public void deleteReview(Long id) {
 
         log.info("Delete review method invoked");
@@ -69,6 +82,8 @@ public class ReviewService {
 
     }
 
+    @CachePut(value = "review", key = "#id")
+    @Transactional
     public ReviewDto updateReview(Long id, ReviewDto reviewDto) {
 
         log.info("Update review method invoked");
@@ -76,7 +91,7 @@ public class ReviewService {
         var review = reviewRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Review with id %s not found", id)));
 
-        var reservation = findReservationOrElseThrow(reviewDto.getReservationId());
+        var reservation = findReviewReservationOrElseThrow(reviewDto.getReservationId());
 
         review.setDescription(reviewDto.getDescription());
         review.setRating(reviewDto.getRating());
@@ -87,7 +102,7 @@ public class ReviewService {
         return reviewMapper.toDto(reviewRepository.save(review));
     }
 
-    private Reservation findReservationOrElseThrow(Long id) {
+    private Reservation findReviewReservationOrElseThrow(Long id) {
 
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Reservation not found with id %s", id)));
@@ -100,7 +115,7 @@ public class ReviewService {
         }
     }
 
-    private static void validateReviewAddingIsAlowed(Reservation reservation) {
+    private static void validateReviewAddingIsAllowed(Reservation reservation) {
         if (!reservation.getDateTo().isBefore(LocalDate.now()) || !reservation.isConfirmed()) {
             throw new ReviewNotAllowedYetException("Adding review is not allowed.");
         }

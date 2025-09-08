@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.coderslab.carrental.dto.RoleDto;
@@ -22,7 +23,12 @@ public class RoleService {
 
     @Cacheable(value = "role", key = "#id")
     public RoleDto getRoleById(Long id) {
-        var role = roleRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+        log.info("Invoked getRoleById method");
+
+        var role = roleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Role with id %s not found", id)));
+
         return roleMapper.toDto(role);
     }
 
@@ -58,6 +64,7 @@ public class RoleService {
         }
     }
 
+    @CachePut(value = "role", key = "#id")
     public RoleDto updateRole(Long id, RoleDto roleDto) {
 
         log.info("Invoked update role method");
@@ -75,6 +82,7 @@ public class RoleService {
         }
     }
 
+    @CachePut(value = "role", key = "#id")
     public void deleteRole(Long id) {
 
         log.info("Invoked delete role method");

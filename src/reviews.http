@@ -1,5 +1,8 @@
-### GET request to example server
+### GET all
 GET localhost:8080/api/reviews
+
+### GET request to example server
+GET localhost:8080/api/review?id=1
 
 ###
 POST localhost:8080/api/review
