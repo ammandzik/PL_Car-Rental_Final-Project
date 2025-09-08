@@ -15,9 +15,10 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "wdsssad@wp.pl",
+  "email": "sssss@wp.pl",
   "roles": [
-    {"id": 1}
+    {"id": 1},
+    {"id": 7}
   ]
 }
 

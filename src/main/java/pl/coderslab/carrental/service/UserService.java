@@ -22,6 +22,7 @@ public class UserService {
     private static final String USER_WITH_ID_S_NOT_FOUND = "User with id %s not found";
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final RoleService roleService;
 
     @Cacheable(value = "user", key = "#id")
     @Transactional(readOnly = true)
@@ -57,6 +58,13 @@ public class UserService {
             if (userRepository.existsByEmail(userDto.getEmail())) {
                 throw new EntityExistsException("User already exists with that data");
             }
+
+            if (userDto.getRoles() != null && !userDto.getRoles().isEmpty()) {
+                userDto.getRoles().forEach(role -> {
+                    roleService.getRoleById(role.getId());
+                });
+            }
+
             var userEntity = userMapper.toUser(userDto);
             userRepository.save(userEntity);
             return userMapper.toUserDto(userEntity);
