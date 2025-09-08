@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ###
-PUT localhost:8080/api/payment-status?id=9&paymentStatus=FUNDS_BEING_REFUNDED
+PUT localhost:8080/api/payment-status?id=2&paymentStatus=FUNDS_BEING_REFUNDED
 
 ###
 GET localhost:8080/api/payments?reservationId=19

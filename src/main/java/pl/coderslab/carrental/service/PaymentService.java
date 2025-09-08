@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.PaymentDto;
 import pl.coderslab.carrental.dto.ReservationDto;
+import pl.coderslab.carrental.exception.PaymentEditionException;
 import pl.coderslab.carrental.mapper.PaymentMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
 import pl.coderslab.carrental.model.enum_package.PaymentMethod;
@@ -61,11 +62,12 @@ public class PaymentService {
         var payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Payment was not found with id %s", id)));
 
-        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
-            if (status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
-                reservationService.updateStatus(payment.getReservation().getId(), false);
-                payment.setPaymentStatus(status);
-            }
+        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && !status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
+            throw new PaymentEditionException(String.format("Payment with id %s is already approved and it's status cannot be changed to %s ", id, status.getDescription()));
+
+        } else if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
+            reservationService.updateStatus(payment.getReservation().getId(), false);
+            payment.setPaymentStatus(status);
         } else {
             payment.setPaymentStatus(status);
         }
