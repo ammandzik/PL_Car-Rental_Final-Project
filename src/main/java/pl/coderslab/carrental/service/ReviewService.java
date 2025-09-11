@@ -43,7 +43,7 @@ public class ReviewService {
 
         return reviewRepository.findById(id)
                 .map(reviewMapper::toDto)
-                .orElseThrow(()-> new EntityNotFoundException(String.format("Review not found with id %s", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Review not found with id %s", id)));
     }
 
     public ReviewDto addReview(ReviewDto reviewDto) {

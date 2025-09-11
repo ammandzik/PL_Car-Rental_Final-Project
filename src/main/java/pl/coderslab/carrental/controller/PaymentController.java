@@ -32,6 +32,12 @@ public class PaymentController {
         }
     }
 
+    @GetMapping("/admin/payments")
+    public ResponseEntity<PaymentDto> getPaymentById(@RequestParam Long id) {
+        
+        return new ResponseEntity<>(paymentService.getPaymentById(id), HttpStatus.OK);
+    }
+
     @PostMapping("/pay")
     public ResponseEntity<PaymentDto> payReservation(@RequestBody @Valid PaymentDto paymentDto) {
 

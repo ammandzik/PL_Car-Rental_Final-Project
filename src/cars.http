@@ -13,13 +13,13 @@ GET localhost:8080/api/cars?carStatus=RENTED
 ###(filtered by both status and brand)
 GET localhost:8080/api/cars?carStatus=AVAILABLE&brand=BMW
 
-###(creating a car, status will be available anyway, req due to validation)
+###(creating a car, status will be available regardless of data input in JSON, required due to validation)
 POST localhost:8080/api/admin/car
 Content-Type: application/json
 
 {
   "brand": {
-    "id": 5
+    "id": 1
   },
   "carStatus": "Rented",
   "model": "220",

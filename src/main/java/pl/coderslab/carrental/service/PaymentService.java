@@ -9,7 +9,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.PaymentDto;
-import pl.coderslab.carrental.dto.ReservationDto;
 import pl.coderslab.carrental.exception.PaymentEditionException;
 import pl.coderslab.carrental.mapper.PaymentMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
@@ -70,7 +69,7 @@ public class PaymentService {
             throw new PaymentEditionException(String.format("Payment with id %s is already in %s status and it's status cannot be changed to %s ",
                     id, payment.getPaymentStatus().getDescription(), status.getDescription()));
 
-        } else if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && status.equals(PaymentStatus.FUNDS_BEING_REFUNDED)) {
+        } else if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
             reservationService.updateStatus(payment.getReservation().getId(), false);
             payment.setPaymentStatus(status);
             payment.setRefundDate(LocalDate.now());
@@ -97,7 +96,7 @@ public class PaymentService {
             paymentDto.setAmount(reservation.getFinalPrice());
             var entity = paymentMapper.toEntity(paymentDto);
 
-            checkIfPaymentApprovedAndChangeReservationStatus(reservation.getId(), paymentDto, reservation);
+            checkIfPaymentApprovedAndChangeReservationStatus(reservation.getId(), paymentDto);
             entity.setReservation(reservationMapper.toEntity(reservation));
 
             return paymentMapper.toDto(paymentRepository.save(entity));
@@ -129,12 +128,13 @@ public class PaymentService {
         }
     }
 
-    private void checkIfPaymentApprovedAndChangeReservationStatus(Long reservationId, PaymentDto paymentDto, ReservationDto reservation) {
+    private void checkIfPaymentApprovedAndChangeReservationStatus(Long reservationId, PaymentDto paymentDto) {
         if (paymentDto.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
             reservationService.updateStatus(reservationId, true);
         }
     }
 
+    @Transactional
     public void updateStatusForAllAskedForRefund() {
 
         var today = LocalDate.now();
@@ -143,5 +143,13 @@ public class PaymentService {
         List<Payment> payments = paymentRepository.findByStatusAndRefundDate(PaymentStatus.FUNDS_BEING_REFUNDED, todayMinusThree);
 
         payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.FUNDS_PAID_BACK));
+    }
+
+    @Transactional
+    public void updateStatusOfAllWithPastDateAndAwaitingPayment() {
+        var today = LocalDate.now();
+
+        List<Payment> payments = paymentRepository.findWithAwaitingStatusAndReservationDateOnOrAfterNow(PaymentStatus.AWAITING, today);
+        payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.CANCELLED));
     }
 }

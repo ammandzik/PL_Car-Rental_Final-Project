@@ -82,7 +82,7 @@ public class CarService {
 
             return carMapper.toDto(carRepository.save(car));
         } else {
-            throw new IllegalArgumentException(String.format("Brand id and car should not be null: %s %s", carDto.getId(), carDto));
+            throw new IllegalArgumentException("Brand id and car should not be null");
         }
     }
 

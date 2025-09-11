@@ -56,7 +56,7 @@ public class Utils {
                 drawText(cs, fontBold, 18, margin, y, title);
 
                 String issueDate = todayFormatted(dateFmt);
-                drawRightAligned(cs, fontReg, 10, margin + contentWidth, y - 2, "Date " + issueDate);
+                drawRightAligned(cs, fontReg, margin + contentWidth, y - 2, "Date " + issueDate);
 
                 y -= 20;
                 drawSeparator(cs, margin, y, margin + contentWidth);
@@ -65,11 +65,11 @@ public class Utils {
                 drawText(cs, fontBold, 12, margin, y, "User");
                 y -= 16;
 
-                y = drawKeyValue(cs, fontReg, 11, margin, y, 120,
+                y = drawKeyValue(cs, fontReg, 11, margin, y,
                         "Name and surname", safe(user.getName()) + " " + safe(user.getSurname()));
-                y = drawKeyValue(cs, fontReg, 11, margin, y, 120,
+                y = drawKeyValue(cs, fontReg, 11, margin, y,
                         "Email", safe(user.getEmail()));
-                y = drawKeyValue(cs, fontReg, 11, margin, y, 120,
+                y = drawKeyValue(cs, fontReg, 11, margin, y,
                         "Phone number", safe(user.getPhone()));
 
                 y -= 12;
@@ -82,11 +82,11 @@ public class Utils {
                 String dateFrom = formatMaybeTemporal(reservation.getDateFrom(), dateFmt);
                 String dateTo = formatMaybeTemporal(reservation.getDateTo(), dateFmt);
 
-                y = drawKeyValue(cs, fontReg, 11, margin, y, 120,
+                y = drawKeyValue(cs, fontReg, 11, margin, y,
                         "Date", dateFrom + " – " + dateTo);
-                y = drawKeyValue(cs, fontReg, 11, margin, y, 120,
+                y = drawKeyValue(cs, fontReg, 11, margin, y,
                         "Car", safe(reservation.getCar().getBrand().getBrandName()) + " " + safe(reservation.getCar().getModel()));
-                y = drawKeyValue(cs, fontBold, 12, margin, y, 120,
+                y = drawKeyValue(cs, fontBold, 12, margin, y,
                         "Total price in PLN", money.format(reservation.getFinalPrice()));
 
                 y -= 18;
@@ -111,16 +111,16 @@ public class Utils {
         cs.endText();
     }
 
-    private static void drawRightAligned(PDPageContentStream cs, PDFont font, float size, float rightX, float y, String text) throws IOException {
-        float x = rightX - stringWidth(font, size, text);
-        drawText(cs, font, size, x, y, text);
+    private static void drawRightAligned(PDPageContentStream cs, PDFont font, float rightX, float y, String text) throws IOException {
+        float x = rightX - stringWidth(font, text);
+        drawText(cs, font,10, x, y, text);
     }
 
     private static float drawKeyValue(PDPageContentStream cs, PDFont font, float size,
-                                      float x, float y, float labelWidth,
+                                      float x, float y,
                                       String label, String value) throws IOException {
         drawText(cs, font, size, x, y, label + ":");
-        drawText(cs, font, size, x + labelWidth, y, value);
+        drawText(cs, font, size, x + 120, y, value);
         return y - (size + 3);
     }
 
@@ -130,8 +130,8 @@ public class Utils {
         cs.stroke();
     }
 
-    private static float stringWidth(PDFont font, float size, String text) throws IOException {
-        return font.getStringWidth(stripControls(text)) / 1000f * size;
+    private static float stringWidth(PDFont font, String text) throws IOException {
+        return font.getStringWidth(stripControls(text)) / 1000f * 10;
     }
 
     private static String stripControls(String s) {
@@ -155,6 +155,7 @@ public class Utils {
         try {
             if (value instanceof TemporalAccessor ta) return fmt.format(ta);
         } catch (Exception ignored) {
+            //this block is ignored
         }
         return String.valueOf(value);
     }

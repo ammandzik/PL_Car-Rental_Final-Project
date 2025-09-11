@@ -60,9 +60,8 @@ public class UserService {
             }
 
             if (userDto.getRoles() != null && !userDto.getRoles().isEmpty()) {
-                userDto.getRoles().forEach(role -> {
-                    roleService.getRoleById(role.getId());
-                });
+                userDto.getRoles().forEach(role ->
+                        roleService.getRoleById(role.getId()));
             }
 
             var userEntity = userMapper.toUser(userDto);

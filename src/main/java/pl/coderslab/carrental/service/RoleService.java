@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleService {
 
+    private static final String ROLE_WITH_ID_S_NOT_FOUND = "Role with id %s not found";
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
@@ -27,7 +28,7 @@ public class RoleService {
         log.info("Invoked getRoleById method");
 
         var role = roleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Role with id %s not found", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ROLE_WITH_ID_S_NOT_FOUND, id)));
 
         return roleMapper.toDto(role);
     }
@@ -71,7 +72,7 @@ public class RoleService {
 
         if (roleDto != null && id != null) {
             var role = roleRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("Role with id %s not found", id)));
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(ROLE_WITH_ID_S_NOT_FOUND, id)));
 
             role.setName(roleDto.getName());
 
@@ -88,7 +89,7 @@ public class RoleService {
         log.info("Invoked delete role method");
         if (id != null) {
             var role = roleRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("Role with id %s not found", id)));
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(ROLE_WITH_ID_S_NOT_FOUND, id)));
             roleRepository.delete(role);
         }
         log.info("Deleted role with id: {}", id);
