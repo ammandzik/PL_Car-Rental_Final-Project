@@ -20,7 +20,7 @@ POST localhost:8080/api/review
 Content-Type: application/json
 
 {
-  "reservationId": 19,
+  "reservationId": 111,
   "description": "Testowa prawidlowa review",
   "rating": 5,
   "pseudonym": "janekBananek"

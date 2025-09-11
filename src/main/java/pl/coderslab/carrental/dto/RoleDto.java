@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.coderslab.carrental.model.Role;
+import pl.coderslab.carrental.validator.UniqueValue;
 
 @Data
 @Builder
@@ -18,5 +20,6 @@ public class RoleDto {
     @NotNull
     @NotBlank
     @Size(min = 5, max = 30)
+    @UniqueValue(entity = Role.class, fieldName = "name", message = "Role with this name already exists")
     private String name;
 }

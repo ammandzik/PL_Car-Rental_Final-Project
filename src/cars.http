@@ -19,7 +19,7 @@ Content-Type: application/json
 
 {
   "brand": {
-    "id": 1
+    "id": 5
   },
   "carStatus": "Rented",
   "model": "220",

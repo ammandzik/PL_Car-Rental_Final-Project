@@ -36,7 +36,7 @@ public class CarController {
     }
 
     @PostMapping("/admin/car")
-    public ResponseEntity<CarDto> createCar(@Valid @RequestBody CarDto carDto) {
+    public ResponseEntity<CarDto> createCar(@RequestBody @Valid CarDto carDto) {
 
         return new ResponseEntity<>(carService.saveCar(carDto), HttpStatus.CREATED);
     }

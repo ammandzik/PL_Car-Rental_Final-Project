@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.coderslab.carrental.model.Role;
+import pl.coderslab.carrental.model.User;
+import pl.coderslab.carrental.validator.UniqueValue;
 
 import java.util.Set;
 
@@ -29,6 +31,7 @@ public class UserDto {
     private String phone;
     @NotNull
     @Email
+    @UniqueValue(entity = User.class, fieldName = "email", message = "User with this email already exists.")
     private String email;
     private Set<Role> roles;
 }

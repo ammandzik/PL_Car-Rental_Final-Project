@@ -11,14 +11,14 @@ public class BrandMapper {
 
         return BrandDto.builder()
                 .id(brand.getId())
-                .name(brand.getBrandName())
+                .brandName(brand.getBrandName())
                 .build();
     }
      public Brand toEntity(BrandDto brandDto) {
 
         return Brand.builder()
                 .id(brandDto.getId())
-                .brandName(brandDto.getName())
+                .brandName(brandDto.getBrandName())
                 .build();
      }
 }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.coderslab.carrental.model.Brand;
+import pl.coderslab.carrental.validator.UniqueValue;
 
 @Data
 @Builder
@@ -16,5 +18,6 @@ public class BrandDto {
     private Long id;
     @NotNull
     @NotBlank
-    private String name;
+    @UniqueValue(entity = Brand.class, fieldName = "brandName", message = "Brand with this name already exists.")
+    private String brandName;
 }

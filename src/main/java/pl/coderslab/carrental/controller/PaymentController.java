@@ -33,7 +33,7 @@ public class PaymentController {
     }
 
     @PostMapping("/pay")
-    public ResponseEntity<PaymentDto> payReservation(@Valid @RequestBody PaymentDto paymentDto) {
+    public ResponseEntity<PaymentDto> payReservation(@RequestBody @Valid PaymentDto paymentDto) {
 
         return new ResponseEntity<>(paymentService.save(paymentDto), HttpStatus.CREATED);
     }

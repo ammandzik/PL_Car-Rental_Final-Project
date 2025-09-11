@@ -53,18 +53,12 @@ public class BrandService {
 
         log.info("Invoked create brand method");
 
-        if (brandDto != null && brandDto.getName() != null) {
+        checkIfBrandAlreadyExistsOrElseThrow(brandDto);
 
-            checkIfBrandAlreadyExistsOrElseThrow(brandDto);
+        log.info("Saving brand: {}", brandDto);
 
-            log.info("Saving brand: {}", brandDto);
-
-            var brand = brandMapper.toEntity(brandDto);
-            return brandMapper.toDto(brandRepository.save(brand));
-
-        } else {
-            throw new IllegalArgumentException("Given brand cannot be null");
-        }
+        var brand = brandMapper.toEntity(brandDto);
+        return brandMapper.toDto(brandRepository.save(brand));
 
     }
 
@@ -77,7 +71,7 @@ public class BrandService {
             var brand = brandRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(BRAND_NOT_FOUND_WITH_ID_S, id)));
 
-            brand.setBrandName(brandDto.getName());
+            brand.setBrandName(brandDto.getBrandName());
             return brandMapper.toDto(brandRepository.save(brand));
         } else {
             throw new IllegalArgumentException("Cannot update brand. Given brand and/or id cannot be null");
@@ -105,8 +99,8 @@ public class BrandService {
 
     private void checkIfBrandAlreadyExistsOrElseThrow(BrandDto brandDto) {
 
-        if (brandRepository.existsByName(brandDto.getName())) {
-            throw new EntityExistsException(String.format("Brand with name %s already exists", brandDto.getName()));
+        if (brandRepository.existsByName(brandDto.getBrandName())) {
+            throw new EntityExistsException(String.format("Brand with name %s already exists", brandDto.getBrandName()));
         }
     }
 }

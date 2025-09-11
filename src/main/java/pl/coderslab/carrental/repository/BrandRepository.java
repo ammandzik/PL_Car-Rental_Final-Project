@@ -10,8 +10,8 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     @Query("""
             SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
-            FROM Brand b WHERE b.brandName = :name
+            FROM Brand b WHERE b.brandName = :brandName
             """)
-    boolean existsByName(String name);
+    boolean existsByName(String brandName);
 
 }
