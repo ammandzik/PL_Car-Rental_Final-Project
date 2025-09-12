@@ -81,12 +81,12 @@ public class ReservationService {
 
         if (reservationDto != null && id != null) {
 
-//            if (!reservationRepository.reservationAllowedForUpdate(reservationDto.getDateFrom(), reservationDto.getDateTo(), id)) {
-//                throw new ReservationDateException("Car is not available for rent during that period");
-//            }
-
             var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
+
+            if (!reservationRepository.reservationAllowedForUpdate(reservationDto.getDateFrom(), reservationDto.getDateTo(), id)) {
+                throw new ReservationDateException("Car is not available for rent during that period");
+            }
 
             checkIfPaidAndConfirmed(id, reservation);
             checkIfFundsBeingReturned(id);

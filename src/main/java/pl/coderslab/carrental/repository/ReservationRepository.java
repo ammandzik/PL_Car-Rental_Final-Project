@@ -61,7 +61,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                 FROM Reservation r
                 WHERE r.dateFrom <= :end
                   AND r.dateTo >= :start
-                  AND r.id <> :id
+                  AND NOT (r.id = :id)
             """)
     boolean reservationAllowedForUpdate(LocalDate start, LocalDate end, Long id);
 }
