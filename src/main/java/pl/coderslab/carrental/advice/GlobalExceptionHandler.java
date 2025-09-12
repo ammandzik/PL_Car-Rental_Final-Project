@@ -34,6 +34,14 @@ public class GlobalExceptionHandler {
         return createResponse(HttpStatus.BAD_REQUEST, wrapped);
     }
 
+    @ExceptionHandler(ReservationDateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleReservationDateException(ReservationDateException ex) {
+        log.error("Handling ReservationDateException {}", ex.getMessage());
+
+        return createResponse(HttpStatus.BAD_REQUEST, ex);
+    }
+
 
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

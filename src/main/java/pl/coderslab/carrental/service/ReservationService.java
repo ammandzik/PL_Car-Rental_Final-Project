@@ -1,6 +1,5 @@
 package pl.coderslab.carrental.service;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,18 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.CarDto;
 import pl.coderslab.carrental.dto.ReservationDto;
-import pl.coderslab.carrental.exception.CarAlreadyRentedException;
+import pl.coderslab.carrental.exception.ReservationDateException;
 import pl.coderslab.carrental.exception.ReservationEditNotAllowed;
 import pl.coderslab.carrental.mapper.CarMapper;
 import pl.coderslab.carrental.mapper.ReservationMapper;
 import pl.coderslab.carrental.mapper.UserMapper;
-import pl.coderslab.carrental.model.Car;
 import pl.coderslab.carrental.model.Reservation;
-import pl.coderslab.carrental.model.enum_package.CarStatus;
 import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 import pl.coderslab.carrental.repository.ReservationRepository;
 
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -67,10 +63,8 @@ public class ReservationService {
 
             var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
-            var car = reservation.getCar();
 
             reservation.setConfirmed(status);
-            checkReservationStatusAndChangeCarStatus(reservation, car);
 
             log.info("Updating reservation status with id {}", id);
             return reservationMapper.toDto(reservationRepository.save(reservation));
@@ -85,6 +79,10 @@ public class ReservationService {
         log.info("Update reservation method invoked");
 
         if (reservationDto != null && id != null) {
+
+            if (!reservationRepository.reservationAllowed(reservationDto.getDateFrom(), reservationDto.getDateTo())) {
+                throw new ReservationDateException("Car is not available for rent during that period");
+            }
 
             var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
@@ -119,7 +117,9 @@ public class ReservationService {
             var carDto = carService.getCarById(reservationDto.getCarId());
             var reservation = reservationMapper.toEntity(reservationDto);
 
-            validateReservationAndCarOrElseThrow(reservationDto, carDto);
+            if (!reservationRepository.reservationAllowed(reservationDto.getDateFrom(), reservationDto.getDateTo())) {
+                throw new ReservationDateException("Car is not available for rent during that period");
+            }
 
             reservation.setConfirmed(false);
             reservation.setUser(userMapper.toUser(userDto));
@@ -163,32 +163,6 @@ public class ReservationService {
         log.info("Invoked getTotalPrice method");
 
         return car.getPricePerDay() * getDays(reservationDto);
-    }
-
-    private void checkReservationStatusAndChangeCarStatus(Reservation reservation, Car car) {
-
-        log.info("Invoked checkReservationStatusAndChangeCarStatus method");
-
-        if (reservation.isConfirmed()) {
-            car.setCarStatus(CarStatus.RENTED);
-            carService.updateCar(car.getId(), carMapper.toDto(car));
-        } else {
-            car.setCarStatus(CarStatus.AVAILABLE);
-            carService.updateCar(car.getId(), carMapper.toDto(car));
-        }
-    }
-
-    private void validateReservationAndCarOrElseThrow(ReservationDto reservationDto, CarDto carDto) {
-
-        log.info("Invoked validate reservation and car method");
-
-        if (reservationRepository.existsByCarIdWithFutureDate(reservationDto.getCarId(), LocalDate.now())) {
-            throw new EntityExistsException(String.format("Reservation with car id %s already exists", reservationDto.getCarId()));
-        }
-
-        if (carDto.getCarStatus().equals(CarStatus.RENTED)) {
-            throw new CarAlreadyRentedException(String.format("Car with id %s already rented.", carDto.getId()));
-        }
     }
 
     private void checkWhichComponentsShouldBeUpdated(ReservationDto reservationDto, Reservation reservation) {

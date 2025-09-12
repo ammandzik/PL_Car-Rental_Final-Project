@@ -21,6 +21,9 @@ public class StartupListener {
         carService.updateCarsAvailabilityByClosedReservationDate();
         log.info("Updated car availability on application ready");
 
+        carService.updateCarsToRentedForActiveReservations();
+        log.info("Updated cars to rented for active reservations on application ready");
+
         paymentService.updateStatusForAllAskedForRefund();
         log.info("Updated all payments status asked for funds being refunded more than 3 days ago to funds paid back on application ready");
 

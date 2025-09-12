@@ -11,6 +11,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     @Query("""
             SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
             FROM Role r
-            WHERE r.name = :name""")
+            WHERE r.name = :name
+            """)
     boolean existsByName(String name);
 }

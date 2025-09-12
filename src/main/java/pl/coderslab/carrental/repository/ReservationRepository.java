@@ -8,6 +8,7 @@ import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -27,15 +28,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                        WHERE r.car.id = :carId
                        AND r.dateTo >= :dateNow
             """)
-    boolean existsByCarIdWithFutureDate(Long carId, LocalDate dateNow);
+    boolean paymentExistsForReservationAndStatus(Long reservationId, PaymentStatus status);
 
     @Query("""
-                SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
-                FROM Payment p
-                WHERE p.reservation.id = :reservationId
-                  AND p.paymentStatus = :status
+            SELECT r FROM Reservation r
+            WHERE r.dateFrom <= :today
+            AND r.dateTo < :today
             """)
-    boolean paymentExistsForReservationAndStatus(Long reservationId, PaymentStatus status);
+    List<Reservation> findActiveReservations(LocalDate today);
 
     @Modifying
     @Query("""
@@ -45,4 +45,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                 AND p.paymentStatus = "AWAITING"
             """)
     void updatePaymentTotalPriceForReservation(Long reservationId, Double amount);
+
+    @Query("""
+                SELECT NOT EXISTS (
+                SELECT 1
+                FROM Reservation r
+                WHERE r.dateFrom < :end
+                AND r.dateTo > :start
+                )
+            """)
+    boolean reservationAllowed(LocalDate start, LocalDate end);
 }

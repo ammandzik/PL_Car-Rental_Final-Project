@@ -11,6 +11,7 @@ import pl.coderslab.carrental.dto.CarDto;
 import pl.coderslab.carrental.mapper.BrandMapper;
 import pl.coderslab.carrental.mapper.CarMapper;
 import pl.coderslab.carrental.model.Car;
+import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.enum_package.CarStatus;
 import pl.coderslab.carrental.repository.CarRepository;
 import pl.coderslab.carrental.repository.ReservationRepository;
@@ -142,6 +143,18 @@ public class CarService {
             carsToUpdate.forEach(c -> c.setCarStatus(CarStatus.AVAILABLE));
             carRepository.saveAll(carsToUpdate);
         }
+    }
+
+    @Transactional
+    public void updateCarsToRentedForActiveReservations() {
+        log.info("Invoked update cars to rented for active reservations");
+
+        var today = LocalDate.now();
+
+        List<Reservation> activeReservations = reservationRepository.findActiveReservations(today);
+        activeReservations.stream()
+                .map(Reservation::getCar)
+                .forEach(c -> c.setCarStatus(CarStatus.RENTED));
     }
 
     private Car getCarOrElseThrow(Long id) {
