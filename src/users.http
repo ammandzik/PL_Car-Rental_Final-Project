@@ -15,21 +15,25 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "amasddnda@wp.pl",
+  "email": "amasddssnda@wp.pl",
   "roles": [
-    {"id": 1}
+    {"id": 3}
   ]
+
 }
 
 ###Update existing user
-PUT localhost:8080/api/admin/user?id=1
+PUT localhost:8080/api/admin/user?id=2
 Content-Type: application/json
 
 {
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "dddddd@wp.pl"
+  "email": "dddddd@wp.pl",
+  "roles": [
+    {"id": 3}
+  ]
 
 }
 
@@ -45,7 +49,7 @@ Content-Type: application/json
 }
 
 ###Delete existing
-DELETE localhost:8080/api/admin/user?id=6
+DELETE localhost:8080/api/admin/user?id=3
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454

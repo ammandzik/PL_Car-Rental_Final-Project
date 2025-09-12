@@ -157,6 +157,8 @@ public class InvoiceService {
         log.info("Invoked generate invoice pdf method");
 
         try {
+
+            refreshInvoiceData(invoiceId);
             var invoice = invoiceRepository.findById(invoiceId)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(INVOICE_WITH_ID_S_NOT_FOUND, invoiceId)));
             var reservation = invoice.getReservation();

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -79,7 +80,7 @@ public class BrandService {
     }
 
     @Transactional
-    @CachePut(value = "brand", key = "#id")
+    @CacheEvict(value = "brand", key = "#id")
     public void deleteBrandById(Long id) {
 
         log.info("Invoked delete brand method");

@@ -42,12 +42,12 @@ Content-Type: application/json
 }
 
 ### - non existing car and brand - should throw and handle exception
-PUT localhost:8080/api/admin/car?id=2333
+PUT localhost:8080/api/admin/car?id=1
 Content-Type: application/json
 
 {
   "brand": {
-    "id": 12222
+    "id": 2
   },
   "carStatus": "Available",
   "model": "Updated",

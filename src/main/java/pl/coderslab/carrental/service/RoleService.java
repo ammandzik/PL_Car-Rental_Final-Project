@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -83,7 +84,7 @@ public class RoleService {
         }
     }
 
-    @CachePut(value = "role", key = "#id")
+    @CacheEvict(value = "role", key = "#id")
     public void deleteRole(Long id) {
 
         log.info("Invoked delete role method");

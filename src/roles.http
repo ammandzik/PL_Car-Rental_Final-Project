@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ###exsisting
-PUT localhost:8080/api/admin/roles?id=2
+PUT localhost:8080/api/admin/roles?id=1
 Content-Type: application/json
 
 {
@@ -21,11 +21,13 @@ Content-Type: application/json
 PUT localhost:8080/api/admin/roles?id=32324
 Content-Type: application/json
 
+{}
+
 ### exisitng
-DELETE localhost:8080/api/admin/roles?id=3
+DELETE localhost:8080/api/admin/roles?id=1
 
 ### non existing
-DELETE localhost:8080/api/admin/roles?id=123343
+DELETE localhost:8080/api/admin/roles?id=2
 
 ###
 GET localhost:8080/api/admin/roles/role?id=2

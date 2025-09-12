@@ -3,6 +3,7 @@ package pl.coderslab.carrental.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -88,7 +89,7 @@ public class CarService {
     }
 
     @Transactional
-    @CachePut(value = "car", key = "#id")
+    @CacheEvict(value = "car", key = "#id")
     public CarDto updateCar(Long id, CarDto carDto) {
 
         log.info("Invoked update car method");
@@ -152,9 +153,14 @@ public class CarService {
         var today = LocalDate.now();
 
         List<Reservation> activeReservations = reservationRepository.findActiveReservations(today);
+        System.out.println(activeReservations);
+
         activeReservations.stream()
                 .map(Reservation::getCar)
-                .forEach(c -> c.setCarStatus(CarStatus.RENTED));
+                .forEach(c -> {
+                    c.setCarStatus(CarStatus.RENTED);
+                    carRepository.save(c);
+                });
     }
 
     private Car getCarOrElseThrow(Long id) {

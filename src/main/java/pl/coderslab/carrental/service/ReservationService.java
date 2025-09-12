@@ -3,6 +3,7 @@ package pl.coderslab.carrental.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -80,9 +81,9 @@ public class ReservationService {
 
         if (reservationDto != null && id != null) {
 
-            if (!reservationRepository.reservationAllowed(reservationDto.getDateFrom(), reservationDto.getDateTo())) {
-                throw new ReservationDateException("Car is not available for rent during that period");
-            }
+//            if (!reservationRepository.reservationAllowedForUpdate(reservationDto.getDateFrom(), reservationDto.getDateTo(), id)) {
+//                throw new ReservationDateException("Car is not available for rent during that period");
+//            }
 
             var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
@@ -117,7 +118,7 @@ public class ReservationService {
             var carDto = carService.getCarById(reservationDto.getCarId());
             var reservation = reservationMapper.toEntity(reservationDto);
 
-            if (!reservationRepository.reservationAllowed(reservationDto.getDateFrom(), reservationDto.getDateTo())) {
+            if (!reservationRepository.reservationAllowedForNew(reservationDto.getDateFrom(), reservationDto.getDateTo())) {
                 throw new ReservationDateException("Car is not available for rent during that period");
             }
 
@@ -135,7 +136,7 @@ public class ReservationService {
         }
     }
 
-    @CachePut(value = "reservation", key = "#id")
+    @CacheEvict(value = "reservation", key = "#id")
     public void deleteById(Long id) {
         log.info("Delete reservation by id method invoked");
 
@@ -190,8 +191,8 @@ public class ReservationService {
     private void checkIfFundsBeingReturned(Long reservationId) {
         log.info("Invoked checkIfFundsBeingReturned method");
 
-        if (reservationRepository.paymentExistsForReservationAndStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED)) {
-            throw new ReservationEditNotAllowed("Cannot update. There is ongoing return of funds processed");
+        if (reservationRepository.paymentExistsForReservationAndStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED) || reservationRepository.paymentExistsForReservationAndStatus(reservationId, PaymentStatus.FUNDS_PAID_BACK)) {
+            throw new ReservationEditNotAllowed("Cannot update. Funds being returned and paid back");
         }
     }
 }

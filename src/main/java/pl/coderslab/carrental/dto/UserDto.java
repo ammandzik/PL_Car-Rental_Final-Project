@@ -33,5 +33,6 @@ public class UserDto {
     @Email
     @UniqueValue(entity = User.class, fieldName = "email", message = "User with this email already exists.")
     private String email;
+    @NotNull
     private Set<Role> roles;
 }

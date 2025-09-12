@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class ReviewService {
         }
     }
 
-    @CachePut(value = "review", key = "#id")
+    @CacheEvict(value = "review", key = "#id")
     public void deleteReview(Long id) {
 
         log.info("Delete review method invoked");
