@@ -21,5 +21,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
             WHERE u.id = :userId
             """)
     boolean userIdDiffers(Long userId);
-
 }

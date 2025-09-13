@@ -31,9 +31,9 @@ PUT localhost:8080/api/review?id=1
 Content-Type: application/json
 
 {
-  "reservationId": 19,
+  "reservationId": 1,
   "description": "Testowa prawidlowa review",
-  "rating": 5,
+  "rating": 3,
   "pseudonym": "janekBananek"
 }
 

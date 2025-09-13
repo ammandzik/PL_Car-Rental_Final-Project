@@ -5,7 +5,7 @@ GET localhost:8080/api/admin/users
 GET localhost:8080/api/admin/user?id=1
 
 ###Get user by id(non existing)
-GET localhost:8080/api/admin/users
+GET localhost:8080/api/admin/user?id=111111
 
 ###Create user
 POST localhost:8080/api/admin/user
@@ -15,9 +15,9 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "amasddssnda@wp.pl",
+  "email": "amanda@wp.pl",
   "roles": [
-    {"id": 3}
+    {"id": 1}
   ]
 
 }
@@ -34,7 +34,6 @@ Content-Type: application/json
   "roles": [
     {"id": 3}
   ]
-
 }
 
 ###Update non-existing user
@@ -45,11 +44,14 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "amanda@wp.pl"
+  "email": "amandddda@wp.pl",
+  "roles": [
+    {"id": 3}
+  ]
 }
 
 ###Delete existing
-DELETE localhost:8080/api/admin/user?id=3
+DELETE localhost:8080/api/admin/user?id=2
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454

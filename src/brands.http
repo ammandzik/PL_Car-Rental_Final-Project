@@ -12,7 +12,7 @@ POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
 {
-  "brandName": "Audi"
+  "brandName": "Suzuki"
 }
 
 ###(creation of already existing)
@@ -27,8 +27,7 @@ Content-Type: application/json
 POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
-{
-}
+{}
 
 ###(update, request param id, request body)
 PUT localhost:8080/api/admin/brands/brand?id=1
@@ -39,7 +38,7 @@ Content-Type: application/json
 }
 
 ###(removing previously added)
-DELETE localhost:8080/api/admin/brands?id=2
+DELETE localhost:8080/api/admin/brands?id=1
 
 ###(removing non existing brand)
 DELETE localhost:8080/api/admin/brands?id=776

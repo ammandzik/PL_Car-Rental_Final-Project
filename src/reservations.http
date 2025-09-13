@@ -7,29 +7,29 @@ Content-Type: application/json
 
 {
   "carId": 1,
-  "dateFrom": "2025-09-29",
-  "dateTo": "2025-09-30",
-  "userId": 4,
-  "confirmed": true
-}
-
-###
-PUT localhost:8080/api/reservation?id=9
-Content-Type: application/json
-
-{
-  "carId": 1,
-  "dateFrom": "2025-09-24",
-  "dateTo": "2025-09-27",
-  "userId": 4,
+  "dateFrom": "2025-09-15",
+  "dateTo": "2025-09-17",
+  "userId": 1,
   "confirmed": false
 }
 
 ###
-PUT localhost:8080/api/admin/reservation-status?id=1&status=false
+PUT localhost:8080/api/reservation?id=1
+Content-Type: application/json
+
+{
+  "carId": 1,
+  "dateFrom": "2025-09-30",
+  "dateTo": "2025-10-11",
+  "userId": 1,
+  "confirmed": false
+}
+
+###
+PUT localhost:8080/api/admin/reservation-status?id=1&status=true
 
 ### - removing exsiting
-DELETE localhost:8080/api/admin/reservation?id=2
+DELETE localhost:8080/api/admin/reservation?id=1
 
 ### - removing not exsiting
 DELETE localhost:8080/api/admin/reservation?id=20

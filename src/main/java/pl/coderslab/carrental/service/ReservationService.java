@@ -81,6 +81,10 @@ public class ReservationService {
 
         if (reservationDto != null && id != null) {
 
+            if (reservationDto.getDateFrom() == reservationDto.getDateTo()) {
+                throw new ReservationDateException("Date from and Date should not be the same");
+            }
+
             var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
 
@@ -113,6 +117,10 @@ public class ReservationService {
         log.info("Invoked save reservation method");
 
         if (reservationDto != null) {
+
+            if (reservationDto.getDateFrom() == reservationDto.getDateTo()) {
+                throw new ReservationDateException("Date from and Date should not be the same");
+            }
 
             var userDto = userService.findById(reservationDto.getUserId());
             var carDto = carService.getCarById(reservationDto.getCarId());

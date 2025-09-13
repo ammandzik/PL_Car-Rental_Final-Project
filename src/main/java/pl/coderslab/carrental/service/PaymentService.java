@@ -73,6 +73,10 @@ public class PaymentService {
             reservationService.updateStatus(payment.getReservation().getId(), false);
             payment.setPaymentStatus(status);
             payment.setRefundDate(LocalDate.now());
+
+        } else if (status.equals(PaymentStatus.APPROVED)) {
+            reservationService.updateStatus(payment.getReservation().getId(), true);
+            payment.setPaymentStatus(status);
         } else {
             payment.setPaymentStatus(status);
         }

@@ -23,7 +23,7 @@ public class BrandService {
     private static final String BRAND_NOT_FOUND_WITH_ID_S = "Brand with id %s was not found";
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
-    private final BrandDeletionPolicy brandDeletionPolicy;
+    private final DeletionPolicy deletionPolicy;
 
 
     public List<BrandDto> getAllBrands() {
@@ -87,7 +87,7 @@ public class BrandService {
 
         if (id != null) {
 
-            if (!brandDeletionPolicy.canDelete(id)) {
+            if (!deletionPolicy.canDeleteBrand(id)) {
                 throw new IllegalStateException(String.format("Cannot delete brand: cars are existing for brand with id %s", id));
             }
 
