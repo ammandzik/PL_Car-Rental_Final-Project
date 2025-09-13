@@ -43,4 +43,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     """)
     List<Payment> findWithAwaitingStatusAndReservationDateOnOrAfterNow(PaymentStatus paymentStatus, LocalDate today);
 
+    boolean existsByReservationId(Long reservationId);
 }

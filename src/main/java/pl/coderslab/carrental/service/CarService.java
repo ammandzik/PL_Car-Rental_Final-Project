@@ -31,6 +31,7 @@ public class CarService {
     private final BrandService brandService;
     private final ReservationRepository reservationRepository;
     private final BrandMapper brandMapper;
+    private final DeletionPolicy deletionPolicy;
 
     public List<CarDto> getAllCars() {
 
@@ -116,6 +117,10 @@ public class CarService {
     public void deleteCar(Long id) {
 
         log.info("Invoked delete car method");
+
+        if (!deletionPolicy.canDeleteCar(id)) {
+            throw new IllegalStateException(String.format("Cannot delete car: reservations are existing for car with id %s", id));
+        }
 
         if (id != null) {
             var car = getCarOrElseThrow(id);

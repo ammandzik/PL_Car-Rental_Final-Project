@@ -22,6 +22,7 @@ public class RoleService {
     private static final String ROLE_WITH_ID_S_NOT_FOUND = "Role with id %s not found";
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+    private final DeletionPolicy deletionPolicy;
 
     @Cacheable(value = "role", key = "#id")
     public RoleDto getRoleById(Long id) {
@@ -89,6 +90,10 @@ public class RoleService {
 
         log.info("Invoked delete role method");
         if (id != null) {
+
+            if (!deletionPolicy.canDeleteRole(id)) {
+                throw new IllegalArgumentException(String.format("Role with id %s is related to user entities and cannot be removed", id));
+            }
             var role = roleRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(ROLE_WITH_ID_S_NOT_FOUND, id)));
             roleRepository.delete(role);

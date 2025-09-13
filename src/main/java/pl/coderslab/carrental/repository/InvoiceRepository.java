@@ -32,4 +32,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
             AND p.paymentStatus = :paymentStatus
             """)
     boolean invoiceReservationPaymentHasStatus(Long reservationId, PaymentStatus paymentStatus);
+
+    boolean existsByReservationId(Long reservationId);
+    boolean existsByUserId(Long userId);
 }

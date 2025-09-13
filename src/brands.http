@@ -34,7 +34,7 @@ PUT localhost:8080/api/admin/brands/brand?id=1
 Content-Type: application/json
 
 {
-  "brandName": "BMW"
+  "brandName": "Audi"
 }
 
 ###(removing previously added)

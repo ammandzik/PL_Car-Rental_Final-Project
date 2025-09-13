@@ -64,4 +64,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                   AND NOT (r.id = :id)
             """)
     boolean reservationAllowedForUpdate(LocalDate start, LocalDate end, Long id);
+
+    boolean existsByCarId(Long carId);
+    boolean existsByUserId(Long userId);
 }

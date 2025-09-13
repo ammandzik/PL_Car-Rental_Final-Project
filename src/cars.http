@@ -2,13 +2,13 @@
 GET localhost:8080/api/cars
 
 ###
-GET localhost:8080/api/car?id=1
+GET localhost:8080/api/cars
 
 ###(brand)
 GET localhost:8080/api/cars?brand=BMW
 
 ###(status)
-GET localhost:8080/api/cars?carStatus=AVAILABLE
+GET localhost:8080/api/cars?carStatus=RENTED
 
 ###(filtered by both status and brand)
 GET localhost:8080/api/cars?carStatus=AVAILABLE&brand=BMW
@@ -61,7 +61,7 @@ Content-Type: application/json
 
 {
   "brand": {
-    "id": 1
+    "id": 2
   },
   "carStatus": "Available",
   "model": "Updated",

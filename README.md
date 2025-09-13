@@ -44,11 +44,11 @@ Features:
 - [x] Add vehicle brands and models
 - [x] Car reservations for customers
 - [x] Creating payments for reservations
-- [x] Changing status of the payment along with reservation and car status
+- [x] Changing status of the payment along with reservation status
 - [x] Creating invoices
 - [x] Generating invoices pdfs
 - [x] Adding reviews
-- [ ] Admin panel for fleet management
+- [x] Changing status of the car if reservation is active
 
 ---
 
@@ -65,9 +65,7 @@ Below is the entity-relationship diagram (ERD) for the MySQL database used in th
 |
 **Technology**        
 |
-**Version / Notes**              
-|
-|
+**Version / Notes**
 -------------------
 |
 ------------------------------
@@ -103,7 +101,7 @@ Docker + Compose
 `.env`
 support    
 |
-Spring Boot + dotenv plugin
+`Spring Boot` + `dotenv plugin`
 
 ---
 

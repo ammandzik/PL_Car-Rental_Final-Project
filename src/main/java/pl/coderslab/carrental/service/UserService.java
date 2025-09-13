@@ -24,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleService roleService;
+    private final DeletionPolicy deletionPolicy;
 
     @Cacheable(value = "user", key = "#id")
     @Transactional(readOnly = true)
@@ -101,6 +102,11 @@ public class UserService {
         log.info("Invoked delete user");
 
         if (id != null) {
+
+            if (!deletionPolicy.canDeleteUser(id)) {
+                throw new IllegalArgumentException(String.format("Cannot remove user. There are related entities for user with id %s", id));
+            }
+
             if (userRepository.existsById(id)) {
                 userRepository.deleteById(id);
                 log.info("User with id {} deleted", id);

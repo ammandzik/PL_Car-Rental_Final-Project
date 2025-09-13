@@ -15,9 +15,9 @@ Content-Type: application/json
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "amanda@wp.pl",
+  "email": "amassnda@wp.pl",
   "roles": [
-    {"id": 1}
+    {"id": 3}
   ]
 
 }
@@ -46,12 +46,12 @@ Content-Type: application/json
   "phone": "123-456-789",
   "email": "amandddda@wp.pl",
   "roles": [
-    {"id": 3}
+    {"id": 2}
   ]
 }
 
 ###Delete existing
-DELETE localhost:8080/api/admin/user?id=2
+DELETE localhost:8080/api/admin/user?id=3
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454

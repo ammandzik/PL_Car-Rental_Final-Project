@@ -32,7 +32,7 @@ Content-Type: application/json
 GET localhost:8080/api/invoices/pdf?id=5
 
 ###Deletion(happy path)
-DELETE localhost:8080/api/admin/invoice?id=3
+DELETE localhost:8080/api/admin/invoice?id=2
 
 ###Deletion(non existing value)
 DELETE localhost:8080/api/admin/invoice?id=12323

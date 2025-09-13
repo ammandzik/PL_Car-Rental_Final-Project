@@ -14,4 +14,12 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
             WHERE r.name = :name
             """)
     boolean existsByName(String name);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END
+            FROM User u
+            JOIN u.roles ur
+            WHERE ur.id = :roleId
+            """)
+    boolean roleInUse(Long roleId);
 }
