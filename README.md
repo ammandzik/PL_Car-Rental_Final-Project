@@ -186,7 +186,35 @@ support
 
 - Improving response time
 
-### API Examples
+### API few Examples
 
+1. Get all cars
+   ```bash
+     GET localhost:8080/api/cars
+   
+2. Post new payment
+   ``` bash
+     POST localhost:8080/api/pay
+     Content-Type: application/json
 
+     {
+     "reservationId": 3,
+     "paymentMethod": "Bank Transfer",
+     "paymentStatus": "Approved"
+     }
+   
+3. Post a review
+   ```bash
+   POST localhost:8080/api/review
+   Content-Type: application/json
+   
+   {
+     "reservationId": 1,
+     "description": "Testowa prawidlowa review",
+     "rating": 5,
+     "pseudonym": "janekBananek"
+   }
 
+**All API examples are available as HTTP API files in the project**
+
+![img.png](img.png)
