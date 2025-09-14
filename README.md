@@ -186,7 +186,7 @@ support
 
 - Improving response time
 
-### API few Examples
+### API Examples
 
 1. Get all cars
    ```bash
@@ -217,4 +217,4 @@ support
 
 **All API examples are available as HTTP API files in the project**
 
-![img.png](img.png)
+![api-examples.png](docs/images/api-examples.png)
