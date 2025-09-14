@@ -6,7 +6,7 @@ POST localhost:8080/api/admin/roles
 Content-Type: application/json
 
 {
-  "name": "Admin"
+  "name": "Customer"
 }
 
 ###exsisting
@@ -14,7 +14,7 @@ PUT localhost:8080/api/admin/roles?id=1
 Content-Type: application/json
 
 {
-  "name": "Nieadmin"
+  "name": "SuperAdmin"
 }
 
 ###non existing
@@ -27,8 +27,8 @@ Content-Type: application/json
 DELETE localhost:8080/api/admin/roles?id=1
 
 ### non existing
-DELETE localhost:8080/api/admin/roles?id=3
+DELETE localhost:8080/api/admin/roles?id=2
 
 ###
-GET localhost:8080/api/admin/roles/role?id=2
+GET localhost:8080/api/admin/roles/role?id=1
 

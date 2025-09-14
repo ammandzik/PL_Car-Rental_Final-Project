@@ -44,4 +44,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findWithAwaitingStatusAndReservationDateOnOrAfterNow(PaymentStatus paymentStatus, LocalDate today);
 
     boolean existsByReservationId(Long reservationId);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
+            FROM Payment p
+            WHERE p.paymentStatus = 'CANCELLED'
+            AND p.reservation.id = :reservationId
+            AND p.reservation.dateFrom <= :today
+            """)
+    boolean hasPastDateAndCancelledStatus(Long reservationId, LocalDate today);
 }

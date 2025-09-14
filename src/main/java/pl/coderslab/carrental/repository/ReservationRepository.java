@@ -23,7 +23,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Set<Long> findActiveCarIds(LocalDate today);
 
     @Query("""
-            SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END 
+            SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
             FROM Payment p
             WHERE p.reservation.id = :reservationId
             AND p.paymentStatus = :status
@@ -60,11 +60,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                 SELECT CASE WHEN COUNT(r) = 0 THEN TRUE ELSE FALSE END
                 FROM Reservation r
                 WHERE r.dateFrom <= :end
-                  AND r.dateTo >= :start
-                  AND NOT (r.id = :id)
+                AND r.dateTo >= :start
+                AND NOT (r.id = :id)
             """)
     boolean reservationAllowedForUpdate(LocalDate start, LocalDate end, Long id);
 
     boolean existsByCarId(Long carId);
+
     boolean existsByUserId(Long userId);
 }

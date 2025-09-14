@@ -30,6 +30,9 @@ public class UserDto {
     @Size(min = 7, max = 20)
     private String phone;
     @NotNull
+    @Size(min = 10, max = 20)
+    private String password;
+    @NotNull
     @Email
     @UniqueValue(entity = User.class, fieldName = "email", message = "User with this email already exists.")
     private String email;

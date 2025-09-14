@@ -17,6 +17,7 @@ public class UserMapper {
                 .name(user.getName())
                 .phone(user.getPhone())
                 .surname(user.getSurname())
+                .password(user.getPassword())
                 .roles(new HashSet<>(user.getRoles()))
                 .build();
     }
@@ -29,6 +30,7 @@ public class UserMapper {
                 .name(userDto.getName())
                 .phone(userDto.getPhone())
                 .surname(userDto.getSurname())
+                .password(userDto.getPassword())
                 .roles(userDto.getRoles())
                 .build();
     }

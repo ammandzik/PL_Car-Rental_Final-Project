@@ -147,16 +147,17 @@ public class ReservationService {
 
     @CacheEvict(value = "reservation", key = "#id")
     public void deleteById(Long id) {
+
         log.info("Delete reservation by id method invoked");
 
         if (id != null) {
 
+            var reservation = reservationRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
+
             if (!deletionPolicy.canDeleteReservation(id)) {
                 throw new IllegalArgumentException(String.format("Reservation cannot be removed due to existing entities for reservation with id %s", id));
             }
-
-            var reservation = reservationRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
 
             reservationRepository.delete(reservation);
             log.info("Deleting reservation with id {}", id);

@@ -16,23 +16,28 @@ Content-Type: application/json
   "surname": "Preisner",
   "phone": "123-456-789",
   "email": "amassnda@wp.pl",
+  "password": "PuszekOkruszek",
   "roles": [
-    {"id": 3}
+    {
+      "id": 1
+    }
   ]
-
 }
 
 ###Update existing user
-PUT localhost:8080/api/admin/user?id=2
+PUT localhost:8080/api/admin/user?id=1
 Content-Type: application/json
 
 {
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "dddddd@wp.pl",
+  "email": "aaa@wp.pl",
+  "password": "puszkorek12",
   "roles": [
-    {"id": 3}
+    {
+      "id": 1
+    }
   ]
 }
 
@@ -45,13 +50,16 @@ Content-Type: application/json
   "surname": "Preisner",
   "phone": "123-456-789",
   "email": "amandddda@wp.pl",
+  "password": "xxxxxssssds",
   "roles": [
-    {"id": 2}
+    {
+      "id": 2
+    }
   ]
 }
 
 ###Delete existing
-DELETE localhost:8080/api/admin/user?id=3
+DELETE localhost:8080/api/admin/user?id=1
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454

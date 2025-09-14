@@ -108,8 +108,10 @@ public class InvoiceService {
         log.info("Invoked delete invoice method");
 
         if (id != null) {
+
             var invoice = invoiceRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(INVOICE_WITH_ID_S_NOT_FOUND, id)));
+
             invoiceRepository.delete(invoice);
             log.info("Invoice with id {} deleted", id);
         } else {
@@ -181,7 +183,8 @@ public class InvoiceService {
 
     private boolean fundsWereWithdrawnForTheInvoiceReservation(Long reservationId) {
 
-        return invoiceRepository.invoiceReservationPaymentHasStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED);
+        return invoiceRepository.invoiceReservationPaymentHasStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED)
+               || invoiceRepository.invoiceReservationPaymentHasStatus(reservationId, PaymentStatus.FUNDS_PAID_BACK);
     }
 
     private void checkIfReservationIsConfirmedAndPaid(Reservation reservation) {

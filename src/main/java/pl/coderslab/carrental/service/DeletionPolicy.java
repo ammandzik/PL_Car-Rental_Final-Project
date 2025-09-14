@@ -35,8 +35,10 @@ public class DeletionPolicy {
 
         log.info("Invoked can delete reservation method");
 
-        return !paymentRepository.existsByReservationId(reservationId) || !invoiceRepository.existsByReservationId(reservationId)
-               || !reviewRepository.existsByReservationId(reservationId);
+        boolean noPayments = paymentRepository.existsByReservationId(reservationId);
+        boolean noInvoices = invoiceRepository.existsByReservationId(reservationId);
+
+        return noPayments && noInvoices;
     }
 
     boolean canDeleteRole(Long roleId) {

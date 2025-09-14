@@ -60,8 +60,14 @@ public class PaymentService {
     @CachePut(value = "payment", key = "#id")
     public PaymentDto updatePaymentStatus(Long id, PaymentStatus status) {
 
+        var today = LocalDate.now();
+
         var payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Payment was not found with id %s", id)));
+
+        if (paymentRepository.hasPastDateAndCancelledStatus(payment.getReservation().getId(), today)) {
+            throw new PaymentEditionException(String.format("Payment with id %s is already cancelled and reservation date is in the past.", id));
+        }
 
         if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && !status.equals(PaymentStatus.FUNDS_BEING_REFUNDED) ||
             payment.getPaymentStatus().equals(PaymentStatus.FUNDS_BEING_REFUNDED) && !status.equals(PaymentStatus.FUNDS_PAID_BACK)) {
@@ -72,7 +78,7 @@ public class PaymentService {
         } else if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
             reservationService.updateStatus(payment.getReservation().getId(), false);
             payment.setPaymentStatus(status);
-            payment.setRefundDate(LocalDate.now());
+            payment.setRefundDate(today);
 
         } else if (status.equals(PaymentStatus.APPROVED)) {
             reservationService.updateStatus(payment.getReservation().getId(), true);
@@ -91,7 +97,13 @@ public class PaymentService {
 
         if (paymentDto != null) {
 
+            var today = LocalDate.now();
+
             var reservation = reservationService.findById(paymentDto.getReservationId());
+
+            if (paymentRepository.hasPastDateAndCancelledStatus(reservation.getId(), today)) {
+                throw new PaymentEditionException("Cannot create new payment. Payment is already cancelled and reservation date is in the past.");
+            }
 
             checkIfPaymentIsAwaiting(reservation.getId());
             checkIfApprovedPaymentAlreadyExists(reservation.getId());

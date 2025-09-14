@@ -1,5 +1,8 @@
 ### Get filtered by period of time(issue date of invoice)
-GET localhost:8080/api/invoices?start=2025-09-01&end=2025-10-30
+GET localhost:8080/api/invoices?start=2025-09-13
+
+### Get all
+GET localhost:8080/api/invoices
 
 ### Get invoice by ID
 GET localhost:8080/api/admin/invoice?id=1
@@ -9,7 +12,7 @@ POST localhost:8080/api/admin/invoice
 Content-Type: application/json
 
 {
-  "reservationId": 3
+  "reservationId": 1
 }
 
 ###Creation of invoice (duplicated)
@@ -29,10 +32,10 @@ Content-Type: application/json
 }
 
 ###pdf
-GET localhost:8080/api/invoices/pdf?id=5
+GET localhost:8080/api/invoices/pdf?id=3
 
 ###Deletion(happy path)
-DELETE localhost:8080/api/admin/invoice?id=2
+DELETE localhost:8080/api/admin/invoice?id=4
 
 ###Deletion(non existing value)
 DELETE localhost:8080/api/admin/invoice?id=12323

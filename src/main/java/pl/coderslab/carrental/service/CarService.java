@@ -104,6 +104,7 @@ public class CarService {
             car.setModel(carDto.getModel());
             car.setYear(carDto.getYear());
             car.setCarStatus(carDto.getCarStatus());
+            car.setPricePerDay(carDto.getPricePerDay());
 
             log.info("Car updated {}", car);
 
