@@ -200,17 +200,4 @@ public class PaymentService {
         List<Payment> payments = paymentRepository.findWithAwaitingStatusAndReservationDateOnOrAfterNow(PaymentStatus.AWAITING, today);
         payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.CANCELLED));
     }
-
-    @Transactional
-    public void updateStatusForAllAskedForRefund() {
-
-        log.info("Invoked update status for all payments where asked for refund");
-
-        var today = LocalDate.now();
-        var todayMinusThree = today.minusDays(3);
-
-        List<Payment> payments = paymentRepository.findByStatusAndRefundDate(PaymentStatus.FUNDS_BEING_REFUNDED, todayMinusThree);
-
-        payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.FUNDS_PAID_BACK));
-    }
 }
