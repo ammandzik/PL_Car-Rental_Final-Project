@@ -18,14 +18,12 @@ public class StartupListener {
     public void onApplicationReady() {
 
         log.info("StartupListener onApplicationReady");
+
         carService.updateCarsAvailabilityByClosedReservationDate();
         log.info("Updated car availability on application ready");
 
         carService.updateCarsToRentedForActiveReservations();
         log.info("Updated cars to rented for active reservations on application ready");
-
-        paymentService.updateStatusForAllAskedForRefund();
-        log.info("Updated all payments status asked for funds being refunded more than 3 days ago to funds paid back on application ready");
 
         paymentService.updateStatusOfAllWithPastDateAndAwaitingPayment();
         log.info("Updated all payments with status awaiting and current/past reservation date to cancelled on application ready");
