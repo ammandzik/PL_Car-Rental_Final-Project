@@ -49,6 +49,7 @@ public class DeletionPolicy {
     }
 
     boolean canDeleteUser(Long userId) {
+
         log.info("Invoked can delete user method");
 
         boolean noInvoices = !invoiceRepository.existsByUserId(userId);

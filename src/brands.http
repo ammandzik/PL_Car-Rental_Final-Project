@@ -30,11 +30,11 @@ Content-Type: application/json
 {}
 
 ###(update, request param id, request body)
-PUT localhost:8080/api/admin/brands/brand?id=1
+PUT localhost:8080/api/admin/brands/brand?id=2
 Content-Type: application/json
 
 {
-  "brandName": "Audi"
+  "brandName": "BMW"
 }
 
 ###(removing previously added)

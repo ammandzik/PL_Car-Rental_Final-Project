@@ -6,7 +6,7 @@ POST localhost:8080/api/admin/roles
 Content-Type: application/json
 
 {
-  "name": "Customer"
+  "name": "Admin"
 }
 
 ###exsisting

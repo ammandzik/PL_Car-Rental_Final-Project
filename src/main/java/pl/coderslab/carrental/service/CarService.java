@@ -59,9 +59,11 @@ public class CarService {
         log.info("Invoked get car by id method");
 
         if (id != null) {
+
             var car = getCarOrElseThrow(id);
 
             log.info("Returned car by id {}", car);
+
             return carMapper.toDto(car);
         } else {
             throw new IllegalArgumentException("Car id is null");
@@ -76,7 +78,6 @@ public class CarService {
         if (carDto != null && carDto.getBrand().getId() != null) {
 
             var brand = brandService.getBrandById(carDto.getBrand().getId());
-
             var car = carMapper.toEntity(carDto);
             car.setBrand(brandMapper.toEntity(brand));
             car.setCarStatus(CarStatus.AVAILABLE);
@@ -114,7 +115,7 @@ public class CarService {
         }
     }
 
-    @CachePut(value = "car", key = "#id")
+    @CacheEvict(value = "car", key = "#id")
     public void deleteCar(Long id) {
 
         log.info("Invoked delete car method");
@@ -124,8 +125,10 @@ public class CarService {
         }
 
         if (id != null) {
+
             var car = getCarOrElseThrow(id);
             carRepository.delete(car);
+
             log.info("Car deleted with ID {}", id);
 
         } else {
@@ -147,19 +150,22 @@ public class CarService {
                 : carRepository.findByCarStatusNotAndIdNotIn(CarStatus.AVAILABLE, activeCarIds);
 
         if (!carsToUpdate.isEmpty()) {
+
             carsToUpdate.forEach(c -> c.setCarStatus(CarStatus.AVAILABLE));
             carRepository.saveAll(carsToUpdate);
+
+            log.info("Cars updated {}", carsToUpdate);
         }
     }
 
     @Transactional
     public void updateCarsToRentedForActiveReservations() {
+
         log.info("Invoked update cars to rented for active reservations");
 
         var today = LocalDate.now();
 
         List<Reservation> activeReservations = reservationRepository.findActiveReservations(today);
-        System.out.println(activeReservations);
 
         activeReservations.stream()
                 .map(Reservation::getCar)
@@ -167,6 +173,8 @@ public class CarService {
                     c.setCarStatus(CarStatus.RENTED);
                     carRepository.save(c);
                 });
+
+        log.info("Active reservations car status updated {}", activeReservations);
     }
 
     private Car getCarOrElseThrow(Long id) {

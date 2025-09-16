@@ -19,6 +19,7 @@ import pl.coderslab.carrental.model.Reservation;
 import pl.coderslab.carrental.model.enum_package.PaymentStatus;
 import pl.coderslab.carrental.repository.ReservationRepository;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -82,17 +83,13 @@ public class ReservationService {
 
         if (reservationDto != null && id != null) {
 
-            if (reservationDto.getDateFrom() == reservationDto.getDateTo()) {
-                throw new ReservationDateException("Date from and Date should not be the same");
-            }
+            checkIfDateFromDiffersWithDateToOrElseThrow(reservationDto);
 
             var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
 
-            if (!reservationRepository.reservationAllowedForUpdate(reservationDto.getDateFrom(), reservationDto.getDateTo(), id)) {
-                throw new ReservationDateException("Car is not available for rent during that period");
-            }
-
+            checkIfReservationDateIsNotInThePastOrElseThrow(LocalDate.now(), reservation.getId());
+            checkIfReservationAllowedOrElseThrow(reservationDto, "update", id);
             checkIfPaidAndConfirmed(id, reservation);
             checkIfFundsBeingReturned(id);
             checkWhichComponentsShouldBeUpdated(reservationDto, reservation);
@@ -119,17 +116,13 @@ public class ReservationService {
 
         if (reservationDto != null) {
 
-            if (reservationDto.getDateFrom().equals(reservationDto.getDateTo())) {
-                throw new ReservationDateException("Date from and Date should not be the same");
-            }
+            checkIfDateFromDiffersWithDateToOrElseThrow(reservationDto);
 
             var userDto = userService.findById(reservationDto.getUserId());
             var carDto = carService.getCarById(reservationDto.getCarId());
             var reservation = reservationMapper.toEntity(reservationDto);
 
-            if (!reservationRepository.reservationAllowedForNew(reservationDto.getDateFrom(), reservationDto.getDateTo())) {
-                throw new ReservationDateException("Car is not available for rent during that period");
-            }
+            checkIfReservationAllowedOrElseThrow(reservationDto, "new", null);
 
             reservation.setConfirmed(false);
             reservation.setUser(userMapper.toUser(userDto));
@@ -195,6 +188,7 @@ public class ReservationService {
     }
 
     private void checkIfPaidAndConfirmed(Long id, Reservation reservation) {
+
         log.info("Invoked checkIfPaidAndConfirmed method");
 
         if (reservation.isConfirmed()) {
@@ -203,10 +197,46 @@ public class ReservationService {
     }
 
     private void checkIfFundsBeingReturned(Long reservationId) {
+
         log.info("Invoked checkIfFundsBeingReturned method");
 
         if (reservationRepository.paymentExistsForReservationAndStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED) || reservationRepository.paymentExistsForReservationAndStatus(reservationId, PaymentStatus.FUNDS_PAID_BACK)) {
             throw new ReservationEditNotAllowed("Cannot update. Funds being returned and paid back");
         }
     }
+
+    private void checkIfReservationAllowedOrElseThrow(ReservationDto reservationDto, String method, Long id) {
+
+        log.info("Invoked checkIfReservationAllowedOrElseThrow method");
+
+        if (method.equals("new") && !reservationRepository.reservationAllowedForNew(reservationDto.getDateFrom(), reservationDto.getDateTo())) {
+            throw new ReservationDateException("Car is not available for rent during that period");
+
+        }
+
+        if (method.equals("update") && !reservationRepository.reservationAllowedForUpdate(reservationDto.getDateFrom(), reservationDto.getDateTo(), id)) {
+            throw new ReservationDateException("Car is not available for rent during that period");
+        }
+
+    }
+
+    private void checkIfDateFromDiffersWithDateToOrElseThrow(ReservationDto reservationDto) {
+
+        log.info("Invoked checkIfDateFromDiffersWithDateToOrElseThrow method");
+
+        if (reservationDto.getDateFrom().equals(reservationDto.getDateTo())) {
+            throw new ReservationDateException("Date from and Date should not be the same");
+        }
+    }
+
+    private void checkIfReservationDateIsNotInThePastOrElseThrow(LocalDate today, Long reservationId) {
+
+        log.info("Invoked checkIfReservationDateIsInThePast method");
+
+        if( reservationRepository.reservationDateToIsBefore(reservationId, today)){
+            throw new ReservationDateException("Reservation date is already in the past and reservation may not be edited.");
+        }
+
+    }
+
 }

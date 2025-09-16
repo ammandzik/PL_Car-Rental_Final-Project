@@ -60,32 +60,16 @@ public class PaymentService {
     @CachePut(value = "payment", key = "#id")
     public PaymentDto updatePaymentStatus(Long id, PaymentStatus status) {
 
-        var today = LocalDate.now();
+        log.info("Invoked update payment");
 
+        var today = LocalDate.now();
         var payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Payment was not found with id %s", id)));
 
-        if (paymentRepository.hasPastDateAndCancelledStatus(payment.getReservation().getId(), today)) {
-            throw new PaymentEditionException(String.format("Payment with id %s is already cancelled and reservation date is in the past.", id));
-        }
+        checkIfNotPastDateAndCancelledStatus(payment.getReservation().getId(), today);
+        checkIfPaymentStatusCouldBeChanged(payment, status, id);
+        changePaymentStatusAccordingly(payment, status, today, id);
 
-        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && !status.equals(PaymentStatus.FUNDS_BEING_REFUNDED) ||
-            payment.getPaymentStatus().equals(PaymentStatus.FUNDS_BEING_REFUNDED) && !status.equals(PaymentStatus.FUNDS_PAID_BACK)) {
-
-            throw new PaymentEditionException(String.format("Payment with id %s is already in %s status and it's status cannot be changed to %s ",
-                    id, payment.getPaymentStatus().getDescription(), status.getDescription()));
-
-        } else if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
-            reservationService.updateStatus(payment.getReservation().getId(), false);
-            payment.setPaymentStatus(status);
-            payment.setRefundDate(today);
-
-        } else if (status.equals(PaymentStatus.APPROVED)) {
-            reservationService.updateStatus(payment.getReservation().getId(), true);
-            payment.setPaymentStatus(status);
-        } else {
-            payment.setPaymentStatus(status);
-        }
         paymentRepository.save(payment);
         return paymentMapper.toDto(payment);
     }
@@ -101,10 +85,7 @@ public class PaymentService {
 
             var reservation = reservationService.findById(paymentDto.getReservationId());
 
-            if (paymentRepository.hasPastDateAndCancelledStatus(reservation.getId(), today)) {
-                throw new PaymentEditionException("Cannot create new payment. Payment is already cancelled and reservation date is in the past.");
-            }
-
+            checkIfNotPastDateAndCancelledStatus(reservation.getId(), today);
             checkIfPaymentIsAwaiting(reservation.getId());
             checkIfApprovedPaymentAlreadyExists(reservation.getId());
             checkIfAskedForRefund(reservation.getId());
@@ -123,6 +104,8 @@ public class PaymentService {
 
     private void checkIfPaymentIsAwaiting(Long reservationId) {
 
+        log.info("Invoked checkIfPaymentIsAwaiting payment method");
+
         if (paymentRepository.existsByStatusAndReservationId(PaymentStatus.AWAITING, reservationId)) {
             throw new EntityExistsException(String.format("Payment with reservation id %s already exists and has awaiting status. Processing new payment is not allowed.", reservationId));
         }
@@ -130,13 +113,19 @@ public class PaymentService {
     }
 
     private void checkIfAskedForRefund(Long reservationId) {
-        if (paymentRepository.existsByStatusAndReservationId(PaymentStatus.FUNDS_BEING_REFUNDED, reservationId)) {
+
+        log.info("Invoked checkIfAskedForRefund method");
+
+        if (paymentRepository.existsByStatusAndReservationId(PaymentStatus.FUNDS_BEING_REFUNDED, reservationId)
+            || paymentRepository.existsByStatusAndReservationId(PaymentStatus.FUNDS_PAID_BACK, reservationId)) {
             throw new EntityExistsException(String.format("Payment already exists with reservation id %s and the funds are being returned. " +
                                                           "Therefore, payment cannot be processed again.", reservationId));
         }
     }
 
     private void checkIfApprovedPaymentAlreadyExists(Long reservationId) {
+
+        log.info("Invoked checkIfApprovedPaymentAlreadyExists");
 
         if (paymentRepository.existsByStatusAndReservationId(PaymentStatus.APPROVED, reservationId)) {
             throw new EntityExistsException(String.format("Payment with reservation id %s already exists and has been approved. " +
@@ -145,13 +134,77 @@ public class PaymentService {
     }
 
     private void checkIfPaymentApprovedAndChangeReservationStatus(Long reservationId, PaymentDto paymentDto) {
+
+        log.info("Invoked checkIfPaymentApprovedAndChangeReservationStatus method");
+
         if (paymentDto.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
             reservationService.updateStatus(reservationId, true);
         }
     }
 
+    private void checkIfNotPastDateAndCancelledStatus(Long reservationId, LocalDate today) {
+
+        log.info("Invoked checkIfNotPastDateAndCancelledStatus method");
+
+        if (paymentRepository.hasPastDateAndCancelledStatus(reservationId, today)) {
+            throw new PaymentEditionException(String.format("Payment with reservation id %s is already cancelled and reservation date is in the past.", reservationId));
+        }
+    }
+
+    private void checkIfPaymentStatusCouldBeChanged(Payment payment, PaymentStatus status, Long id) {
+
+        log.info("Invoked checkIfPaymentStatusCouldBeChanged method");
+
+        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED) && !status.equals(PaymentStatus.FUNDS_BEING_REFUNDED) ||
+            payment.getPaymentStatus().equals(PaymentStatus.FUNDS_BEING_REFUNDED) && !status.equals(PaymentStatus.FUNDS_PAID_BACK) ||
+            payment.getPaymentStatus().equals(PaymentStatus.AWAITING) && !(status.equals(PaymentStatus.APPROVED) || status.equals(PaymentStatus.CANCELLED)) ||
+            payment.getPaymentStatus().equals(PaymentStatus.FUNDS_PAID_BACK) ||
+            payment.getPaymentStatus().equals(PaymentStatus.CANCELLED)) {
+
+            throw new PaymentEditionException(String.format("Payment with id %s is already in %s status and it's status cannot be changed to %s ",
+                    id, payment.getPaymentStatus().getDescription(), status.getDescription()));
+        }
+    }
+
+    private void changePaymentStatusAccordingly(Payment payment, PaymentStatus status, LocalDate today, Long id) {
+
+        log.info("Invoked changePaymentStatusAccordingly method");
+
+        if (payment.getPaymentStatus().equals(PaymentStatus.APPROVED)) {
+
+            log.info("Payment with id {} is approved and about to be cancelled. Changing reservation and payment status.", id);
+
+            reservationService.updateStatus(payment.getReservation().getId(), false);
+            payment.setPaymentStatus(status);
+            payment.setRefundDate(today);
+
+        } else if (status.equals(PaymentStatus.APPROVED)) {
+
+            log.info("Payment status is being changed to Approved. Changing reservation and payment status.");
+            reservationService.updateStatus(payment.getReservation().getId(), true);
+            payment.setPaymentStatus(status);
+
+        } else {
+            log.info("Changing payment status.");
+            payment.setPaymentStatus(status);
+        }
+    }
+
+    @Transactional
+    public void updateStatusOfAllWithPastDateAndAwaitingPayment() {
+
+        log.info("Invoked update status of all payment with past date and awaiting status");
+
+        var today = LocalDate.now();
+
+        List<Payment> payments = paymentRepository.findWithAwaitingStatusAndReservationDateOnOrAfterNow(PaymentStatus.AWAITING, today);
+        payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.CANCELLED));
+    }
+
     @Transactional
     public void updateStatusForAllAskedForRefund() {
+
+        log.info("Invoked update status for all payments where asked for refund");
 
         var today = LocalDate.now();
         var todayMinusThree = today.minusDays(3);
@@ -159,13 +212,5 @@ public class PaymentService {
         List<Payment> payments = paymentRepository.findByStatusAndRefundDate(PaymentStatus.FUNDS_BEING_REFUNDED, todayMinusThree);
 
         payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.FUNDS_PAID_BACK));
-    }
-
-    @Transactional
-    public void updateStatusOfAllWithPastDateAndAwaitingPayment() {
-        var today = LocalDate.now();
-
-        List<Payment> payments = paymentRepository.findWithAwaitingStatusAndReservationDateOnOrAfterNow(PaymentStatus.AWAITING, today);
-        payments.forEach(payment -> updatePaymentStatus(payment.getId(), PaymentStatus.CANCELLED));
     }
 }

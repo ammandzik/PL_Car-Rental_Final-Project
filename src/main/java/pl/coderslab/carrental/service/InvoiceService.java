@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -56,13 +57,14 @@ public class InvoiceService {
 
     @Cacheable(value = "invoice", key = "#id")
     public InvoiceDto getInvoice(Long id) {
+
         log.info("Invoked get invoice method");
 
         if (id != null) {
+
             var invoice = invoiceRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(INVOICE_WITH_ID_S_NOT_FOUND, id)));
 
-            log.info("Invoice with id {} found", id);
             return invoiceMapper.toDto(invoice);
         } else {
             throw new IllegalArgumentException("Invoice id is null");
@@ -102,7 +104,7 @@ public class InvoiceService {
         }
     }
 
-    @CachePut(value = "invoice", key = "#id")
+    @CacheEvict(value = "invoice", key = "#id")
     public void deleteInvoice(Long id) {
 
         log.info("Invoked delete invoice method");
@@ -129,8 +131,6 @@ public class InvoiceService {
 
             var invoice = invoiceRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(INVOICE_WITH_ID_S_NOT_FOUND, id)));
-
-            log.info("Invoice with id {} found", id);
 
             var reservation = reservationService.getReservationEntityWithComponents(invoice.getReservation().getId());
             var user = userMapper.toUser(userService.findById(invoice.getUser().getId()));
@@ -166,6 +166,8 @@ public class InvoiceService {
             var reservation = invoice.getReservation();
             var user = reservation.getUser();
 
+            log.info("Building invoice");
+
             return Utils.buildSimpleInvoice(invoiceId, user, reservation);
 
         } catch (IOException e) {
@@ -175,6 +177,8 @@ public class InvoiceService {
 
     private String uniqueInvoiceNumberGenerator(LocalDate issueDate) {
 
+        log.info("Invoked unique invoice number generator method");
+
         var randomId = Utils.randomBase64Url12();
         var sb = new StringBuilder(String.format("%s-%s", issueDate, randomId));
 
@@ -183,11 +187,15 @@ public class InvoiceService {
 
     private boolean fundsWereWithdrawnForTheInvoiceReservation(Long reservationId) {
 
+        log.info("Invoked funds were withdrawn for the invoice reservation {}", reservationId);
+
         return invoiceRepository.invoiceReservationPaymentHasStatus(reservationId, PaymentStatus.FUNDS_BEING_REFUNDED)
                || invoiceRepository.invoiceReservationPaymentHasStatus(reservationId, PaymentStatus.FUNDS_PAID_BACK);
     }
 
     private void checkIfReservationIsConfirmedAndPaid(Reservation reservation) {
+
+        log.info("Invoked checkIfReservationIsConfirmedAndPaid method");
 
         if (!reservation.isConfirmed() || !invoiceRepository.invoiceReservationPaymentHasStatus(reservation.getId(), PaymentStatus.APPROVED)) {
             throw new InvoiceCreationNotAllowed("Invoice creation not allowed. Reservation has not been confirmed and paid");
@@ -195,6 +203,9 @@ public class InvoiceService {
     }
 
     private void checkIfInvoiceExistsByReservation(Long reservationId) {
+
+        log.info("Invoked check if invoice exists by reservation");
+
         if (invoiceRepository.existsByInvoiceNumberAndReservationId(reservationId)) {
             throw new EntityExistsException(String.format("Invoice with reservation id %s already exists", reservationId));
         }

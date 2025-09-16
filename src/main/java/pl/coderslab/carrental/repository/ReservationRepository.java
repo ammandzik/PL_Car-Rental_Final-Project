@@ -68,4 +68,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     boolean existsByCarId(Long carId);
 
     boolean existsByUserId(Long userId);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+            FROM Reservation r
+            WHERE r.id = :id
+            AND r.dateFrom <= :now
+            """)
+    boolean reservationDateToIsBefore(Long id, LocalDate now);
 }

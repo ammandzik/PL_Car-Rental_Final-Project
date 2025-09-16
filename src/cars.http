@@ -62,7 +62,7 @@ Content-Type: application/json
 }
 
 ### - update with existing brand
-PUT localhost:8080/api/admin/car?id=2
+PUT localhost:8080/api/admin/car?id=1
 Content-Type: application/json
 
 {

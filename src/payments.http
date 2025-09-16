@@ -2,10 +2,10 @@
 GET localhost:8080/api/payments
 
 ### GET with filters
-GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&paymentStatus=APPROVED&reservationId=1
+GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&paymentStatus=APPROVED&reservationId=2
 
 ### GET with filters
-GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&paymentStatus=APPROVED
+GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&paymentStatus=CANCELLED
 
 ### GET with filters
 GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&reservationId=1
@@ -21,15 +21,25 @@ Content-Type: application/json
 }
 
 ###
-PUT localhost:8080/api/payment-status?id=1&paymentStatus=FUNDS_BEING_REFUNDED
+POST localhost:8080/api/pay
+Content-Type: application/json
+
+{
+"reservationId": 1,
+"paymentMethod": "Bank Transfer",
+"paymentStatus": "Awaiting"
+}
+
 ###
-PUT localhost:8080/api/payment-status?id=1&paymentStatus=FUNDS_PAID_BACK
+PUT localhost:8080/api/payment-status?id=2&paymentStatus=FUNDS_BEING_REFUNDED
 ###
-PUT localhost:8080/api/payment-status?id=1&paymentStatus=APPROVED
+PUT localhost:8080/api/payment-status?id=3&paymentStatus=FUNDS_PAID_BACK
 ###
-PUT localhost:8080/api/payment-status?id=1&paymentStatus=CANCELLED
+PUT localhost:8080/api/payment-status?id=3&paymentStatus=APPROVED
 ###
-PUT localhost:8080/api/payment-status?id=1&paymentStatus=AWAITING
+PUT localhost:8080/api/payment-status?id=3&paymentStatus=CANCELLED
+###
+PUT localhost:8080/api/payment-status?id=3&paymentStatus=AWAITING
 
 ###
 GET localhost:8080/api/payments?reservationId=1
