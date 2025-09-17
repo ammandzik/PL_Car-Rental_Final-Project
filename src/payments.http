@@ -8,6 +8,9 @@ GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&paymentStatus=APPROV
 GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&paymentStatus=CANCELLED
 
 ### GET with filters
+GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&paymentStatus=FUNDS_PAID_BACK
+
+### GET with filters
 GET localhost:8080/api/payments?paymentMethod=BANK_TRANSFER&reservationId=1
 
 ###

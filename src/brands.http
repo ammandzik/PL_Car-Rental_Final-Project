@@ -30,7 +30,7 @@ Content-Type: application/json
 {}
 
 ###(update, request param id, request body)
-PUT localhost:8080/api/admin/brands/brand?id=2
+PUT localhost:8080/api/admin/brands/brand?id=3
 Content-Type: application/json
 
 {

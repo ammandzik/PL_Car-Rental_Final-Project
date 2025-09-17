@@ -19,8 +19,8 @@ Content-Type: application/json
 
 {
   "carId": 1,
-  "dateFrom": "2025-10-13",
-  "dateTo": "2025-10-15",
+  "dateFrom": "2025-10-16",
+  "dateTo": "2025-10-18",
   "userId": 1,
   "confirmed": false
 }
@@ -31,7 +31,7 @@ Content-Type: application/json
 
 {
   "carId": 1,
-  "dateFrom": "2025-10-10",
+  "dateFrom": "2025-10-18",
   "dateTo": "2025-10-20",
   "userId": 1,
   "confirmed": false

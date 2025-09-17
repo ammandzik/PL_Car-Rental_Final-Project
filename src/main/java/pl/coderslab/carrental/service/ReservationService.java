@@ -83,7 +83,7 @@ public class ReservationService {
 
         if (reservationDto != null && id != null) {
 
-            checkIfDateFromDiffersWithDateToOrElseThrow(reservationDto);
+            checkIfDateFromDiffersWithDateToAndIsBeforeOrElseThrow(reservationDto);
 
             var reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(String.format(RESERVATION_NOT_FOUND_WITH_ID_S, id)));
@@ -116,7 +116,7 @@ public class ReservationService {
 
         if (reservationDto != null) {
 
-            checkIfDateFromDiffersWithDateToOrElseThrow(reservationDto);
+            checkIfDateFromDiffersWithDateToAndIsBeforeOrElseThrow(reservationDto);
 
             var userDto = userService.findById(reservationDto.getUserId());
             var carDto = carService.getCarById(reservationDto.getCarId());
@@ -220,12 +220,12 @@ public class ReservationService {
 
     }
 
-    private void checkIfDateFromDiffersWithDateToOrElseThrow(ReservationDto reservationDto) {
+    private void checkIfDateFromDiffersWithDateToAndIsBeforeOrElseThrow(ReservationDto reservationDto) {
 
         log.info("Invoked checkIfDateFromDiffersWithDateToOrElseThrow method");
 
-        if (reservationDto.getDateFrom().equals(reservationDto.getDateTo())) {
-            throw new ReservationDateException("Date from and Date should not be the same");
+        if (reservationDto.getDateFrom().equals(reservationDto.getDateTo()) || reservationDto.getDateFrom().isAfter(reservationDto.getDateTo())) {
+            throw new ReservationDateException("Incorrect date from and/or dateTo");
         }
     }
 
@@ -233,7 +233,7 @@ public class ReservationService {
 
         log.info("Invoked checkIfReservationDateIsInThePast method");
 
-        if( reservationRepository.reservationDateToIsBefore(reservationId, today)){
+        if (reservationRepository.reservationDateToIsBefore(reservationId, today)) {
             throw new ReservationDateException("Reservation date is already in the past and reservation may not be edited.");
         }
 

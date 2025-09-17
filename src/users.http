@@ -19,7 +19,7 @@ Content-Type: application/json
   "password": "PuszekOkruszek",
   "roles": [
     {
-      "id": 2
+      "id": 1
     }
   ]
 }

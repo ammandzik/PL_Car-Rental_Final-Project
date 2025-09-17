@@ -5,7 +5,7 @@ GET localhost:8080/api/invoices?start=2025-09-17
 GET localhost:8080/api/invoices
 
 ### Get invoice by ID
-GET localhost:8080/api/admin/invoice?id=3
+GET localhost:8080/api/admin/invoice?id=1
 
 ###Creation of invoice (happy path)
 POST localhost:8080/api/admin/invoice

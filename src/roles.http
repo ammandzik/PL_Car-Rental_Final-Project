@@ -39,5 +39,5 @@ DELETE localhost:8080/api/admin/roles?id=1
 DELETE localhost:8080/api/admin/roles?id=2
 
 ###
-GET localhost:8080/api/admin/roles/role?id=1
+GET localhost:8080/api/admin/roles/role?id=2
 
