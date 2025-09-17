@@ -9,6 +9,15 @@ Content-Type: application/json
   "name": "Admin"
 }
 
+###adding
+POST localhost:8080/api/admin/roles
+Content-Type: application/json
+
+{
+  "name": "Customer"
+}
+
+
 ###exsisting
 PUT localhost:8080/api/admin/roles?id=1
 Content-Type: application/json

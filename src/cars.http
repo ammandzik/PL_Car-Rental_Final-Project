@@ -67,10 +67,10 @@ Content-Type: application/json
 
 {
   "brand": {
-    "id": 2
+    "id": 1
   },
   "carStatus": "Available",
-  "model": "newly updated",
+  "model": "Updated car id 1",
   "year": 2022,
   "pricePerDay": 400.00
 }

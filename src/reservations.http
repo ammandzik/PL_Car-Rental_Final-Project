@@ -6,7 +6,7 @@ POST localhost:8080/api/reservation
 Content-Type: application/json
 
 {
-  "carId": 2,
+  "carId": 1,
   "dateFrom": "2025-10-13",
   "dateTo": "2025-10-15",
   "userId": 1,
@@ -18,27 +18,27 @@ POST localhost:8080/api/reservation
 Content-Type: application/json
 
 {
-  "carId": 2,
-  "dateFrom": "2025-10-20",
-  "dateTo": "2025-10-21",
-  "userId": 2,
-  "confirmed": false
-}
-
-###
-PUT localhost:8080/api/reservation?id=2
-Content-Type: application/json
-
-{
-  "carId": 2,
-  "dateFrom": "2025-10-29",
-  "dateTo": "2025-10-30",
+  "carId": 1,
+  "dateFrom": "2025-10-13",
+  "dateTo": "2025-10-15",
   "userId": 1,
   "confirmed": false
 }
 
 ###
-PUT localhost:8080/api/admin/reservation-status?id=3&status=false
+PUT localhost:8080/api/reservation?id=1
+Content-Type: application/json
+
+{
+  "carId": 1,
+  "dateFrom": "2025-10-10",
+  "dateTo": "2025-10-20",
+  "userId": 1,
+  "confirmed": false
+}
+
+###
+PUT localhost:8080/api/admin/reservation-status?id=1&status=true
 
 ### - removing exsiting
 DELETE localhost:8080/api/admin/reservation?id=1

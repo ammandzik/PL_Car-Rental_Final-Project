@@ -10,9 +10,9 @@ Content-Type: application/json
 
 {
   "reservationId": 1,
-  "description": "Testowa prawidlowa review",
+  "description": "First review",
   "rating": 5,
-  "pseudonym": "janekBananek"
+  "pseudonym": "Janusz P."
 }
 
 ###
@@ -21,9 +21,9 @@ Content-Type: application/json
 
 {
   "reservationId": 111,
-  "description": "Testowa prawidlowa review",
+  "description": "Review xxxxx",
   "rating": 5,
-  "pseudonym": "janekBananek"
+  "pseudonym": "Janek B."
 }
 
 ###
@@ -32,9 +32,9 @@ Content-Type: application/json
 
 {
   "reservationId": 1,
-  "description": "Testowa prawidlowa review",
+  "description": "Updatowana review",
   "rating": 3,
-  "pseudonym": "janekBananek"
+  "pseudonym": "Janusz P."
 }
 
 ###

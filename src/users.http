@@ -15,7 +15,7 @@ Content-Type: application/json
   "name": "Us2",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "dwass@wp.pl",
+  "email": "dsecond@wp.pl",
   "password": "PuszekOkruszek",
   "roles": [
     {
@@ -36,7 +36,7 @@ Content-Type: application/json
   "password": "puszkorek12",
   "roles": [
     {
-      "id": 3
+      "id": 1
     }
   ]
 }
@@ -59,7 +59,7 @@ Content-Type: application/json
 }
 
 ###Delete existing
-DELETE localhost:8080/api/admin/user?id=1
+DELETE localhost:8080/api/admin/user?id=2
 
 ###Delete non existing
 DELETE localhost:8080/api/admin/user?id=14454

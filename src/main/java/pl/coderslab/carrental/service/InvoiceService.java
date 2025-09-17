@@ -122,7 +122,7 @@ public class InvoiceService {
     }
 
     @Transactional
-    @CachePut(value = "invoice", key = "#id")
+    @CacheEvict(value = "invoice", key = "#id")
     public void refreshInvoiceData(Long id) {
 
         log.info("Invoked update invoice method");
@@ -150,10 +150,11 @@ public class InvoiceService {
             }
 
         } else {
-            throw new IllegalArgumentException(String.format("Id is null %s", id));
+            throw new IllegalArgumentException("Id is null");
         }
     }
 
+    @Transactional
     public byte[] generateInvoicePdf(Long invoiceId) {
 
         log.info("Invoked generate invoice pdf method");
