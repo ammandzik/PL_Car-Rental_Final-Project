@@ -112,7 +112,7 @@ support
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/apreisne/
+   git clone https://github.com/apreisne/PL_Car-Rental_Final-Project.git
 
 2. **Navigate to the project directory**
 
