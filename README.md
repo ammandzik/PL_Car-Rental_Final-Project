@@ -120,19 +120,19 @@ support
    cd [here goes project name]
 
 3. **Configure environment variables**
-   ```bash
-    MYSQL_USER=
-    MYSQL_PASSWORD=
-    MYSQL_DATABASE=
-    MYSQL_ROOT_PASSWORD=
-    DB_PORT={host port}
-    DB_HOST=localhost
-    SPRING_DATASOURCE_URL=jdbc:mysql://mysql:{container port}/{your db name}
-    SPRING_DATASOURCE_USERNAME=
-    SPRING_DATASOURCE_PASSWORD=
-    SPRING_REDIS_HOST=localhost
-    SPRING_REDIS_PORT=6379
-    TZ={your time zone}
+   
+       MYSQL_USER=
+       MYSQL_PASSWORD=
+       MYSQL_DATABASE=
+       MYSQL_ROOT_PASSWORD=
+       DB_PORT={host port}
+       DB_HOST=localhost
+       SPRING_DATASOURCE_URL=jdbc:mysql://mysql:{container port}/{your db name}
+       SPRING_DATASOURCE_USERNAME=
+       SPRING_DATASOURCE_PASSWORD=
+       SPRING_REDIS_HOST=localhost
+       SPRING_REDIS_PORT=6379
+       TZ={your time zone}
 
 ### 🖥Running in IntelliJ IDEA
 
@@ -192,8 +192,8 @@ This project provides a ready-to-use **Docker image** hosted on **GitHub Contain
 
 2. **Stop containers**
 
-    ```bash
-   docker compose down -v
+  
+      docker compose down -v
 
 ### ⚡Caching with Redis
 
