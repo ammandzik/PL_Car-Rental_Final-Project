@@ -7,8 +7,8 @@ Content-Type: application/json
 
 {
   "carId": 1,
-  "dateFrom": "2025-10-13",
-  "dateTo": "2025-10-15",
+  "dateFrom": "2025-10-18",
+  "dateTo": "2025-10-20",
   "userId": 1,
   "confirmed": false
 }
@@ -19,8 +19,8 @@ Content-Type: application/json
 
 {
   "carId": 1,
-  "dateFrom": "2025-10-16",
-  "dateTo": "2025-10-18",
+  "dateFrom": "2025-11-01",
+  "dateTo": "2025-11-10",
   "userId": 1,
   "confirmed": false
 }
@@ -31,8 +31,8 @@ Content-Type: application/json
 
 {
   "carId": 1,
-  "dateFrom": "2025-10-18",
-  "dateTo": "2025-10-20",
+  "dateFrom": "2025-10-30",
+  "dateTo": "2025-10-31",
   "userId": 1,
   "confirmed": false
 }
@@ -41,7 +41,7 @@ Content-Type: application/json
 PUT localhost:8080/api/admin/reservation-status?id=1&status=true
 
 ### - removing exsiting
-DELETE localhost:8080/api/admin/reservation?id=1
+DELETE localhost:8080/api/admin/reservation?id=2
 
 ### - removing not exsiting
 DELETE localhost:8080/api/admin/reservation?id=111

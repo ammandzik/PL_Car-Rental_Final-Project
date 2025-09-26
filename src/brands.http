@@ -5,14 +5,14 @@ GET localhost:8080/api/admin/brands
 GET localhost:8080/api/admin/brands/brand?id=33
 
 ###(exisitng one)
-GET localhost:8080/api/admin/brands/brand?id=2
+GET localhost:8080/api/admin/brands/brand?id=3
 
 ###(creation of new one, request body)
 POST localhost:8080/api/admin/brands
 Content-Type: application/json
 
 {
-  "brandName": "Audi"
+  "brandName": "Toyota"
 }
 
 ###(creation of already existing)

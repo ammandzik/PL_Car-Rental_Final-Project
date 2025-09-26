@@ -53,7 +53,7 @@ Content-Type: application/json
   "password": "xxxxxssssds",
   "roles": [
     {
-      "id": 2
+      "id": 1
     }
   ]
 }

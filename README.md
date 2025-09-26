@@ -158,20 +158,39 @@ support
 
 ### 🐳Running with Docker
 
-1. **Build and start containers**
 
-    ```bash
-    docker compose up --build
+This project provides a ready-to-use **Docker image** hosted on **GitHub Container Registry (GHCR)**.
 
-2. **Services started:**
+### 🔹 Pull the image
+**The image is public - you can pull it directly:**
 
-   Spring Boot App → http://localhost:8080
+      docker pull ghcr.io/apreisne/pl_car-rental_final-project:latest
 
-   MySQL → on port 3306
+### 🔹 Run the container
 
-   Redis → on port 6379
+      docker run -d \
+      --name car-rental-app \
+      -p 8080:8080 \
+      -e SPRING_PROFILES_ACTIVE=docker \
+      ghcr.io/apreisne/pl_car-rental_final-project:latest
 
-3. **Stop containers**
+### OR
+
+**Build and start containers**
+
+      docker compose up --build
+
+1. **Services started:**
+
+
+      Spring Boot App → http://localhost:8080
+
+      MySQL → on port 3306
+
+      Redis → on port 6379
+
+
+2. **Stop containers**
 
     ```bash
    docker compose down -v

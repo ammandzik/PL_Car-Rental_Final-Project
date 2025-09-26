@@ -76,7 +76,7 @@ Content-Type: application/json
 }
 
 ### existing car
-DELETE localhost:8080/api/admin/car?id=1
+DELETE localhost:8080/api/admin/car?id=2
 
 ### non exsiting car deletion
 DELETE localhost:8080/api/admin/car?id=123

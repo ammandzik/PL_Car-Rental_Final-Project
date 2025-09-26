@@ -36,7 +36,7 @@ Content-Type: application/json
 DELETE localhost:8080/api/admin/roles?id=1
 
 ### non existing
-DELETE localhost:8080/api/admin/roles?id=2
+DELETE localhost:8080/api/admin/roles?id=2222
 
 ###
 GET localhost:8080/api/admin/roles/role?id=2

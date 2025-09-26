@@ -9,7 +9,7 @@ POST localhost:8080/api/review
 Content-Type: application/json
 
 {
-  "reservationId": 1,
+  "reservationId": 4,
   "description": "First review",
   "rating": 5,
   "pseudonym": "Janusz P."
