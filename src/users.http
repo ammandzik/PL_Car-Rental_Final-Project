@@ -25,18 +25,18 @@ Content-Type: application/json
 }
 
 ###Update existing user
-PUT localhost:8080/api/admin/user?id=1
+PUT localhost:8080/api/admin/user?id=3
 Content-Type: application/json
 
 {
   "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "aaa@wp.pl",
-  "password": "puszkorek12",
+  "email": "admin2@carrental.pl",
+  "password": "Puszekokruszek321",
   "roles": [
     {
-      "id": 1
+      "id": 3
     }
   ]
 }

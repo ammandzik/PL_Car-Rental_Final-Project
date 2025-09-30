@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.carrental.model.User;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -21,4 +23,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             WHERE u.id = :userId
             """)
     boolean userIdDiffers(Long userId);
+    
+    @Query("""
+            SELECT u FROM User u
+            WHERE u.email = :email
+            """)
+    Optional<User> findUserByEmail(String email);
 }

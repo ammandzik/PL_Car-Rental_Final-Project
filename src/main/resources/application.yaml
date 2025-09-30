@@ -26,6 +26,7 @@ logging:
     org.springframework.jdbc: DEBUG
     org.springframework.orm.jpa: DEBUG
     org.springframework.cache: DEBUG
+    org.springframework.security: DEBUG
     org.hibernate.engine.jdbc.spi: DEBUG
     com.mysql.cj.jdbc: TRACE
   file:

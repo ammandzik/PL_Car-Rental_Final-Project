@@ -4,28 +4,35 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.UserDto;
 import pl.coderslab.carrental.mapper.UserMapper;
+import pl.coderslab.carrental.model.CurrentUser;
 import pl.coderslab.carrental.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private static final String USER_WITH_ID_S_NOT_FOUND = "User with id %s not found";
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleService roleService;
     private final DeletionPolicy deletionPolicy;
+    private final PasswordEncoder passwordEncoder;
 
     @Cacheable(value = "user", key = "#id")
     @Transactional(readOnly = true)
@@ -68,7 +75,7 @@ public class UserService {
             }
 
             var userEntity = userMapper.toUser(userDto);
-            userEntity.setPassword(hashPassword(userDto.getPassword()));
+            userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
             userRepository.save(userEntity);
             return userMapper.toUserDto(userEntity);
 
@@ -97,7 +104,7 @@ public class UserService {
 
             userEntity.setSurname(userDto.getSurname());
             userEntity.setPhone(userDto.getPhone());
-            userEntity.setPassword(hashPassword(userDto.getPassword()));
+            userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
             userEntity.setEmail(userDto.getEmail());
             userEntity.setRoles(userDto.getRoles());
 
@@ -129,8 +136,23 @@ public class UserService {
         }
     }
 
-    private String hashPassword(String password) {
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+        log.info("Invoked loadUserByUsername method");
+
+        if (email != null) {
+            var user = userRepository.findUserByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("User with email %s not found", email)));
+
+            var authorities = user.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
+                    .collect(Collectors.toSet());
+
+            return new CurrentUser(user.getEmail(), user.getPassword(), authorities, user);
+
+        } else {
+            throw new IllegalArgumentException("Email is null");
+        }
     }
 }
