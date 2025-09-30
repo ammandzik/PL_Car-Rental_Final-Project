@@ -1,4 +1,4 @@
-# 🚗 Car Rental Application with MySQL, Redis, Docker and Maven
+# 🚗 Car Rental Application with MySQL, Redis, Docker, Maven and Spring Security
 
 A Spring Boot application that can be run both locally (via IntelliJ IDEA) and in Docker.  
 It uses MySQL as the database and Redis for caching.  
