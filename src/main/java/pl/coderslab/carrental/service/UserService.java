@@ -7,25 +7,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.carrental.dto.UserDto;
 import pl.coderslab.carrental.mapper.UserMapper;
-import pl.coderslab.carrental.model.CurrentUser;
 import pl.coderslab.carrental.repository.UserRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private static final String USER_WITH_ID_S_NOT_FOUND = "User with id %s not found";
     private final UserRepository userRepository;
@@ -133,26 +127,6 @@ public class UserService implements UserDetailsService {
             }
         } else {
             throw new IllegalArgumentException("Id cannot be empty.");
-        }
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        log.info("Invoked loadUserByUsername method");
-
-        if (email != null) {
-            var user = userRepository.findUserByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("User with email %s not found", email)));
-
-            var authorities = user.getRoles().stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
-                    .collect(Collectors.toSet());
-
-            return new CurrentUser(user.getEmail(), user.getPassword(), authorities, user);
-
-        } else {
-            throw new IllegalArgumentException("Email is null");
         }
     }
 }

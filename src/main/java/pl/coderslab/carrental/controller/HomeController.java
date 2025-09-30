@@ -18,7 +18,10 @@ public class HomeController {
     @GetMapping("/logged")
     public String admin(@AuthenticationPrincipal CurrentUser customUser) {
 
-        var entityUser = customUser.getUser();
-        return String.format("Hello %s %s !", entityUser.getName(), entityUser.getSurname());
+        if (customUser != null) {
+            var entityUser = customUser.getUser();
+            return String.format("Hello %s %s !", entityUser.getName(), entityUser.getSurname());
+        }
+        return "Welcome!";
     }
 }

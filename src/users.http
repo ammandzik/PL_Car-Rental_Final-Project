@@ -9,13 +9,14 @@ GET localhost:8080/api/admin/user?id=111111
 
 ###Create user
 POST localhost:8080/api/admin/user
+Cookie: JSESSIONID=284F6D4A9297C43D1F68939A5CD9A37E
 Content-Type: application/json
 
 {
-  "name": "Us2",
+  "name": "Amanda",
   "surname": "Preisner",
   "phone": "123-456-789",
-  "email": "dsecond@wp.pl",
+  "email": "admin2@carrental.pl",
   "password": "PuszekOkruszek",
   "roles": [
     {
